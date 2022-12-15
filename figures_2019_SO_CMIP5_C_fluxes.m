@@ -606,6 +606,241 @@ end
 % print(gcf, '-dpdf', [Plot_manus_dir '/' plot_filename '.pdf'])
 print(gcf, '-dpng', [Plot_manus_dir '/' plot_filename '.png'])
 
+%% Figure 3 - side by side pCO2/SST/DIC seasonal cycle and contour plot
+
+clf
+set(gcf, 'units', 'inches')
+paper_w = 15; paper_h =14;
+set(gcf,'PaperSize',[paper_w paper_h],'PaperPosition', [0 0 paper_w paper_h]);
+
+set(gcf, 'colormap', brewermap(30, 'Spectral'))
+
+plot_filename = 'Fig_3_Toy model pCO2';
+
+
+main_var = 'dissic';
+v = 7;
+
+% copied idealized test_out_2 to know order of indexes
+% idealized_test_out_2 = NaN(length(adjust_dissic_phase_shift_days), length(adjust_dissic_amp_percent), ...
+%     length(adjust_tos_phase_shift_days ), length(adjust_tos_amp_percent), ...
+%     length(adjust_talk_phase_shift_days), length(adjust_talk_amp_percent),  ...
+%     length(adjust_sos_phase_shift_days), length(adjust_sos_amp_percent), 3);
+% legend_names = {};
+
+%indexes for different scenarios
+tap = 3;
+talk_ap = 5;
+
+dpsd = 6;
+dap = 11;
+
+pco2_orig = squeeze(pco2_idealized(dpsd,dap,1,tap,1,talk_ap,1,1,:));
+dic_orig = squeeze(dic_idealized(dpsd,dap,1,tap,1,talk_ap,1,1,:));
+tos_orig = squeeze(tos_idealized(dpsd,dap,1,tap,1,talk_ap,1,1,:));
+
+blues = brewermap(10,'Blues');
+greens = brewermap(10, 'Greens');
+purples = brewermap(10,'Purples');
+oranges = brewermap(10,'oranges');
+PurpleRed = brewermap(9,'PuRd');
+% now test plots to run
+dpsd = {[6 6]; [3  9]; [3 3 9 9];[6 6];[3 3 9 9]};
+dap = {[6 16]; [11 11];[6 16 6 16];[11 11];[6 16 6 16]};
+tap = {[3 3 ];[3 3];[3 3 3 3] ;[2 4];[4 4 4 4]};
+
+plot_colors = {[blues(5,:) ; blues(9,:)];...
+    [greens(5,:); greens(9,:) ]; ...
+    [purples(4,:); purples(6,:); purples(8,:); purples(10,:)];...
+    [oranges(5,:) ; oranges(9,:)];...
+    [PurpleRed(4,:); PurpleRed(5,:); PurpleRed(6,:); PurpleRed(7,:)]};
+
+% set up 3 columns - one for DIC changes alone, one for SST changes alone,
+% and one for both
+tos_amp_per_plot = {0 ;0; 0; [-50 50]; 50};
+sub_v = 5;
+
+col_titles = {'DIC Amp.'; 'DIC Timing'; {'DIC Amp. +', 'DIC Timing'}; 'SST Amp.'; {'DIC Amp. +', 'DIC Timing + SST Amp.'}};
+
+for cc = 1:length(tos_amp_per_plot)
+    tos_amp_per = tos_amp_per_plot{cc};
+
+    d = NaN(length(tos_amp_per));
+    contour_pos = NaN(length(tos_amp_per),4);
+    for z = 1: length(tos_amp_per)
+
+        tt = find(adjust_vars.adjust_tos_amp_percent==tos_amp_per(z));
+
+        % plot pCO2 correlation arrays for different scenarios:
+        pCO2_grid = NaN(length(adjust_vars.(['adjust_' main_var '_amp_percent'])), length(adjust_vars.(['adjust_' main_var '_phase_shift_days'])));
+
+        for dd =1: length(adjust_vars.(['adjust_' main_var '_amp_percent']))
+            pCO2_grid(dd,:) = idealized_test_out_2(:,dd,1,tt,1,talk_ap,1,1,1);
+        end
+
+        d(z) = subplot(5,5,15+cc+5*(z-1));
+
+        [C, h] = contourf( adjust_vars.(['adjust_' main_var '_phase_shift_days']), adjust_vars.(['adjust_' main_var '_amp_percent']),pCO2_grid, 'levellist', -1:0.05:1, 'linestyle', 'none'); colorbar; caxis([-1 1])
+        hold on
+        [C1, h1] = contour( adjust_vars.(['adjust_' main_var '_phase_shift_days']),adjust_vars.(['adjust_' main_var '_amp_percent']), pCO2_grid, 'levellist', [-0.5:0.5:0.5], 'linestyle', '-', 'linewidth', 2, 'color', 'k');
+        clabel(C1, h1)
+        xlabel('DIC timing (days)')
+        ylabel('\Delta DIC amp. % ')
+        title(['\Delta SST amp. ' num2str(tos_amp_per(z)) ' %']);
+        contourcbar("off")
+
+        contour_pos(z,:) = get(d(z),'position');
+    end
+
+    % plot base DIC, SST, pCO2
+    d2 = subplot(5,5,cc);
+    hold on
+    plot(dic_orig, '-k', 'linewidth', 3)
+    if cc==1
+        ylabel('DIC (\mumol kg^-^1)')
+    end
+    set(d2, 'ylim', [2165 2240])
+    title(col_titles{cc})
+
+
+    d3 = subplot(5,5,cc+5);
+    hold on
+    plot(tos_orig, '-k', 'linewidth', 3)
+    if cc==1
+        ylabel('SST (\circC)')
+    end
+    set(d3, 'ylim', [1 6])
+
+    d1 = subplot(5,5,cc+10);
+    hold on
+    p1 = plot(pco2_orig, '-k', 'linewidth', 3);
+    if cc==1
+    ylabel('pCO_2 (\muatm)')
+    end
+    set(d1, 'ylim', [340 450])
+    xlabel('Month')
+
+
+    % now plot test symbols overlaid
+    for qq = 1:length(dpsd{cc})
+
+        pco2_test = squeeze(pco2_idealized(dpsd{cc}(qq),dap{cc}(qq),1,tap{cc}(qq),1,talk_ap,1,1,:));
+        dic_test = squeeze(dic_idealized(dpsd{cc}(qq),dap{cc}(qq),1,tap{cc}(qq),1,talk_ap,1,1,:));
+        tos_test = squeeze(tos_idealized(dpsd{cc}(qq),dap{cc}(qq),1,tap{cc}(qq),1,talk_ap,1,1,:));
+
+        pco2_correlation = idealized_test_out_2(dpsd{cc}(qq),dap{cc}(qq),1,tap{cc}(qq),1,talk_ap,1,1,1);
+
+        plot(d2, dic_test,'--', 'linewidth', 3, 'color', plot_colors{cc}(qq,:));
+        plot(d3, tos_test,'--r', 'linewidth', 3, 'color', plot_colors{cc}(qq,:));
+
+        plot(d1, pco2_test,'--r', 'linewidth', 3, 'color', plot_colors{cc}(qq,:));
+
+        contour_index = find(tos_amp_per_plot{cc} == adjust_vars.adjust_tos_amp_percent(tap{cc}(qq)));
+
+        plot(d(contour_index), 0, 0, '*k', 'markersize', 10)
+       p1 =  plot(d(contour_index),  adjust_vars.adjust_dissic_phase_shift_days(dpsd{cc}(qq)), ...
+            adjust_vars.adjust_dissic_amp_percent(dap{cc}(qq)), 'markersize', 15);
+       p1.Marker = 'o';
+       p1.MarkerEdgeColor = 'k';
+       p1.MarkerFaceColor = plot_colors{cc}(qq,:);
+%        set(p1, 'marker', 's', 'markeredgecolor', 'k', 'markerfacecolor', 'color', plot_colors{cc}(qq,:));
+%         scatter(d(contour_index), adjust_vars.adjust_dissic_phase_shift_days(dpsd{cc}(qq)), ...
+%             adjust_vars.adjust_dissic_amp_percent(dap{cc}(qq)), 200, pco2_correlation, 'filled', 'markeredgecolor', 'k')
+
+    end
+
+    for z = 1: length(tos_amp_per)
+    height_adjust = 0.03;
+
+        if cc<4
+            set(d(z), 'position', contour_pos(z,:) +[0 -0.12 0 height_adjust])
+
+            if cc==2
+                second_pos = get(d(z), 'position');
+            end
+        elseif cc==4 && z==1
+            set(d(z), 'position', contour_pos(z,:) +[0 -0.03 0 height_adjust])
+        elseif cc==4 && z==2
+            set(d(z), 'position', contour_pos(z,:) +[0 -0.07 0 height_adjust])
+            %             new_pos = get(d(z), 'position');
+            bottom_pos = get(d(z), 'position');
+
+        end
+    end
+end
+
+cb1 = contourcbar(d(contour_index), 'location', 'southoutside');
+cb1_pos = get(cb1, 'position');
+set(d(z), 'position', [contour_pos(z,1) bottom_pos(2) contour_pos(z,3) contour_pos(z,4)+height_adjust])
+set(cb1, 'position', [second_pos(1) second_pos(2)-.11 cb1_pos(3)+.04 cb1_pos(4)+.02])
+title(cb1, 'pCO_2 Correlation', 'fontweight', 'bold')
+set(cb1, 'fontsize', 14)
+print(gcf, '-dpng', [Plot_manus_dir '/' plot_filename '.png'])
+
+%%
+
+for qq = 1:length(dpsd)
+    
+    
+    pco2_test = squeeze(pco2_idealized(dpsd(qq),dap(qq),1,tap(qq),1,talk_ap,1,1,:));
+    dic_test = squeeze(dic_idealized(dpsd(qq),dap(qq),1,tap(qq),1,talk_ap,1,1,:));
+    tos_test = squeeze(tos_idealized(dpsd(qq),dap(qq),1,tap(qq),1,talk_ap,1,1,:));
+    
+    pco2_correlation = idealized_test_out_2(dpsd(qq),dap(qq),1,tap(qq),1,talk_ap,1,1,1);
+    
+    test_name = ['DIC shift ' num2str(adjust_vars.adjust_dissic_phase_shift_days(dpsd(qq))) ...
+        ' DIC Amp change ' num2str(adjust_vars.adjust_dissic_amp_percent(dap(qq))) ...
+        ' TOS Amp Change ' num2str(adjust_vars.adjust_tos_amp_percent(tap(qq)))];
+%     legend_names = [legend_names test_name];
+    
+    d1 = subplot(3,1,1);
+    hold on
+    p1 = plot(pco2_orig, '-k', 'linewidth', 3);
+    ylabel('pCO_2 (\muatm)')
+        set(d1, 'ylim', [360 440])
+
+    d2 = subplot(3,1,2);
+    hold on
+    plot(dic_orig, '-k', 'linewidth', 3)
+    ylabel('DIC (\mumol kg^-^1)')
+    set(d2, 'ylim', [2175 2230])
+
+   
+    d3 = subplot(3,1,3);
+    hold on
+    plot(tos_orig, '-k', 'linewidth', 3)
+    ylabel('SST (\circC)')
+    xlabel('Month')
+            set(d3, 'ylim', [1 6])
+
+    plot_filename = 'Toy model pCO2';
+    if qq==1
+        legend(d1, p1, 'Original', 'location', 'northwest')
+
+%         print(gcf, '-dpng', '-r400', [Plot_out_dir 'Sensitivity_tests/' plot_filename plot_ver])
+    end
+    
+    p2 = plot(d1, pco2_test,'--r', 'linewidth', 2);
+    title(d1, ['Test pCO_2 correlation: ' num2str(pco2_correlation,2)])
+    plot(d2, dic_test,'--r', 'linewidth', 2);
+    title(d2, ['DIC shift ' num2str(adjust_vars.adjust_dissic_phase_shift_days(dpsd(qq))) ' Days'...
+        '; DIC Amp change ' num2str(adjust_vars.adjust_dissic_amp_percent(dap(qq))) ' %'])
+    
+    plot(d3, tos_test,'--r', 'linewidth', 2)
+    title(d3, [' SST Amp Change ' num2str(adjust_vars.adjust_tos_amp_percent(tap(qq))) ' %'])
+    %     taylor_eval(harm.spco2.seasonal_fit, pco2_test)
+    %         taylor_eval(pco2_orig, pco2_test)
+    
+    legend(d1, [p1 p2], 'Original', 'Test', 'location', 'northwest')
+    plot_filename = [plot_filename ' ' test_name];
+%     print(gcf, '-dpng', '-r400', [Plot_out_dir 'Sensitivity_tests/' plot_filename plot_ver])
+    
+    pause
+end
+% legend(d1, legend_names, 'location', 'northwest')
+% plot(d1, harm.spco2.seasonal_fit, 'k--')
+
+
 %% Supplemental Figure 2 - mean flux maps with SAF overlaid
 
 % var_cmaps.fgco2 = %flipud(brewermap(30, 'RdBu'));

@@ -3094,7 +3094,7 @@ for q = 1:length(model_types)
 end
 print(gcf, '-dpng', '-r300', [Plot_out_dir seas_comp_vars{sv} '/' plot_filename '.png'])
 clear  plot_filename
-%% fit a harmonic to data
+%% Needed %% - fit a harmonic to data
 clear harm
 year_days = datenum(2012,1:12,15)-datenum(2012,1,0);
 nharm=1;cutoff=10;L=365.25;
@@ -3127,7 +3127,7 @@ for v = [7 5 1 8 15 6 4 2]
     end
 end
 
-%% creating a seasonal dic that is internally consistent with pCO2 and TALK
+%% Needed %% - creating a seasonal dic that is internally consistent with pCO2 and TALK 
 
 [harm.spco2.amp,harm.spco2.phase,harm.spco2.frac,harm.spco2.offset,harm.spco2.residual]= ...
     fit_harmonics(obs.spco2.Combined.y2021.SOCCOM_SOCAT.out_seasonal(:,1), year_days, nharm, L, cutoff);
@@ -3197,7 +3197,8 @@ dic_from_pco2_alk = DATA(:,2);
 [harm.intpp.amp,harm.intpp.phase,harm.intpp.frac,harm.intpp.offset,harm.intpp.residual]= ...
     fit_harmonics(obs.intpp.out_seasonal(:,1), year_days, nharm, L, cutoff);
 
-%% 2022_03_14 test plots for pCO2 tests
+clear j yt seasonal_pco2 seasonal_tos seasonal_talk dic_from_pco2_alk
+%% Needed %% 2022_03_14 test plots for pCO2 tests
 
 % recreate harmonic of obs DIC and T:
 for v = [7 5 1 8 6 4]
@@ -3986,7 +3987,7 @@ for m = 1:length(cmip_names.spco2) % spco2 model number
     print(gcf, '-dpdf', [Plot_out_dir 'Sensitivity_tests/' plot_filename])
 end
 
-%% Parallel attempt: Starting from correct model, recalculating pCO2 for different test cases 
+%% Needed %% Parallel attempt: Starting from correct model, recalculating pCO2 for different test cases 
 % clf
 % idealized_test_out = table;
 tic
@@ -4219,7 +4220,7 @@ end
 toc
 
 
-%% Contour plots of pCO2 correlation against DISSIC amplitude and phase shifts
+%% Needed for Figures %% Contour plots of pCO2 correlation against DISSIC amplitude and phase shifts
 set(gcf, 'colormap', brewermap(30, 'Spectral'))
 
 
@@ -4342,7 +4343,7 @@ for ta = 1:length(adjust_vars.(sub_var_3_name))
 
     print(gcf, '-dpdf', [Plot_out_dir 'Sensitivity_tests/' plot_filename plot_ver])
 end
-%% Example plots of pCO2 shifts due to DIC and SST changes
+%% Needed for Figures %% Example plots of pCO2 shifts due to DIC and SST changes
 
 % copied idealized test_out_2 to know order of indexes
 % idealized_test_out_2 = NaN(length(adjust_dissic_phase_shift_days), length(adjust_dissic_amp_percent), ...
@@ -4427,7 +4428,7 @@ for qq = 1:length(dpsd)
     plot_filename = [plot_filename ' ' test_name];
     print(gcf, '-dpng', '-r400', [Plot_out_dir 'Sensitivity_tests/' plot_filename plot_ver])
     
-%     pause
+    pause
 end
 % legend(d1, legend_names, 'location', 'northwest')
 % plot(d1, harm.spco2.seasonal_fit, 'k--')
