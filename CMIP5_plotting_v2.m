@@ -2494,8 +2494,8 @@ save([home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/data/seasonal_cycles
     'var_lims', 'depth_levs', 'poleward_lat_lim', 'depth_names', 'plot_ver')
 
 %% Taylor diagrams:
-
-%% Taylor calculations and diagram using Kathy Kelly's tools
+% 0.0 Run Carbon_mapped_product_analysis
+%% 0. Taylor calculations and diagram using Kathy Kelly's tools
 q = 2; % SOCCOM SOCAT
 p = 3; % Combined
 y = 1; % 
@@ -3094,12 +3094,12 @@ for q = 1:length(model_types)
 end
 print(gcf, '-dpng', '-r300', [Plot_out_dir seas_comp_vars{sv} '/' plot_filename '.png'])
 clear  plot_filename
-%% Needed %% - fit a harmonic to data
+%% Needed %% - 1. fit a harmonic to data
 clear harm
 year_days = datenum(2012,1:12,15)-datenum(2012,1,0);
 nharm=1;cutoff=10;L=365.25;
 
-%% Fit Harmonics for all models
+%% 2. Fit Harmonics for all models
 % year_days = datenum(2012,1:12,15)-datenum(2012,1,0);
 
 for v = [7 5 1 8 15 6 4 2]
@@ -3127,7 +3127,7 @@ for v = [7 5 1 8 15 6 4 2]
     end
 end
 
-%% Needed %% - creating a seasonal dic that is internally consistent with pCO2 and TALK 
+%% Needed %% - 3. creating a seasonal dic that is internally consistent with pCO2 and TALK 
 
 [harm.spco2.amp,harm.spco2.phase,harm.spco2.frac,harm.spco2.offset,harm.spco2.residual]= ...
     fit_harmonics(obs.spco2.Combined.y2021.SOCCOM_SOCAT.out_seasonal(:,1), year_days, nharm, L, cutoff);
@@ -3198,7 +3198,7 @@ dic_from_pco2_alk = DATA(:,2);
     fit_harmonics(obs.intpp.out_seasonal(:,1), year_days, nharm, L, cutoff);
 
 clear j yt seasonal_pco2 seasonal_tos seasonal_talk dic_from_pco2_alk
-%% Needed %% 2022_03_14 test plots for pCO2 tests
+%% Needed %% 4. 2022_03_14 test plots for pCO2 tests
 
 % recreate harmonic of obs DIC and T:
 for v = [7 5 1 8 6 4]
@@ -3987,7 +3987,7 @@ for m = 1:length(cmip_names.spco2) % spco2 model number
     print(gcf, '-dpdf', [Plot_out_dir 'Sensitivity_tests/' plot_filename])
 end
 
-%% Needed %% Parallel attempt: Starting from correct model, recalculating pCO2 for different test cases 
+%% Needed %% 5. Parallel attempt: Starting from correct model, recalculating pCO2 for different test cases 
 % clf
 % idealized_test_out = table;
 tic
@@ -4220,7 +4220,7 @@ end
 toc
 
 
-%% Needed for Figures %% Contour plots of pCO2 correlation against DISSIC amplitude and phase shifts
+%% Needed for Figures %% 6. Contour plots of pCO2 correlation against DISSIC amplitude and phase shifts
 set(gcf, 'colormap', brewermap(30, 'Spectral'))
 
 
@@ -4232,6 +4232,28 @@ sub_var_name = 'adjust_tos_amp_percent';
 
 sub_var_3_name = 'adjust_talk_amp_percent';
 model_plot = 1;
+
+% try plotting different variables for the scatter colors
+pco2_corr_plot = 1;
+
+% for plotting other colors than model pCO2 correlation:
+
+
+vp = 4; % mlotst max / min
+vp = 2; % intpp
+if pco2_corr_plot==0 && vp==4
+    plot_title_add = 'mlotst max div min';
+    min_max = [2 7];
+elseif pco2_corr_plot==0 && vp==2
+    plot_title_add = 'jan intpp';
+    min_max = [100 1300];
+end
+
+if pco2_corr_plot==0
+    alt_color_map = brewermap(30, 'PuRd');
+    alt_color_map = alt_color_map(1:20,:);
+    grad_step = (min_max(2)-min_max(1))./length(alt_color_map);
+end
 % first, find all points with the correct sub_v amplitude and shift, then put
 % into a matric of ampl rows and phase columns
 
@@ -4241,17 +4263,21 @@ model_plot = 1;
 %     length(adjust_talk_phase_shift_days), length(adjust_talk_amp_percent),  ...
 %     length(adjust_sos_phase_shift_days), length(adjust_sos_amp_percent), 3);
 
-for ta = 1:length(adjust_vars.(sub_var_3_name))
+for ta = 5%1:length(adjust_vars.(sub_var_3_name))
     subplot_index = 0;
     clf
     set(gcf, 'units', 'inches')
-    paper_w = 10; paper_h =15;
+    paper_w = 15; paper_h =15;
     set(gcf,'PaperSize',[paper_w paper_h],'PaperPosition', [0 0 paper_w paper_h]);
 
     plot_filename = ['Contour_correlation ' variables{v} ' subplots by ' variables{sub_v} ' and ' sub_var_3_name '_' num2str(adjust_vars.(sub_var_3_name)(ta))];
 
     if model_plot==1
         plot_filename = [plot_filename '_model_overlay'];
+    end
+    if pco2_corr_plot==0
+        plot_filename = [plot_filename '_' plot_title_add];
+
     end
     for tt = 1:length(adjust_vars.(sub_var_name))
         
@@ -4323,10 +4349,32 @@ for ta = 1:length(adjust_vars.(sub_var_3_name))
                 if isempty(var_phase_shift_days)
                     continue
                 end
+
+                if pco2_corr_plot==1
+
                 mod_pco2_corr = obs.spco2.correlation(m);
                 
                 scatter(var_phase_shift_days, var_amp_per_diff, 200, mod_pco2_corr, 'filled', 'markeredgecolor', 'k')
-                
+                else
+                   
+                    mod_match_index = strcmp(cmip_names.(variables{vp}), cmip_names.spco2{m});
+                    if sum(mod_match_index)==0
+                        disp([cmip_names.spco2{m} ' missing ' variables{v}])
+                        continue
+                    end
+
+                    if vp==4
+                        var_c = max(CMIP.(variables{vp}).out_seasonal(mod_match_index,:,1))./min(CMIP.(variables{vp}).out_seasonal(mod_match_index,:,1)) ;
+                    elseif vp==2
+                        mon = 1; % january
+                        var_c = CMIP.(variables{vp}).out_seasonal(mod_match_index,mon,1);
+                    end
+
+                    marker_color = alt_color_map(round((var_c-min_max(1)+grad_step)./(min_max(2) - min_max(1)+grad_step).*length(alt_color_map)),:);
+%                     plot(var_phase_shift_days, var_amp_per_diff, 'markeredgecolor', 'k', 'markerfacecolor', marker_color)
+                    plot(var_phase_shift_days, var_amp_per_diff, 'o', 'markeredgecolor', 'k', 'markerfacecolor', marker_color, 'markersize', 15)
+
+                end
                 disp(cmip_names.spco2{m})
                 disp(m)
                 disp(var_phase_shift_days)
@@ -4339,8 +4387,24 @@ for ta = 1:length(adjust_vars.(sub_var_3_name))
         end
         
     end
-    
 
+    if pco2_corr_plot==0
+        % make a subplot that acts as a secondary colorbar for the plotted
+        % variable (if not pCO2_corr)
+        subplot(3,2,2); hold on
+
+
+        for c  = min_max(1):grad_step:min_max(2)-grad_step
+
+            marker_color = alt_color_map(round(((c-min_max(1)+grad_step)./(min_max(2) - min_max(1)+grad_step)).*length(alt_color_map)),:);
+
+            p1 = patch([c c+grad_step c+grad_step c],[0 0 1 1], marker_color);
+            p1.LineStyle = 'none';
+
+        end
+        set(gca, 'ytick', [])
+        title(plot_title_add)
+    end
     print(gcf, '-dpdf', [Plot_out_dir 'Sensitivity_tests/' plot_filename plot_ver])
 end
 %% Needed for Figures %% Example plots of pCO2 shifts due to DIC and SST changes
@@ -4351,7 +4415,7 @@ end
 %     length(adjust_talk_phase_shift_days), length(adjust_talk_amp_percent),  ...
 %     length(adjust_sos_phase_shift_days), length(adjust_sos_amp_percent), 3);
 % legend_names = {};
-
+  
 %indexes for different scenarios
 tap = 3;
 talk_ap = 5;
@@ -4386,24 +4450,24 @@ for qq = 1:length(dpsd)
         ' TOS Amp Change ' num2str(adjust_vars.adjust_tos_amp_percent(tap(qq)))];
 %     legend_names = [legend_names test_name];
     
-    d1 = subplot(3,1,1);
+    d1 = subplot(3,1,3);
     hold on
     p1 = plot(pco2_orig, '-k', 'linewidth', 3);
     ylabel('pCO_2 (\muatm)')
         set(d1, 'ylim', [360 440])
+    xlabel('Month')
 
-    d2 = subplot(3,1,2);
+    d2 = subplot(3,1,1);
     hold on
     plot(dic_orig, '-k', 'linewidth', 3)
     ylabel('DIC (\mumol kg^-^1)')
     set(d2, 'ylim', [2175 2230])
 
    
-    d3 = subplot(3,1,3);
+    d3 = subplot(3,1,2);
     hold on
     plot(tos_orig, '-k', 'linewidth', 3)
     ylabel('SST (\circC)')
-    xlabel('Month')
             set(d3, 'ylim', [1 6])
 
     plot_filename = 'Toy model pCO2';
@@ -4428,7 +4492,7 @@ for qq = 1:length(dpsd)
     plot_filename = [plot_filename ' ' test_name];
     print(gcf, '-dpng', '-r400', [Plot_out_dir 'Sensitivity_tests/' plot_filename plot_ver])
     
-    pause
+%     pause
 end
 % legend(d1, legend_names, 'location', 'northwest')
 % plot(d1, harm.spco2.seasonal_fit, 'k--')
@@ -4598,27 +4662,27 @@ subplot(1,1,1);
 hold on
 
 seas_amplitude = 0;
-dissic_vert_gradient=1;
+dissic_vert_gradient=0;
 dd = 12;
-mon = 9;
+mon = 1;
 
 wmo_on = 0;
 
 if wmo_on==0
-sv = 9;
-v = find(strncmp(seas_comp_vars{sv}, variables, 4));
-if length(v)>1 % cludge since dissic and dissic_yr were getting confused
-    v = strmatch(seas_comp_vars{sv}, variables, 'exact');
-end
+    sv = 10;
+    v = find(strncmp(seas_comp_vars{sv}, variables, 4));
+    if length(v)>1 % cludge since dissic and dissic_yr were getting confused
+        v = strmatch(seas_comp_vars{sv}, variables, 'exact');
+    end
 else
     v=10;
 end
 
 alt_x=0;
 
-sv2 = 4;
+sv2 = 6;
 tests = {'norm_error';'correlation' ; 'ratio'};
-tt = 3;
+tt = 2;
 
 v2 = find(strncmp(seas_comp_vars{sv2}, variables, 4));
 if length(v2)>1 % cludge since dissic and dissic_yr were getting confused
