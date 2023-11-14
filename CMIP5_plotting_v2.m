@@ -4,57 +4,57 @@
 %% Note - might correct for area when averaging, but not essential and probably doesn't make a difference really..
 % setting colors for consistency b/t plots
 
-color_model = {'CanESM2' 1 ; ...
-    'BLANK' 2; ...
-    'MPI_ESM_LR' 3; ...
-    'MPI_ESM_MR' 4 ; ...
-    'NorESM1_ME' 5 ; ...
-    'MIROC_ESM_CHEM' 6 ; ...
-    'MIROC_ESM' 7 ; ...
-    'HadGEM2_CC' 8; ...
-    'HadGEM2_ES' 9 ; ...
-    'GFDL_ESM2M' 10 ; ...
-    'GFDL_ESM2G' 11 ; ...
-    'CMCC_CESM' 12 ; ...
-    'CESM1_BGC' 13 ; ...
-    'bcc_csm1_1_m' 14 ; ...
-    'inmcm4' 15 ; ...
-    'MRI_ESM1' 16 ; ...
-    'CNRM_CM5' 17 ; ...
-    'BLANK' 18 ; ...
-    'GISS_E2_H_CC' 19 ; ...
-    'GISS_E2_R_CC' 20; ...
-    'CESM2_WACCM_6' 21;...
-    'CESM2_6' 22;...
-    'CNRM_ESM2_1_6' 23;...
-    'CanESM5_6' 24;...
-    'MIROC_ES2L_6' 25 ;...
-    'UKESM1_0_LL_6' 26; ...
-    'GISS_E2_R' 27; ...
-    'ACCESS_ESM1_5_6' 28; ...
-    'BCC_CSM2_MR_6' 29; ...
-    'GFDL_CM4_6' 30;...
-    'GFDL_ESM4_6' 31; ...
-    'INM_CM4_8_6' 32; ...
-    'INM_CM5_0_6' 33; ...
-    'MPI_ESM1_2_HR_6' 34; ...
-    'MPI_ESM1_2_LR_6' 35; ...
-    'NorESM2_LM_6' 36; ...
-    'NorESM2_MM_6' 37;
-    'IPSL_CM5B_LR' 38; ...
-    'IPSL_CM5A_LR' 39; ...
-    'IPSL_CM5A_MR' 40; ...
-    'MRI_ESM2_0_6' 41; ...
-    'SOSE_i133' 42; ...
-    'SOSE_i122' 43; ...
-    'IPSL_CM6A_LR_6' 44; ...
-    'CMCC_ESM2_6' 45};
+color_model = {'CanESM2' 1 [] 'o'; ...
+    'BLANK' 2 [] '^'; ...
+    'MPI_ESM_LR' 3 [] 's'; ...
+    'MPI_ESM_MR' 4 [] 'v'; ...
+    'NorESM1_ME' 5  [] '>' ; ...
+    'MIROC_ESM_CHEM' 6  [] '<' ; ...
+    'MIROC_ESM' 7  [] 'o'; ...
+    'HadGEM2_CC' 8 [] '^'; ...
+    'HadGEM2_ES' 9  [] 's'; ...
+    'GFDL_ESM2M' 10  [] 'v'; ...
+    'GFDL_ESM2G' 11  [] '>' ; ...
+    'CMCC_CESM' 12 [] '<' ; ...
+    'CESM1_BGC' 13  [] 'o'; ...
+    'bcc_csm1_1_m' 14  [] '^'; ...
+    'inmcm4' 15  [] 's'; ...
+    'MRI_ESM1' 16  [] 'v'; ...
+    'CNRM_CM5' 17  [] '>' ; ...
+    'BLANK' 18  [] '<' ; ...
+    'GISS_E2_H_CC' 19  [] 'o'; ...
+    'GISS_E2_R_CC' 20 [] '^'; ...
+    'CESM2_WACCM_6' 21 [] 's';...
+    'CESM2_6' 22 [] 'v';...
+    'CNRM_ESM2_1_6' 23 [] '>' ;...
+    'CanESM5_6' 24  [] '<' ;...
+    'MIROC_ES2L_6' 25  [] 'o';...
+    'UKESM1_0_LL_6' 26 [] '^'; ...
+    'GISS_E2_R' 27 [] 's'; ...
+    'ACCESS_ESM1_5_6' 28 [] 'v'; ...
+    'BCC_CSM2_MR_6' 29 [] '>' ; ...
+    'GFDL_CM4_6' 30  [] '<' ;...
+    'GFDL_ESM4_6' 31 [] 'o'; ...
+    'INM_CM4_8_6' 32 [] '^'; ...
+    'INM_CM5_0_6' 33 [] 's'; ...
+    'MPI_ESM1_2_HR_6' 34 [] 'v'; ...
+    'MPI_ESM1_2_LR_6' 35 [] '>' ; ...
+    'NorESM2_LM_6' 36  [] '<' ; ...
+    'NorESM2_MM_6' 37 [] 'o';
+    'IPSL_CM5B_LR' 38 [] '^'; ...
+    'IPSL_CM5A_LR' 39 [] 's'; ...
+    'IPSL_CM5A_MR' 40 [] 'v'; ...
+    'MRI_ESM2_0_6' 41 [] '>' ; ...
+    'SOSE_i133' 42  [] '<' ; ...
+    'SOSE_i122' 43 [] 'o'; ...
+    'IPSL_CM6A_LR_6' 44 [] '^'; ...
+    'CMCC_ESM2_6' 45 [] 's'} ;
 
 cmap = distinguishable_colors(length(color_model));
 
 % obs will always be black.
-
-Plot_out_dir = [home_dir 'Work/Projects/2019_05 SO_C_flux_model_comparison/Plots/'];
+Project_dir = [home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/'];
+% Plot_out_dir = [home_dir 'Work/Projects/2019_05 SO_C_flux_model_comparison/Plots/'];
 %
 % % model_type_1
 % model_group_names.good_mag_good_phase = {'MIROC_ESM', 'MIROC_ESM_CHEM', ...
@@ -75,7 +75,7 @@ Plot_out_dir = [home_dir 'Work/Projects/2019_05 SO_C_flux_model_comparison/Plots
 % model_types = fieldnames(model_group_names);
 % lat_lims = [-62 -45];
 
-poleward_lat_lim = -62;
+poleward_lat_lim = -65;
 %%
 model_group_colors = brewermap(10, 'dark2');
 model_group_colors(1,:) = [0.105882352941176,0.619607843137255,0.8];
@@ -96,8 +96,12 @@ plot([-4 0], [1 2], 'color', model_group_colors(5,:), 'linewidth', 2)
 clear CMIP cmip_names var_type var_lims
 
 
-%%% removing this, using C_input loaded from "Carbon_mapped_product_analysis.m"
-%%% Neural Network fCO2 load
+% removing this, using C_input loaded from "Carbon_mapped_product_analysis.m"
+%% Carbon_mapped_product_analysis output load
+
+c_input_file = 'Carbon_mapped_product_analysis_output_2023_10_23.mat';
+
+load([Project_dir 'data/' c_input_file])
 % neural_dir = [data_dir 'Data_Products/CO2_fluxes/Landshuster_Neural/2018_08_30/'];
 % load([neural_dir 'neural_network_results_v2.mat'])
 
@@ -111,14 +115,15 @@ var_lims = [350 450 ;  0 7e2; 980 1020 ; 0 500 ; -1 25; 29 35.5; 1950 2300;2200 
 % error with any variables that have depth. I'm concatenating along the
 % depth axis, not time, when I add historical runs. Need to fix. 2022_06_24
 % - checked, this is now fixed
-plot_ver = '_v12'; % fixed gaps in SAF_mask 
+plot_ver = '_v13'; % restarting work October 22, 2023
+% plot_ver = '_v12'; % fixed gaps in SAF_mask
 
 % int_levels = [12,25,50,75,100,125,150,175,200,250,300,350,400];
 % bgc_levels = [10,25,50,75,100,125,150,175,200,300,400,500,600,700,800,900,1000,1200,1400,1600,1800,2000];
 
 for v= 1:length(variables)
     disp([ '     <strong> Starting ' variables{v} ' processing </strong>' ])
-    
+
     if  (strcmp(variables{v}, 'dissic') || strcmp(variables{v}, 'talk')) && strcmp(var_type{v}, 'Omon')
         CMIP_dir = [data_dir 'Model_Output/CMIP5/' variables{v} '/monthly/regrid/'];
         var_load = variables{v};
@@ -128,21 +133,21 @@ for v= 1:length(variables)
     else
         var_load = variables{v};
         CMIP_dir = [data_dir 'Model_Output/CMIP5/' variables{v} '/regrid/'];
-        
+
     end
-    
+
     % CMIP5 load %%%
 
     cmip_files = dir([CMIP_dir '*.nc']);
-    
+
     CMIP.(variables{v}) = [];
-    
+
     cmip_names.(variables{v}) = cell(length(cmip_files),1);
     %
     time_offset = 0; % differing time stamps is now fixed using cdo commands
-    
+
     for f=1:length(cmip_files)
-        
+
         % finding model name by looking between frequency indicator and
         % rcp85
         % also want to save out the ensemble member to make sure everything
@@ -150,27 +155,27 @@ for v= 1:length(variables)
         first_index = strfind(cmip_files(f).name, var_type{v});
         second_index = strfind(cmip_files(f).name, 'rcp85');
         third_index = strfind(cmip_files(f).name, '_2');
-        
+
         if strcmp(var_type{v}, 'Oyr')
             mod_name = cmip_files(f).name(first_index+4:second_index-2);
         else
             mod_name = cmip_files(f).name(first_index+5:second_index-2);
         end
         disp([mod_name ' started'])
-        
+
         mod_name = strrep(mod_name, '-', '_');
-        
+
         CMIP.(variables{v}).(mod_name).ensemble_member = cmip_files(f).name(second_index+6:third_index-1);
-        
+
         time_temp = ncread([CMIP_dir cmip_files(f).name], 'time');
-        
+
         temp_Matlab_time = time_temp + time_offset;
-        
+
         if f==1
             CMIP.(variables{v}).lon = ncread([CMIP_dir cmip_files(f).name], 'lon');
             CMIP.(variables{v}).lat = ncread([CMIP_dir cmip_files(f).name], 'lat');
         end
-        
+
         CMIP.(variables{v}).(mod_name).GMT_Matlab = temp_Matlab_time; clear temp_Matlab_time
         CMIP.(variables{v}).(mod_name).(variables{v}) = squeeze(ncread([CMIP_dir cmip_files(f).name], var_load));
         CMIP.(variables{v}).(mod_name).units = ncreadatt([CMIP_dir cmip_files(f).name], var_load, 'units');
@@ -179,7 +184,7 @@ for v= 1:length(variables)
             CMIP.(variables{v}).(mod_name).standard_name = ncreadatt([CMIP_dir cmip_files(f).name], var_load, 'standard_name');
         catch
         end
-        
+
         if numel(size(CMIP.(variables{v}).(mod_name).(variables{v})))==4 || strcmp(variables{v}, 'thetao')
             try
                 CMIP.(variables{v}).(mod_name).depth = ncread([CMIP_dir cmip_files(f).name], 'zlev');
@@ -187,14 +192,14 @@ for v= 1:length(variables)
                 CMIP.(variables{v}).(mod_name).depth = ncread([CMIP_dir cmip_files(f).name], 'lev');
             end
         end
-        
+
         cmip_names.(variables{v}){f} = mod_name;
-        
+
         clear mod_name time_temp first_index second_index
     end
-    
+
     clear cmip_files CMIP_dir
-    
+
     % CMIP 6 load %%%
     % ssp585 first
     if  (strcmp(variables{v}, 'dissic') || strcmp(variables{v}, 'talk')) && strcmp(var_type{v}, 'Omon')
@@ -205,50 +210,50 @@ for v= 1:length(variables)
         CMIP_dir = [data_dir 'Model_Output/CMIP6/' variables{v} '/regrid/ssp585_download/'];
     end
     CMIP_dir_hist = [CMIP_dir '../historical_download/'];
-    
+
     cmip_files = dir([CMIP_dir '*.nc']);
     cmip_files_hist = dir([CMIP_dir_hist '*.nc']);
-    
-    
+
+
     cmip6_model_names = cell(length(cmip_files),1);
     time_offset = 0; % time and calendar has been set in CDO
-    
-    
+
+
     for f=1:length(cmip_files)
-        
+
         first_index = strfind(cmip_files(f).name, var_type{v});
         second_index = strfind(cmip_files(f).name, 'ssp585');
         third_index = strfind(cmip_files(f).name, '_2');
-        
+
         if strcmp(var_type{v}, 'Oyr')
             mod_name_orig = cmip_files(f).name(first_index+4:second_index-2);
         else
             mod_name_orig = cmip_files(f).name(first_index+5:second_index-2);
         end
-        
-        
+
+
         disp([mod_name_orig ' started'])
-        
+
         mod_name = strrep(mod_name_orig, '-', '_');
         mod_name = [mod_name '_6'];
-        
+
         CMIP.(variables{v}).(mod_name).ensemble_member = cmip_files(f).name(second_index+7:third_index-1);
-        
+
         time_temp = ncread([CMIP_dir cmip_files(f).name], 'time');
         temp_Matlab_time = time_temp + time_offset;
-        
+
         CMIP.(variables{v}).(mod_name).GMT_Matlab = temp_Matlab_time; clear temp_Matlab_time time_temp
         CMIP.(variables{v}).(mod_name).(variables{v}) = squeeze(ncread([CMIP_dir cmip_files(f).name], var_load));
         CMIP.(variables{v}).(mod_name).units = ncreadatt([CMIP_dir cmip_files(f).name], var_load, 'units');
         CMIP.(variables{v}).(mod_name).long_name = ncreadatt([CMIP_dir cmip_files(f).name], var_load, 'long_name');
         CMIP.(variables{v}).(mod_name).standard_name = ncreadatt([CMIP_dir cmip_files(f).name], var_load, 'standard_name');
-        
-        
+
+
         if numel(size(CMIP.(variables{v}).(mod_name).(variables{v})))==4 || strcmp(variables{v}, 'thetao')
             try
                 CMIP.(variables{v}).(mod_name).depth = ncread([CMIP_dir cmip_files(f).name], 'zlev');
                 CMIP.(variables{v}).(mod_name).depth_units_orig = ncreadatt([CMIP_dir cmip_files(f).name], 'zlev', 'units');
-                
+
             catch
                 try
                     CMIP.(variables{v}).(mod_name).depth = ncread([CMIP_dir cmip_files(f).name], 'lev');
@@ -260,69 +265,69 @@ for v= 1:length(variables)
                 catch
                     CMIP.(variables{v}).(mod_name).depth = ncread([CMIP_dir cmip_files(f).name], 'olevel');
                     CMIP.(variables{v}).(mod_name).depth_units_orig = ncreadatt([CMIP_dir cmip_files(f).name], 'olevel', 'units');
-                    
+
                 end
             end
         end
-                        % 2022_06_24 - removing as this should be fixed in cdo now
-%         % check units and adjust if centimeters (CESM2_6 only so far)
-%         if isfield(CMIP.(variables{v}).(mod_name), 'depth_units_orig') && strcmp(CMIP.(variables{v}).(mod_name).depth_units_orig, 'centimeters')
-%             CMIP.(variables{v}).(mod_name).depth =  CMIP.(variables{v}).(mod_name).depth./100;
-%             CMIP.(variables{v}).(mod_name).depth_units =  'm';
-%             
-%         end
-        
+        % 2022_06_24 - removing as this should be fixed in cdo now
+        %         % check units and adjust if centimeters (CESM2_6 only so far)
+        %         if isfield(CMIP.(variables{v}).(mod_name), 'depth_units_orig') && strcmp(CMIP.(variables{v}).(mod_name).depth_units_orig, 'centimeters')
+        %             CMIP.(variables{v}).(mod_name).depth =  CMIP.(variables{v}).(mod_name).depth./100;
+        %             CMIP.(variables{v}).(mod_name).depth_units =  'm';
+        %
+        %         end
+
         % 2022_06_24 - removing, as this should be fixed in CDO now
-%         % if there are more than 13 depths and var is thetao, the file has not been
-%         % interpolated already in depth.
-%         % Perform an interpolation at each grid cell
-%         if strcmp(variables{v}, 'thetao') && length(CMIP.(variables{v}).(mod_name).depth)>13 %%|| ...
-%             % 				(strcmp(variables{v}, 'dissic') && length(CMIP.(variables{v}).(mod_name).depth)>1) || ...
-%             % 				(strcmp(variables{v}, 'talk') && length(CMIP.(variables{v}).(mod_name).depth)>1)
-%             CMIP.(variables{v}).(mod_name).([variables{v} '_raw']) = CMIP.(variables{v}).(mod_name).(variables{v});
-%             
-%             CMIP.(variables{v}).(mod_name).(variables{v}) = NaN(length(CMIP.(variables{v}).lon), length(CMIP.(variables{v}).lat), length(int_levels));
-%             for lo = 1:length(CMIP.(variables{v}).lon)
-%                 for la = 1:length(CMIP.(variables{v}).lat)
-%                     CMIP.(variables{v}).(mod_name).(variables{v})(lo, la, :) = ...
-%                         interp1(CMIP.(variables{v}).(mod_name).depth, squeeze(CMIP.(variables{v}).(mod_name).([variables{v} '_raw'])(lo, la, :)), int_levels);
-%                 end
-%             end
-%             % save original depth:
-%             CMIP.(variables{v}).(mod_name).depth_orig = CMIP.(variables{v}).(mod_name).depth;
-%             
-%             % put int_levels into depth vector:
-%             CMIP.(variables{v}).(mod_name).depth = int_levels;
-%             clear lo la
-%         end
+        %         % if there are more than 13 depths and var is thetao, the file has not been
+        %         % interpolated already in depth.
+        %         % Perform an interpolation at each grid cell
+        %         if strcmp(variables{v}, 'thetao') && length(CMIP.(variables{v}).(mod_name).depth)>13 %%|| ...
+        %             % 				(strcmp(variables{v}, 'dissic') && length(CMIP.(variables{v}).(mod_name).depth)>1) || ...
+        %             % 				(strcmp(variables{v}, 'talk') && length(CMIP.(variables{v}).(mod_name).depth)>1)
+        %             CMIP.(variables{v}).(mod_name).([variables{v} '_raw']) = CMIP.(variables{v}).(mod_name).(variables{v});
+        %
+        %             CMIP.(variables{v}).(mod_name).(variables{v}) = NaN(length(CMIP.(variables{v}).lon), length(CMIP.(variables{v}).lat), length(int_levels));
+        %             for lo = 1:length(CMIP.(variables{v}).lon)
+        %                 for la = 1:length(CMIP.(variables{v}).lat)
+        %                     CMIP.(variables{v}).(mod_name).(variables{v})(lo, la, :) = ...
+        %                         interp1(CMIP.(variables{v}).(mod_name).depth, squeeze(CMIP.(variables{v}).(mod_name).([variables{v} '_raw'])(lo, la, :)), int_levels);
+        %                 end
+        %             end
+        %             % save original depth:
+        %             CMIP.(variables{v}).(mod_name).depth_orig = CMIP.(variables{v}).(mod_name).depth;
+        %
+        %             % put int_levels into depth vector:
+        %             CMIP.(variables{v}).(mod_name).depth = int_levels;
+        %             clear lo la
+        %         end
 
 
         % try to load historical
         % check if the correct file exists
         hh=[];
         for g = 1:length(cmip_files_hist)
-            
+
             first_index = strfind(cmip_files_hist(g).name, var_type{v});
             second_index = strfind(cmip_files_hist(g).name, 'historical');
-            
+
             if strcmp(var_type{v}, 'Oyr')
                 mod_name_hist = cmip_files_hist(g).name(first_index+4:second_index-2);
             else
                 mod_name_hist = cmip_files_hist(g).name(first_index+5:second_index-2);
             end
-            
+
             if strcmp(mod_name_hist, mod_name_orig) % make sure the model name matches between historical and ssp585
                 hh = g;
                 break
             end
         end
-        
+
         clear mod_name_hist
         % if historical run exists, load and concatenate or average
         if ~isempty(hh)
             time_temp = ncread([CMIP_dir_hist cmip_files_hist(hh).name], 'time');
             temp_Matlab_time = time_temp + time_offset;
-            
+
             second_index = strfind(cmip_files_hist(hh).name, 'historical');
             third_index = strfind(cmip_files_hist(hh).name, '_1');
             if isempty(third_index)
@@ -331,16 +336,16 @@ for v= 1:length(variables)
             if isempty(third_index)
                 disp(['Missing ensemble name ' (mod_name) ' historical'])
             end
-            
+
             CMIP.(variables{v}).(mod_name).ensemble_member_hist = cmip_files_hist(hh).name(second_index+11:third_index-1);
             CMIP.(variables{v}).(mod_name).GMT_Matlab = [temp_Matlab_time;  CMIP.(variables{v}).(mod_name).GMT_Matlab];
-            
-            
+
+
             if ~strcmp(variables{v}, 'thetao')
                 time_dimension = find(size(CMIP.(variables{v}).(mod_name).(variables{v}))==length(time_temp));
                 CMIP.(variables{v}).(mod_name).(variables{v}) = cat(time_dimension,squeeze(ncread([CMIP_dir_hist cmip_files_hist(hh).name], var_load)), ...
                     CMIP.(variables{v}).(mod_name).(variables{v}));
-                
+
                 clear time_dimension
             else
                 % for thetao, you only have one temporal mean, so you don't
@@ -351,70 +356,70 @@ for v= 1:length(variables)
                     try
                         CMIP.(variables{v}).(mod_name).depth_hist = ncread([CMIP_dir_hist cmip_files_hist(hh).name], 'zlev');
                         CMIP.(variables{v}).(mod_name).depth_units_orig_hist = ncreadatt([CMIP_dir_hist cmip_files_hist(hh).name], 'zlev', 'units');
-                        
+
                     catch
                         try
                             CMIP.(variables{v}).(mod_name).depth_hist = ncread([CMIP_dir_hist cmip_files_hist(hh).name], 'lev');
                             try
                                 CMIP.(variables{v}).(mod_name).depth_units_orig_hist = ncreadatt([CMIP_dir_hist cmip_files_hist(hh).name], 'lev', 'units');
-                                
+
                             catch
                                 disp(['No units for ' cmip_files(f).name ' lev'])
-                                
+
                             end
                         catch
                             CMIP.(variables{v}).(mod_name).depth_hist = ncread([CMIP_dir_hist cmip_files_hist(hh).name], 'olevel');
                             CMIP.(variables{v}).(mod_name).depth_units_orig_hist = ncreadatt([CMIP_dir_hist cmip_files_hist(hh).name], 'olevel', 'units');
-                            
+
                         end
                     end
                 end
-                
-                                % 2022_06_24 - removing as this should be fixed in cdo now
 
-%                 % check units and adjust if centimeters (CESM2_6 only so far)
-%                 if isfield(CMIP.(variables{v}).(mod_name), 'depth_units_orig') && strcmp(CMIP.(variables{v}).(mod_name).depth_units_orig, 'centimeters')
-%                     CMIP.(variables{v}).(mod_name).depth_hist =  CMIP.(variables{v}).(mod_name).depth_hist./100;
-%                     CMIP.(variables{v}).(mod_name).depth_hist_units =  'm';
-%                     
-%                 end
-                
                 % 2022_06_24 - removing as this should be fixed in cdo now
-%                 % if there are more than 13 depths and var is thetao, the file has not been
-%                 % interpolated already in depth. Perform an interpolation at each
-%                 % grid cell.
-%                 if length(CMIP.(variables{v}).(mod_name).depth_hist)>13 && strcmp(variables{v}, 'thetao')
-%                     %                 CMIP.(variables{v}).(mod_name).([variables{v} '_raw_hist']) = temp_var; clear temp_var
-%                     
-%                     temp_var_hist_interp = NaN(length(CMIP.(variables{v}).lon), length(CMIP.(variables{v}).lat), length(int_levels));
-%                     for lo = 1:length(CMIP.(variables{v}).lon)
-%                         for la = 1:length(CMIP.(variables{v}).lat)
-%                             temp_var_hist_interp(lo, la, :) = ...
-%                                 interp1(CMIP.(variables{v}).(mod_name).depth_hist, squeeze(temp_var_hist(lo, la, :)), int_levels);
-%                         end
-%                     end
-%                     clear lo la
-%                     temp_var_hist = temp_var_hist_interp;
-%                 end
-                
+
+                %                 % check units and adjust if centimeters (CESM2_6 only so far)
+                %                 if isfield(CMIP.(variables{v}).(mod_name), 'depth_units_orig') && strcmp(CMIP.(variables{v}).(mod_name).depth_units_orig, 'centimeters')
+                %                     CMIP.(variables{v}).(mod_name).depth_hist =  CMIP.(variables{v}).(mod_name).depth_hist./100;
+                %                     CMIP.(variables{v}).(mod_name).depth_hist_units =  'm';
+                %
+                %                 end
+
+                % 2022_06_24 - removing as this should be fixed in cdo now
+                %                 % if there are more than 13 depths and var is thetao, the file has not been
+                %                 % interpolated already in depth. Perform an interpolation at each
+                %                 % grid cell.
+                %                 if length(CMIP.(variables{v}).(mod_name).depth_hist)>13 && strcmp(variables{v}, 'thetao')
+                %                     %                 CMIP.(variables{v}).(mod_name).([variables{v} '_raw_hist']) = temp_var; clear temp_var
+                %
+                %                     temp_var_hist_interp = NaN(length(CMIP.(variables{v}).lon), length(CMIP.(variables{v}).lat), length(int_levels));
+                %                     for lo = 1:length(CMIP.(variables{v}).lon)
+                %                         for la = 1:length(CMIP.(variables{v}).lat)
+                %                             temp_var_hist_interp(lo, la, :) = ...
+                %                                 interp1(CMIP.(variables{v}).(mod_name).depth_hist, squeeze(temp_var_hist(lo, la, :)), int_levels);
+                %                         end
+                %                     end
+                %                     clear lo la
+                %                     temp_var_hist = temp_var_hist_interp;
+                %                 end
+
                 % first concatenate thetao datasets, then take the mean
                 % along the new time dimension, leaving a lon x lat x depth
                 % array
                 CMIP.(variables{v}).(mod_name).(variables{v}) = ...
                     nanmean(cat(4, CMIP.(variables{v}).(mod_name).(variables{v}), temp_var_hist),4);
-                
+
                 clear temp_var_hist_interp temp_var_hist
             end
-            
-            
-            
+
+
+
             clear temp_Matlab_time time_temp
         else
             disp(['No historical run for ' mod_name])
         end
-        
+
         cmip6_model_names{f} = mod_name;
-        
+
         clear mod_name time_temp first_index second_index temp_Matlab_time hh g
     end
     clear f
@@ -422,13 +427,13 @@ for v= 1:length(variables)
     % historical run only:
     % go through each cmip file name, find the model  name, and compare to
     % the list of cmip6_model names (cmip6_model_names)
-    
+
     for g = 1:length(cmip_files_hist)
         hh=0;
-        
+
         first_index = strfind(cmip_files_hist(g).name, var_type{v});
         second_index = strfind(cmip_files_hist(g).name, 'historical');
-        
+
         if strcmp(var_type{v}, 'Oyr')
             mod_name_orig = cmip_files_hist(g).name(first_index+4:second_index-2);
         else
@@ -436,16 +441,16 @@ for v= 1:length(variables)
         end
         mod_name = strrep(mod_name_orig, '-', '_');
         mod_name = [mod_name '_6'];
-        
+
         for mm = 1:length(cmip6_model_names)
             if strcmp(mod_name, cmip6_model_names{mm})
                 hh=1;
             end
-            
+
         end
         if hh~=1
             disp([mod_name ' Model not found in cmip6 list, adding historical run alone'])
-            
+
             second_index = strfind(cmip_files_hist(g).name, 'historical');
             third_index = strfind(cmip_files_hist(g).name, '_1');
             if isempty(third_index)
@@ -454,18 +459,18 @@ for v= 1:length(variables)
             if isempty(third_index)
                 disp(['Missing ensemble name ' (mod_name) ' historical'])
             end
-            
+
             CMIP.(variables{v}).(mod_name).ensemble_member_hist = cmip_files_hist(g).name(second_index+11:third_index-1);
-            
+
             time_temp = ncread([CMIP_dir_hist cmip_files_hist(g).name], 'time');
             temp_Matlab_time = time_temp + time_offset;
-            
-            
+
+
             CMIP.(variables{v}).(mod_name).GMT_Matlab = temp_Matlab_time; clear temp_Matlab_time time_temp
             CMIP.(variables{v}).(mod_name).(variables{v}) = squeeze(ncread([CMIP_dir_hist cmip_files_hist(g).name], var_load));
             CMIP.(variables{v}).(mod_name).units = ncreadatt([CMIP_dir_hist cmip_files_hist(g).name], var_load, 'units');
             CMIP.(variables{v}).(mod_name).long_name = ncreadatt([CMIP_dir_hist cmip_files_hist(g).name], var_load, 'long_name');
-            
+
             if numel(size(CMIP.(variables{v}).(mod_name).(variables{v})))==4
                 try
                     CMIP.(variables{v}).(mod_name).depth = ncread([CMIP_dir_hist cmip_files_hist(g).name], 'zlev');
@@ -473,19 +478,19 @@ for v= 1:length(variables)
                     CMIP.(variables{v}).(mod_name).depth = ncread([CMIP_dir_hist cmip_files_hist(g).name], 'lev');
                 end
             end
-            
+
             cmip6_model_names{end+1} = mod_name;
         end
     end
-    
+
     clear f cmip_files cmip_files_hist g hh
-    
+
     cmip_names.(variables{v}) = [cmip_names.(variables{v}) ; cmip6_model_names];
-    
-    
-    
+
+
+
     clear q cmip6_talk_names time_offset CMIP_dir cmip6_model_names var_load
-    
+
 end
 clear f cmip_files v first_index second_index third_index
 
@@ -497,16 +502,16 @@ for aa = 1:length(adjust_list)
     if ~isfield(cmip_names, variables{v})
         continue
     end
-    
+
     for m=1:length(cmip_names.(variables{v}))
         if isfield(CMIP.(variables{v}).(cmip_names.(variables{v}){m}), 'units_old')
             continue
         end
-        
+
         CMIP.(variables{v}).(cmip_names.(variables{v}){m}).units_old = CMIP.(variables{v}).(cmip_names.(variables{v}){m}).units;
         CMIP.(variables{v}).(cmip_names.(variables{v}){m}).(variables{v}) = CMIP.(variables{v}).(cmip_names.(variables{v}){m}).(variables{v}).*scale_factor(aa); % Pa to uatm
         CMIP.(variables{v}).(cmip_names.(variables{v}){m}).units = new_units{aa};
-        
+
     end
 end
 clear aa v m scale_factor adjust_list new_units
@@ -534,7 +539,7 @@ if isfield(cmip_names, variables{v})
         if isfield(CMIP.(variables{v}).(cmip_names.(variables{v}){m}), 'units_old')
             continue
         end
-        
+
         if strcmp(CMIP.(variables{v}).(cmip_names.(variables{v}){m}).units, 'K')
             %         CMIP.(variables{v}).(cmip_names.(variables{v}){m}).([variables{v} '_old']) = CMIP.(variables{v}).(cmip_names.(variables{v}){m}).(variables{v});
             CMIP.(variables{v}).(cmip_names.(variables{v}){m}).units_old = CMIP.(variables{v}).(cmip_names.(variables{v}){m}).units;
@@ -552,7 +557,7 @@ if isfield(cmip_names, variables{v})
         if isfield(CMIP.(variables{v}).(cmip_names.(variables{v}){m}), 'units_old')
             continue
         end
-        
+
         if strcmp(CMIP.(variables{v}).(cmip_names.(variables{v}){m}).units, 'K')
             %         CMIP.(variables{v}).(cmip_names.(variables{v}){m}).([variables{v} '_old']) = CMIP.(variables{v}).(cmip_names.(variables{v}){m}).(variables{v});
             CMIP.(variables{v}).(cmip_names.(variables{v}){m}).units_old = CMIP.(variables{v}).(cmip_names.(variables{v}){m}).units;
@@ -647,7 +652,7 @@ if isfield(cmip_names, variables{v})
     s_per_year = 3600*24*365;
     Pg_per_kg = 1e-12;
     scale_factor = -1.*s_per_year.*Pg_per_kg./12.*1000;  % kg m2 s-1 into the ocean to Tg C m-2 mon-1 out of the ocean
-    
+
     scale_factor_molC_m2_yr = -1.*s_per_year.*10^3.*1./12.0107; % kg m2 s-1 into the ocean to mol C m-2 yr-1 out of the ocean
     for m=1:length(cmip_names.(variables{v}))
         if isfield(CMIP.(variables{v}).(cmip_names.(variables{v}){m}), 'units_old')
@@ -657,7 +662,7 @@ if isfield(cmip_names, variables{v})
         CMIP.(variables{v}).(cmip_names.(variables{v}){m}).units_old = CMIP.(variables{v}).(cmip_names.(variables{v}){m}).units;
         % first save flux in units of mol C m-2 yr-1
         CMIP.(variables{v}).(cmip_names.(variables{v}){m}).([variables{v} '_mol_C_m2_yr']) = CMIP.(variables{v}).(cmip_names.(variables{v}){m}).(variables{v}).*scale_factor_molC_m2_yr;  %mol C m-2 yr-1 out of the ocean from kg m-2 s-1into the ocean
-        
+
         % then save in Tg C mon-1
         CMIP.(variables{v}).(cmip_names.(variables{v}){m}).(variables{v}) = CMIP.(variables{v}).(cmip_names.(variables{v}){m}).(variables{v}).*scale_factor.*C_input.Neur.y2021.area';  %Tg C mon-1 out of the ocean from kg m-2 s-1into the ocean
         CMIP.(variables{v}).(cmip_names.(variables{v}){m}).units = 'Tg C mon-1';
@@ -681,20 +686,20 @@ clear ensemble_table
 ensemble_table = table();
 for m = 1:length(cmip_names.fgco2)
     ensemble_table.model_name(m) = cmip_names.fgco2(m);
-    
+
 end
 for v = 1:length(variables)
     for m = 1:length(cmip_names.fgco2) % use fgco2 as your reference list of models
-        
+
         if ~isfield(CMIP.(variables{v}), cmip_names.fgco2{m})
             continue
         end
-        
+
         try
             ensemble_table.(variables{v}){m} = CMIP.(variables{v}).(cmip_names.fgco2{m}).ensemble_member;
         catch
         end
-        
+
         if isfield(CMIP.(variables{v}).(cmip_names.fgco2{m}), 'ensemble_member_hist')
             ensemble_table.([variables{v} '_hist']){m} = CMIP.(variables{v}).(cmip_names.fgco2{m}).ensemble_member_hist;
         end
@@ -711,15 +716,15 @@ year_range = {'2013to2018' ; '2013to2017'};
 var_load = {'BLGCFLX'; 'BLGPCO2'; 'TRAC02'; 'TRAC01'; 'THETA'; 'SALT'; 'THETA'; 'BLGNPP' ; 'BLGMLD' }; % theta is in here twice, once for "TOS", once for "THETAO"
 
 for w = 1% 1:2
-    
+
     mod_name = ['SOSE_' SOSE_its{w}];
-    
+
     if w==1
         SOSE_dir = [data_dir 'Model_Output/SOSE/2013-2018_ITER133_1_6deg/regrid/'];
-        
+
     elseif w==2
         SOSE_dir = [data_dir 'Model_Output/SOSE/2013-2017v2_ITER122_1_6deg/regrid/'];
-        
+
     end
     sose_file = {['bsose_' SOSE_its{w} '_' year_range{w} '_monthly_surfCO2flx.nc']; ['bsose_' SOSE_its{w} '_' year_range{w} '_monthly_pCO2.nc']; ...
         ['bsose_' SOSE_its{w} '_' year_range{w} '_monthly_Alk.nc']; ['bsose_' SOSE_its{w} '_' year_range{w} '_monthly_DIC.nc'];...
@@ -727,56 +732,57 @@ for w = 1% 1:2
         ['bsose_' SOSE_its{w} '_' year_range{w} '_monthly_Theta.nc'] ;...
         ['bsose_' SOSE_its{w} '_' year_range{w} '_monthly_NPP.nc'] ;...
         ['bsose_' SOSE_its{w} '_' year_range{w} '_30day_MLD.nc']};
-    
+
+
     sose_vars =  [9 1 8 7 5 6 13 2 4];
     % CO2 flux:
     for sv = 1:length(sose_vars)
-        
+
         v = sose_vars(sv);
-        
+
         time_temp = ncread([SOSE_dir sose_file{sv}], 'time');
         temp_Matlab_time = time_temp - time_offset;
-        
+
         CMIP.(variables{v}).(mod_name).GMT_Matlab = temp_Matlab_time; clear temp_Matlab_time time_temp
         CMIP.(variables{v}).(mod_name).(variables{v}) = squeeze(ncread([SOSE_dir sose_file{sv}], var_load{sv}));
         CMIP.(variables{v}).(mod_name).units = ncreadatt([SOSE_dir sose_file{sv}], var_load{sv}, 'units');
         CMIP.(variables{v}).(mod_name).long_name = ncreadatt([SOSE_dir sose_file{sv}], var_load{sv}, 'long_name');
-        
+
         if numel(size(CMIP.(variables{v}).(mod_name).(variables{v})))==4 && (v==8 || v==7 || v==5 || v==6)
             temp_var = CMIP.(variables{v}).(mod_name).(variables{v}) ;
             surface_var = squeeze(temp_var(:,:,1,:));
             CMIP.(variables{v}).(mod_name).(variables{v}) = surface_var; % sets the monthly resolved surface variable to match CMIP models
-            
+
             if (v==8 || v==7)
                 % calculate annual averages from temp_var:
                 mod_vec = datevec(CMIP.(variables{v}).(mod_name).GMT_Matlab);
-                
+
                 temp_yr_mean = NaN(length(CMIP.(variables{v}).lon), length(CMIP.(variables{v}).lat), size(temp_var,3), numel(unique(mod_vec(:,1))));
-                
+
                 ind = 0;
                 for yr = min(mod_vec(:,1)):max(mod_vec(:,1))
                     ind = ind+1;
                     yr_index = mod_vec(:,1)==yr;
                     temp_yr_mean(:,:,:,ind) = nanmean((temp_var(:,:,:,yr_index)),4);
-                    
+
                 end
-                
+
                 CMIP.([variables{v} '_yr']).(mod_name).GMT_Matlab = datenum(unique(mod_vec(:,1)), 7,1);
                 CMIP.([variables{v} '_yr']).(mod_name).([variables{v} '_yr']) = temp_yr_mean;
                 CMIP.([variables{v} '_yr']).(mod_name).units = CMIP.(variables{v}).(mod_name).units;
                 CMIP.([variables{v} '_yr']).(mod_name).long_name = CMIP.(variables{v}).(mod_name).long_name;
                 CMIP.([variables{v} '_yr']).(mod_name).depth = ncread([SOSE_dir sose_file{sv}], 'Z').*-1;
-                
-                
+
+
                 if sum(strcmp(cmip_names.([variables{v} '_yr']), mod_name))==0
                     cmip_names.([variables{v} '_yr']){end+1} = mod_name;
                 end
             end
-            
+
             clear temp_var surface_var temp_yr_mean mod_vec ind yr mod_vec yr_index
-            
+
         end
-        
+
         % for thetao
         if v==13
             % first take the mean in time
@@ -785,43 +791,43 @@ for w = 1% 1:2
             CMIP.([variables{v}]).(mod_name).depth = ncread([SOSE_dir sose_file{sv}], 'Z').*-1;
             target_depth = 400;
             depth_index = min(abs(CMIP.([variables{v}]).(mod_name).depth - target_depth)) == abs(CMIP.([variables{v}]).(mod_name).depth - target_depth);
-            
+
             % create a new temporary variable that is 360 x 180 x 13;
             % fill the new depth # 13 with bSOSE theta at 400 m
-            
+
             temp_var_matched_depths = NaN(360, 180, 13);
             temp_var_matched_depths(:,:,13) = temp_var(:,:, depth_index);
-            
+
             % put the new array back into the thetao spot
             CMIP.(variables{v}).(mod_name).(variables{v}) = temp_var_matched_depths;
-            
+
             % and save the new depth scale as well:
             CMIP.([variables{v}]).(mod_name).depth = CMIP.([variables{v}]).(cmip_names.(variables{v}){1}).depth;
-            
+
             % overwrite the time with a mean time value
             CMIP.([variables{v}]).(mod_name).GMT_Matlab = nanmean(CMIP.([variables{v}]).(mod_name).GMT_Matlab);
             clear target_depth temp_var temp_var_matched_depths depth_index
         end
-        
+
         % for NPP, calculate the vertical integral to match CMIP models
         if v==2
             temp_var = CMIP.(variables{v}).(mod_name).(variables{v}) ;
-            
+
             CMIP.([variables{v}]).(mod_name).depth = ncread([SOSE_dir sose_file{sv}], 'Z').*-1;
-            
+
             % create a new array to store your individual column averaged
             % months:
             col_intg_mol_C_m2_s = NaN(360,180, size(temp_var,4));
-            
+
             % for each time step
             for tt = 1:size(temp_var,4)
-                
+
                 % for each depth,
                 % create a NaN array for that day:
                 month_temp = zeros(360, 180);
                 for dd = 1:length(CMIP.([variables{v}]).(mod_name).depth)
                     single_depth = temp_var(:,:,dd,tt);
-                    
+
                     if dd==1
                         d_z = CMIP.([variables{v}]).(mod_name).depth(dd) - 0;
                     else
@@ -834,63 +840,63 @@ for w = 1% 1:2
                 month_temp(month_temp==0) = nan;
                 % save month into new array
                 col_intg_mol_C_m2_s(:,:,tt) = month_temp;
-                
+
                 clear month_temp
             end
-            
+
             s_per_day = 60*60*24;
             gC_per_mol = 12.0107;
             mg_per_g = 1e3;
-            
-            
+
+
             CMIP.(variables{v}).(mod_name).units_old = CMIP.(variables{v}).(mod_name).units;
-            
+
             % save column integral back into CMIP structure
             CMIP.(variables{v}).(mod_name).(variables{v}) = col_intg_mol_C_m2_s.*s_per_day.*gC_per_mol.*mg_per_g;
             CMIP.(variables{v}).(mod_name).units = 'mg C m-2 d-1';
-            
+
             clear s_per_day gC_per_mol mg_per_g tt dd temp_var col_intg_mol_C_m2_s
         end
-        
+
         if v==9
             s_per_year = 3600*24*365;
             Tg_per_g = 1e-12;
             scale_factor = -1.*s_per_year.*12.0107.*C_input.Neur.y2021.area'./12.*Tg_per_g;
             CMIP.(variables{v}).(mod_name).([variables{v} '_mol_C_m2_yr']) = CMIP.(variables{v}).(mod_name).(variables{v}).*s_per_year.*-1; % saves original flux density as mol C m-2 yr-1 from mol C m-2 s-1
-            
+
             CMIP.(variables{v}).(mod_name).(variables{v}) = CMIP.(variables{v}).(mod_name).(variables{v}).*scale_factor;
             CMIP.(variables{v}).(mod_name).units_old = CMIP.(variables{v}).(mod_name).units;
             CMIP.(variables{v}).(mod_name).units = 'Tg C mon-1';
             clear scale_factor s_per_year Tg_per_g
-            
+
         end
-        
+
         if v==1
             scale_factor = 10^6;  % atm to uatm
             CMIP.(variables{v}).(mod_name).(variables{v}) = CMIP.(variables{v}).(mod_name).(variables{v}).*scale_factor;
             CMIP.(variables{v}).(mod_name).units_old = CMIP.(variables{v}).(mod_name).units;
             CMIP.(variables{v}).(mod_name).units = 'uatm';
             clear scale_factor
-            
+
         end
-        
+
         if v==8 || v==7
             scale_factor = 10^3;  % mol / m-3 to umol/l
             CMIP.(variables{v}).(mod_name).(variables{v}) = CMIP.(variables{v}).(mod_name).(variables{v}).*scale_factor;
             CMIP.(variables{v}).(mod_name).units_old = CMIP.(variables{v}).(mod_name).units;
             CMIP.(variables{v}).(mod_name).units = 'umol -l';
-            
+
             CMIP.([variables{v} '_yr']).(mod_name).([variables{v} '_yr']) = CMIP.([variables{v} '_yr']).(mod_name).([variables{v} '_yr']).*scale_factor;
             CMIP.([variables{v} '_yr']).(mod_name).units_old = CMIP.([variables{v} '_yr']).(mod_name).units;
             CMIP.([variables{v} '_yr']).(mod_name).units = 'umol -l';
             clear scale_factor
-            
+
         end
-        
+
         if sum(strcmp(cmip_names.(variables{v}), mod_name))==0
             cmip_names.(variables{v}){end+1} = mod_name;
         end
-        
+
     end
     clear mod_name sv
 end
@@ -909,9 +915,9 @@ CMIP.CO2_sol.lon = CMIP.tos.lon;
 
 for m = 1:length(cmip_names.tos)
     disp(cmip_names.tos{m})
-    
+
     sos_index = strmatch(cmip_names.tos{m}, cmip_names.sos, 'exact');
-    
+
     if isempty(sos_index)
         continue
     end
@@ -919,7 +925,7 @@ for m = 1:length(cmip_names.tos)
     CMIP.CO2_sol.(cmip_names.tos{m}).CO2_sol = CO2_Sol(CMIP.tos.(cmip_names.tos{m}).tos, CMIP.sos.(cmip_names.sos{sos_index}).sos);
     CMIP.CO2_sol.(cmip_names.tos{m}).units = 'mmol m-3 atm-1';
     clear sos_index
-    
+
     cmip_names.CO2_sol = [cmip_names.CO2_sol; cmip_names.tos{m}];
 end
 
@@ -934,19 +940,19 @@ for v=[1:12 14] % skip thetao as it is only used for the mask
         continue
     end
     disp(['Starting ' variables{v}])
-    
+
     lat_grid = repmat(CMIP.(variables{v}).lat', 360, 1);
-    
+
     %     lat_index = CMIP.thetao.lat<=lat_lims(2) & CMIP.(variables{v}).lat>=lat_lims(1);
-    
+
     if ~strcmp(var_type{v}, 'Oyr')
-        
+
         if strcmp(var_type{v}, 'Omon') || strcmp(var_type{v}, 'Amon') % is there a seasonal cycle?
-            
+
             if isfield(CMIP.(variables{v}).(cmip_names.(variables{v}){1}), 'depth')  % check first model for this variable to see if there is a depth variable
-                
+
                 num_depths = length(CMIP.(variables{v}).(cmip_names.(variables{v}){1}).depth);
-                
+
                 CMIP.(variables{v}).out_seasonal = NaN(length(cmip_names.(variables{v})),num_depths,12,2); % 4D out_seasonal variable if needed (num models, num depths, 12 months, mean and std)
                 var4D = 1;
             else
@@ -955,101 +961,101 @@ for v=[1:12 14] % skip thetao as it is only used for the mask
                 num_depths = 1;
             end
         end % need to add an option for the annual variables
-        
+
         for m = 1:length(cmip_names.(variables{v}))
             if ~isfield(CMIP.thetao,cmip_names.(variables{v}){m})
                 continue
             end
-            
+
             % only create a new mask if there isn't one already made
             if ~isfield(CMIP.thetao.(cmip_names.(variables{v}){m}), 'SAF_S_mask')
                 SAF_S_mask = CMIP.thetao.(cmip_names.(variables{v}){m}).thetao(:,:,13)<=5 & lat_grid<-30  & lat_grid>poleward_lat_lim;
                 CMIP.thetao.(cmip_names.(variables{v}){m}).SAF_S_mask = SAF_S_mask;
                 clear SAF_S_mask
-                
-                 % Calculate a SAF based on the SAF mask (i.e. the northern-most lat included in the mask)
+
+                % Calculate a SAF based on the SAF mask (i.e. the northern-most lat included in the mask)
                 % could probably use this to fill in SAF masks
-                    
-                    CMIP.thetao.(cmip_names.(variables{v}){m}).SAF = NaN(length(CMIP.thetao.lon),1);
-                    for lon = 1:length(CMIP.thetao.lon)
-                        temp_lat_vec = CMIP.thetao.lat(CMIP.thetao.(cmip_names.(variables{v}){m}).SAF_S_mask(lon,:));
-                        if ~isempty(temp_lat_vec)
-                            CMIP.thetao.(cmip_names.(variables{v}){m}).SAF(lon) = max(temp_lat_vec);
-                        end
+
+                CMIP.thetao.(cmip_names.(variables{v}){m}).SAF = NaN(length(CMIP.thetao.lon),1);
+                for lon = 1:length(CMIP.thetao.lon)
+                    temp_lat_vec = CMIP.thetao.lat(CMIP.thetao.(cmip_names.(variables{v}){m}).SAF_S_mask(lon,:));
+                    if ~isempty(temp_lat_vec)
+                        CMIP.thetao.(cmip_names.(variables{v}){m}).SAF(lon) = max(temp_lat_vec);
                     end
-                    clear lon
-                    % remove nans from SAF
-                    old_SAF = CMIP.thetao.(cmip_names.(variables{v}){m}).SAF;
-                    old_SAF_w_lon = [CMIP.thetao.lon old_SAF];
-                    old_SAF_w_lon = old_SAF_w_lon(~isnan(old_SAF_w_lon(:,2)),:);
-                    new_SAF = interp1(old_SAF_w_lon(:,1), old_SAF_w_lon(:,2), CMIP.thetao.lon);
-                    CMIP.thetao.(cmip_names.(variables{v}){m}).SAF = new_SAF;
-                    
-                    clear old_SAF old_SAF_w_lon new_SAF
-                    
-                    % find points in SAF mask that are South of SAF and
-                    % north of poleward_lat_lim and fill in
-                    new_SAF_mask = false(size(CMIP.lat_grid));
-                    for lon = 1:length(CMIP.thetao.lon)
-                        lat_index = CMIP.thetao.lat<=CMIP.thetao.(cmip_names.(variables{v}){m}).SAF(lon) & ...
-                            CMIP.thetao.lat>poleward_lat_lim;
-                        new_SAF_mask(lon,:) = lat_index;
-                    end
-                    CMIP.thetao.(cmip_names.(variables{v}){m}).SAF_S_mask = new_SAF_mask;
-                    
-                    clear new_SAF_mask lon 
+                end
+                clear lon
+                % remove nans from SAF
+                old_SAF = CMIP.thetao.(cmip_names.(variables{v}){m}).SAF;
+                old_SAF_w_lon = [CMIP.thetao.lon old_SAF];
+                old_SAF_w_lon = old_SAF_w_lon(~isnan(old_SAF_w_lon(:,2)),:);
+                new_SAF = interp1(old_SAF_w_lon(:,1), old_SAF_w_lon(:,2), CMIP.thetao.lon);
+                CMIP.thetao.(cmip_names.(variables{v}){m}).SAF = new_SAF;
+
+                clear old_SAF old_SAF_w_lon new_SAF
+
+                % find points in SAF mask that are South of SAF and
+                % north of poleward_lat_lim and fill in
+                new_SAF_mask = false(size(CMIP.lat_grid));
+                for lon = 1:length(CMIP.thetao.lon)
+                    lat_index = CMIP.thetao.lat<=CMIP.thetao.(cmip_names.(variables{v}){m}).SAF(lon) & ...
+                        CMIP.thetao.lat>poleward_lat_lim;
+                    new_SAF_mask(lon,:) = lat_index;
+                end
+                CMIP.thetao.(cmip_names.(variables{v}){m}).SAF_S_mask = new_SAF_mask;
+
+                clear new_SAF_mask lon
             end
-            
+
             % load the SAF_S_mask
             SAF_S_mask = CMIP.thetao.(cmip_names.(variables{v}){m}).SAF_S_mask;
-            
+
             for dd = 1:num_depths
-                
+
                 for mon = 1:12
                     mod_vec = datevec(CMIP.(variables{v}).(cmip_names.(variables{v}){m}).GMT_Matlab); % create a date vector to use for filter
                     time_index = mod_vec(:,2)==mon; % find all months equal to mon
-                    
+
                     if var4D==0
                         SO_var = CMIP.(variables{v}).(cmip_names.(variables{v}){m}).(variables{v})(:, :, time_index); % save correct months to SO_var
-                        
+
                         if strcmp(variables{v}, 'fgco2')
-                            
+
                             SO_var_mol_C_m2_yr = CMIP.(variables{v}).(cmip_names.(variables{v}){m}).([variables{v} '_mol_C_m2_yr'])(:, :, time_index); % save correct months to SO_var
                         end
                     elseif var4D==1
                         SO_var = squeeze(CMIP.(variables{v}).(cmip_names.(variables{v}){m}).(variables{v})(:, :, dd, time_index)); % save correct months to SO_var
                     end
-                    
+
                     if strcmp(variables{v}, 'fgco2')
                         % collapse all years into one mean map for each month
                         SO_fgco2_mean = nanmean(SO_var,3);
-                        
+
                         % mask out nan values north of the SAF in each
                         % model
                         SO_fgco2_mean(~SAF_S_mask)=nan;
-                        
+
                         % sum all grid cells to convert to total flux in the area
                         CMIP.(variables{v}).out_seasonal(m,mon,1) = nansum(reshape(SO_fgco2_mean,[],1)); % sum, not mean
-                        
+
                         clear SO_fgco2_mean
-                        
+
                         % calculate seasonal cycle from C flux density as
                         % well
                         SO_var_mean = nanmean(SO_var_mol_C_m2_yr,3); % average along the time dimension
                         % mask out nan values north of the SAF in each
                         % model
                         SO_var_mean(~SAF_S_mask)=nan;
-                        
+
                         % get the area for each grid cell and mask the
                         % same as SO_var
                         temp_area = C_input.Neur.y2021.area';
                         temp_area(isnan(SO_var_mean)) = nan;
                         % creating an area weighting:
                         grid_weights = temp_area./nansum(reshape(temp_area,[],1));
-                        
+
                         CMIP.(variables{v}).out_seasonal_mol_C_m2_yr(m,mon,1) = nansum(reshape(SO_var_mean.*grid_weights,[],1));
                         CMIP.(variables{v}).out_seasonal_mol_C_m2_yr(m,mon,2) = nanstd(reshape(SO_var_mean,[],1));
-                        
+
                         clear SO_var_mol_C_m2_yr
                     else
                         if var4D ==0
@@ -1057,14 +1063,14 @@ for v=[1:12 14] % skip thetao as it is only used for the mask
                             % mask out nan values north of the SAF in each
                             % model
                             SO_var_mean(~SAF_S_mask)=nan;
-                            
+
                             % get the area for each grid cell and mask the
                             % same as SO_var
                             temp_area = C_input.Neur.y2021.area';
                             temp_area(isnan(SO_var_mean)) = nan;
                             % creating an area weighting:
                             grid_weights = temp_area./nansum(reshape(temp_area,[],1));
-                            
+
                             CMIP.(variables{v}).out_seasonal(m,mon,1) = nansum(reshape(SO_var_mean.*grid_weights,[],1));  % nanmean(reshape(SO_var_mean,[],1));
                             CMIP.(variables{v}).out_seasonal(m,mon,2) = nanstd(reshape(SO_var_mean,[],1));
                         elseif var4D==1
@@ -1072,14 +1078,14 @@ for v=[1:12 14] % skip thetao as it is only used for the mask
                             % mask out nan values north of the SAF in each
                             % model
                             SO_var_mean(~SAF_S_mask)=nan;
-                            
+
                             % get the area for each grid cell and mask the
                             % same as SO_var
                             temp_area = C_input.Neur.y2021.area';
                             temp_area(isnan(SO_var_mean)) = nan;
                             % creating an area weighting:
                             grid_weights = temp_area./nansum(reshape(temp_area,[],1));
-                            
+
                             % calculate the weighted mean, std is not
                             % weighted for now..
                             CMIP.(variables{v}).out_seasonal(m,dd,mon,1) = nansum(reshape(SO_var_mean.*grid_weights,[],1));  % nanmean(reshape(SO_var_mean,[],1));
@@ -1093,82 +1099,82 @@ for v=[1:12 14] % skip thetao as it is only used for the mask
         end
         clear m mon num_depths var4D
     else
-        
+
         num_depths = length(CMIP.(variables{v}).(cmip_names.(variables{v}){1}).depth);
-        
+
         CMIP.(variables{v}).out_annual = NaN(length(cmip_names.(variables{v})),num_depths,2);
-        
+
         for m = 1:length(cmip_names.(variables{v}))
-            
+
             if ~isfield(CMIP.thetao,cmip_names.(variables{v}){m})
                 continue
             end
-            
+
             % only create a new mask if there isn't one already made
             if ~isfield(CMIP.thetao.(cmip_names.(variables{v}){m}), 'SAF_S_mask')
                 SAF_S_mask = CMIP.thetao.(cmip_names.(variables{v}){m}).thetao(:,:,13)<=5 & lat_grid<-30  & lat_grid>poleward_lat_lim;
                 CMIP.thetao.(cmip_names.(variables{v}){m}).SAF_S_mask = SAF_S_mask;
                 clear SAF_S_mask
-                
-                 % Calculate a SAF based on the SAF mask (i.e. the northern-most lat included in the mask)
+
+                % Calculate a SAF based on the SAF mask (i.e. the northern-most lat included in the mask)
                 % could probably use this to fill in SAF masks
-                    
-                    CMIP.thetao.(cmip_names.(variables{v}){m}).SAF = NaN(length(CMIP.thetao.lon),1);
-                    for lon = 1:length(CMIP.thetao.lon)
-                        temp_lat_vec = CMIP.thetao.lat(CMIP.thetao.(cmip_names.(variables{v}){m}).SAF_S_mask(lon,:));
-                        if ~isempty(temp_lat_vec)
-                            CMIP.thetao.(cmip_names.(variables{v}){m}).SAF(lon) = max(temp_lat_vec);
-                        end
+
+                CMIP.thetao.(cmip_names.(variables{v}){m}).SAF = NaN(length(CMIP.thetao.lon),1);
+                for lon = 1:length(CMIP.thetao.lon)
+                    temp_lat_vec = CMIP.thetao.lat(CMIP.thetao.(cmip_names.(variables{v}){m}).SAF_S_mask(lon,:));
+                    if ~isempty(temp_lat_vec)
+                        CMIP.thetao.(cmip_names.(variables{v}){m}).SAF(lon) = max(temp_lat_vec);
                     end
-                    clear lon
-                    % remove nans from SAF
-                    old_SAF = CMIP.thetao.(cmip_names.(variables{v}){m}).SAF;
-                    old_SAF_w_lon = [CMIP.thetao.lon old_SAF];
-                    old_SAF_w_lon = old_SAF_w_lon(~isnan(old_SAF_w_lon(:,2)),:);
-                    new_SAF = interp1(old_SAF_w_lon(:,1), old_SAF_w_lon(:,2), CMIP.thetao.lon);
-                    CMIP.thetao.(cmip_names.(variables{v}){m}).SAF = new_SAF;
-                    
-                    clear old_SAF old_SAF_w_lon new_SAF
-                    
-                    % find points in SAF mask that are South of SAF and
-                    % north of poleward_lat_lim and fill in
-                    new_SAF_mask = false(size(CMIP.lat_grid));
-                    for lon = 1:length(CMIP.thetao.lon)
-                        lat_index = CMIP.thetao.lat<=CMIP.thetao.(cmip_names.(variables{v}){m}).SAF(lon) & ...
-                            CMIP.thetao.lat>poleward_lat_lim;
-                        new_SAF_mask(lon,:) = lat_index;
-                    end
-                    CMIP.thetao.(cmip_names.(variables{v}){m}).SAF_S_mask = new_SAF_mask;
-                    
-                    clear new_SAF_mask lon 
+                end
+                clear lon
+                % remove nans from SAF
+                old_SAF = CMIP.thetao.(cmip_names.(variables{v}){m}).SAF;
+                old_SAF_w_lon = [CMIP.thetao.lon old_SAF];
+                old_SAF_w_lon = old_SAF_w_lon(~isnan(old_SAF_w_lon(:,2)),:);
+                new_SAF = interp1(old_SAF_w_lon(:,1), old_SAF_w_lon(:,2), CMIP.thetao.lon);
+                CMIP.thetao.(cmip_names.(variables{v}){m}).SAF = new_SAF;
+
+                clear old_SAF old_SAF_w_lon new_SAF
+
+                % find points in SAF mask that are South of SAF and
+                % north of poleward_lat_lim and fill in
+                new_SAF_mask = false(size(CMIP.lat_grid));
+                for lon = 1:length(CMIP.thetao.lon)
+                    lat_index = CMIP.thetao.lat<=CMIP.thetao.(cmip_names.(variables{v}){m}).SAF(lon) & ...
+                        CMIP.thetao.lat>poleward_lat_lim;
+                    new_SAF_mask(lon,:) = lat_index;
+                end
+                CMIP.thetao.(cmip_names.(variables{v}){m}).SAF_S_mask = new_SAF_mask;
+
+                clear new_SAF_mask lon
             end
-            
+
             % load the SAF_S_mask
             SAF_S_mask = CMIP.thetao.(cmip_names.(variables{v}){m}).SAF_S_mask;
-            
+
             for dd = 1:num_depths
                 % mean value at different depths
-                
+
                 single_depth = squeeze(CMIP.(variables{v}).(cmip_names.(variables{v}){m}).(variables{v})(:,:,dd,:));
                 single_year = nanmean(single_depth,3); % take the mean along the year dimension
-                
+
                 % mask out nan values north of the SAF in each
                 % model
                 single_year(~SAF_S_mask)=nan;
-                
+
                 % get the area for each grid cell and mask the
                 % same as SO_var
                 temp_area = C_input.Neur.y2021.area';
                 temp_area(isnan(single_year)) = nan;
                 % creating an area weighting:
                 grid_weights = temp_area./nansum(reshape(temp_area,[],1));
-                
+
                 CMIP.(variables{v}).out_annual(m, dd, 1) =  nansum(reshape(single_year.*grid_weights,[],1));  % nanmean(reshape(single_year,[],1));
                 CMIP.(variables{v}).out_annual(m, dd, 2) = nanstd(reshape(single_year,[],1));
-                
+
                 %                 CMIP.(variables{v}).out_annual(m, dd, 1) = nanmean(reshape(squeeze(CMIP.(variables{v}).(cmip_names.(variables{v}){m}).(variables{v})(:, lat_index, dd, :)),[],1));
                 %                 CMIP.(variables{v}).out_annual(m, dd, 2) = nanstd(reshape(squeeze(CMIP.(variables{v}).(cmip_names.(variables{v}){m}).(variables{v})(:, lat_index, dd, :)),[],1));
-                
+
                 clear temp_area grid_weights single_depth single_year
             end
         end
@@ -1188,42 +1194,42 @@ for v=9%[1 2 4 5 6 7 8]%9%13:length(variables)
         continue
     end
     [lon_grid, lat_grid] = meshgrid(CMIP.(variables{v}).lon, CMIP.(variables{v}).lat);
-    
+
     CMIP.lon_grid = lon_grid';
     CMIP.lat_grid = lat_grid';
     clear lon_grid lat_grid
-    for m = 1%%length(cmip_names.(variables{v}))
-        
+    for m = 1:length(cmip_names.(variables{v}))
+
         if isfield(CMIP.(variables{v}).(cmip_names.(variables{v}){m}), 'depth')
             num_depths = length(CMIP.(variables{v}).(cmip_names.(variables{v}){m}).depth);
         else
             num_depths =1;
         end
-        
+
         for dd = [1 num_depths]
-            
+
             clf
             set(gcf, 'units', 'inches')
             paper_w = 16; paper_h =9;
             set(gcf,'PaperSize',[paper_w paper_h],'PaperPosition', [0 0 paper_w paper_h]);
             colormap(parula(70))
             %             set(gcf, 'colormap', var_cmaps.(variables{v}));
-            
+
             %         SO_var = nanmean(CMIP.(variables{v}).(cmip_names.(variables{v}){m}).(variables{v}),3);
-            
+
             if num_depths==1
                 SO_var = mean(CMIP.(variables{v}).(cmip_names.(variables{v}){m}).(variables{v})(:, :, :),3, 'omitnan');
             else
                 SO_var = mean(squeeze(CMIP.(variables{v}).(cmip_names.(variables{v}){m}).(variables{v})(:, :, dd, :)),3, 'omitnan');
             end
-            
+
             subplot(2,1,1)
             pcolor(CMIP.lon_grid, CMIP.lat_grid, SO_var); shading flat
             xlabel('Longitude')
             ylabel('Latitude')
             c1 = colorbar;
             ylabel(c1, [variables{v} ' (' CMIP.(variables{v}).(cmip_names.(variables{v}){m}).units ')'], 'interpreter', 'none')
-            
+
             if num_depths==1
                 title([cmip_names.(variables{v}){m} ' ' variables{v}], 'interpreter', 'none')
             else
@@ -1234,25 +1240,25 @@ for v=9%[1 2 4 5 6 7 8]%9%13:length(variables)
             caxis(var_lims(v,:))
             hold on
             plot([1 360], [poleward_lat_lim poleward_lat_lim], 'm-', 'linewidth', 2)
-            
+
             try
                 plot(1:360, CMIP.thetao.(cmip_names.(variables{v}){m}).SAF, 'm-', 'linewidth', 2)
-                
+
                 subplot(2,1,2)
-                
-                
+
+
                 SO_var(~CMIP.thetao.(cmip_names.(variables{v}){m}).SAF_S_mask)=nan;
                 pcolor(CMIP.lon_grid, CMIP.lat_grid, SO_var); shading flat
                 hold on
                 plot(1:360, CMIP.thetao.(cmip_names.(variables{v}){m}).SAF, 'm-', 'linewidth', 2)
                 plot([1 360], [poleward_lat_lim poleward_lat_lim], 'm-', 'linewidth', 2)
-                
-                
+
+
                 xlabel('Longitude')
                 ylabel('Latitude')
                 c1 = colorbar;
                 ylabel(c1, [variables{v} ' (' CMIP.(variables{v}).(cmip_names.(variables{v}){m}).units ')'], 'interpreter', 'none')
-                
+
                 if num_depths==1
                     title([cmip_names.(variables{v}){m} ' ' variables{v}], 'interpreter', 'none')
                 else
@@ -1261,17 +1267,17 @@ for v=9%[1 2 4 5 6 7 8]%9%13:length(variables)
                 set(gca, 'ylim', [-85 -35])
                 set(gca, 'fontsize', 20)
                 caxis(var_lims(v,:))
-                
+
             catch
             end
             if num_depths==1
                 plot_filename = [variables{v} '_Surface_' cmip_names.(variables{v}){m}];
-                
+
             else
                 plot_filename = [variables{v} '_' cmip_names.(variables{v}){m} '_' num2str(CMIP.(variables{v}).(cmip_names.(variables{v}){m}).depth(dd)) 'm' ];
             end
             saveas(gcf, [Plot_out_dir variables{v} '/surface/' plot_filename plot_ver], 'png')
-            
+
             clear SO_var SO_mean_var plot_filename SO_SSS time_index mod_vec
         end
     end
@@ -1303,9 +1309,9 @@ load topo
 % for mon = 1:12
 for dd = 1:length(NOAA_SST.Matlab_time)
     %     date_index = sst_vec(:,2)==mon;
-    
+
     temp_sst = NOAA_SST.SST(:,:, dd);
-    
+
     %     temp_mean = nanmean(temp_sst,3);
     % this should create an SST map that matches the lat/lon of the model output
     temp_mean_flipped = fliplr(temp_sst);
@@ -1357,15 +1363,15 @@ sst_vec = datevec(NOAA_SST.Matlab_time);
 
 for mon = 1:12
     time_index = sst_vec(:,2)==mon;
-    
-    
+
+
     %     select correct months
     %     SO_var = NOAA_SST.SST(:, lat_index, time_index);
     SO_var = NOAA_SST.SST_land_mask(:,:,time_index);
-    
+
     % save out 10-yr climatology for the purpose of CO2 SOL calc later
     NOAA_SST.SST_land_mask_mean(:,:,mon) = nanmean(SO_var, 3);
-    
+
     % for each year, mask out the non SAF_S region and weight based on the
     % area
     for zz = 1:size(SO_var,3)
@@ -1373,16 +1379,16 @@ for mon = 1:12
         TT(~NOAA_SST.SAF_mask) = nan;
         temp_area = C_input.Neur.y2021.area';
         temp_area(isnan(TT)) = nan;
-        
+
         % creating an area weighting:
         grid_weights = temp_area./nansum(reshape(temp_area,[],1));
-        
-        
+
+
         SO_var(:,:,zz) = TT.*grid_weights; % weight each value - now to get the annual mean you will sum these together
         clear TT
     end
     clear zz
-    
+
     % sum each year into a single month, then take the mean and std:
     zonal_sum = nansum(SO_var,1);
     box_sum = squeeze(nansum(zonal_sum,2));
@@ -1398,12 +1404,12 @@ for mon = 1:12
     %     % creating an area weighting:
     %     grid_weights = temp_area./nansum(reshape(temp_area,[],1));
     %
-    
+
     % sum the product of grid_weights and SO_var to get the area weighted
     % mean
     %     obs.tos.out_seasonal(mon,1) = nansum(reshape(SO_var.*grid_weights,[],1));
     %     obs.tos.out_seasonal(mon,2) = nanstd(reshape(SO_var,[],1));
-    
+
     clear time_index SO_var temp_area grid_weights zonal_sum
 end
 
@@ -1424,16 +1430,16 @@ WOA_SSS.SSS_long_name = ncreadatt([SSS_dir 'woa18_A5B7_s01_01.nc'], 's_an', 'lon
 
 for mon = 1:12
     WOA_SSS.Month(mon) = mon;
-    
+
     month_text = num2str(mon);
     if length(month_text)<2
         month_text = ['0' month_text];
     end
     sal_temp = ncread([SSS_dir 'woa18_A5B7_s' month_text '_01.nc'], 's_an');
-    
+
     WOA_SSS.SSS(1:180,:,mon) = sal_temp(181:end,:,1);
     WOA_SSS.SSS(181:end,:,mon) = sal_temp(1:180,:,1);
-    
+
     clear sal_temp month_text
 end
 
@@ -1446,22 +1452,22 @@ obs.sos.out_seasonal = NaN(12,2);
 % lat_index = WOA_SSS.lat<=lat_lims(2) & WOA_SSS.lat>=lat_lims(1);
 
 for mon = 1:12
-    
+
     SO_var = WOA_SSS.SSS(:, :, mon);
     SO_var(~NOAA_SST.SAF_mask)=nan;
-    
+
     % get the area for each grid cell and mask the
     % same as SO_var
     temp_area = C_input.Neur.y2021.area';
     temp_area(isnan(SO_var)) = nan;
     % creating an area weighting:
     grid_weights = temp_area./nansum(reshape(temp_area,[],1));
-    
+
     % sum the product of grid_weights and SO_var to get the area weighted
     % mean
     obs.sos.out_seasonal(mon,1) =  nansum(reshape(SO_var.*grid_weights,[],1));
     obs.sos.out_seasonal(mon,2) = nanstd(reshape(SO_var,[],1));
-    
+
     clear time_index SO_var temp_area grid_weights
 end
 
@@ -1475,21 +1481,21 @@ obs.CO2_sol.out_seasonal = NaN(12,2);
 % lat_index = WOA_SSS.lat<=lat_lims(2) & WOA_SSS.lat>=lat_lims(1);
 
 for mon = 1:12
-    
+
     SO_var = CO2_sol_obs(:, :, mon);
     SO_var(~NOAA_SST.SAF_mask)=nan;
-    
+
     temp_area = C_input.Neur.y2021.area';
     temp_area(isnan(SO_var)) = nan;
     % creating an area weighting:
     grid_weights = temp_area./nansum(reshape(temp_area,[],1));
-    
-    
+
+
     % sum the product of grid_weights and SO_var to get the area weighted
     % mean
     obs.CO2_sol.out_seasonal(mon,1) = nansum(reshape(SO_var.*grid_weights,[],1));
     obs.CO2_sol.out_seasonal(mon,2) = nanstd(reshape(SO_var,[],1));
-    
+
     clear time_index SO_var temp_area grid_weights
 end
 
@@ -1518,7 +1524,7 @@ load([SOCCOM_float_directory SOCCOM_filename])
 
 for f = 1:length(SO_SNs)
     Argo.(SO_SNs{f}).in_situ_dens = sw_dens(Argo.(SO_SNs{f}).Sal, Argo.(SO_SNs{f}).Temp_C, Argo.(SO_SNs{f}).Press_db);
-    
+
 end
 clear f
 %
@@ -1530,7 +1536,7 @@ depth_levs = CMIP.dissic_yr.(cmip_names.dissic_yr{1}).depth;
 % create fields for each depth found in the annual output data.
 for dd = 1:length(depth_levs)
     for a = 1:length(argo_fields)
-        
+
         argo_SO.(['d' num2str(depth_levs(dd))]).(argo_fields{a}) = [];
         argo_SO.(['d' num2str(depth_levs(dd))]).(argo_fields{a}) = [];
     end
@@ -1543,15 +1549,15 @@ end
 clear dd a
 %
 for f = 1:length(SO_SNs)
-    
+
     if isfield(Argo.(SO_SNs{f}), 'PDENS')
         temp_rep_lat = repmat( Argo.(SO_SNs{f}).Lat, 1,800);
         temp_rep_lon = repmat( Argo.(SO_SNs{f}).Lon, 1,800);
-        
+
         temp_rep_GMT = repmat( Argo.(SO_SNs{f}).GMT_Matlab, 1,800);
-        
+
         for dd = 1:length(depth_levs) % loop through each depth level
-            
+
             % find a minimum and maxium depth to search for each depth
             % level
             if dd==1
@@ -1564,7 +1570,7 @@ for f = 1:length(SO_SNs)
             else
                 max_depth = depth_levs(dd) + abs((depth_levs(dd)-depth_levs(dd+1)))/2;
             end
-            
+
             % index based on pressure and SO latitude cutoff
             argo_index = Argo.(SO_SNs{f}).Press_db>= min_depth & Argo.(SO_SNs{f}).Press_db<max_depth & (temp_rep_lat<=lat_lims_SO(2) & ...
                 temp_rep_lat>=lat_lims_SO(1));
@@ -1583,50 +1589,50 @@ for f = 1:length(SO_SNs)
             %         break
             %     end
             %
-            
+
             % create a SO specific record of argo
             argo_SO.(depth_names{dd}).GMT_Matlab = [argo_SO.(depth_names{dd}).GMT_Matlab ; reshape(temp_rep_GMT(argo_index),[],1)];
             %         argo_SO.deep.GMT_Matlab = [argo_SO.deep.GMT_Matlab ; reshape(temp_rep_GMT(deep_index),[],1)];
-            
+
             argo_SO.(depth_names{dd}).Lat = [argo_SO.(depth_names{dd}).Lat ; reshape(temp_rep_lat(argo_index),[],1)];
             %         argo_SO.deep.Lat = [argo_SO.deep.Lat ; reshape(temp_rep_lat(deep_index),[],1)];
-            
+
             argo_SO.(depth_names{dd}).Lon = [argo_SO.(depth_names{dd}).Lon ; reshape(temp_rep_lon(argo_index),[],1)];
             %         argo_SO.deep.Lon = [argo_SO.deep.Lon ; reshape(temp_rep_lon(deep_index),[],1)];
-            
+
             for a = 4:length(argo_fields)
                 argo_SO.(depth_names{dd}).(argo_fields{a}) = [argo_SO.(depth_names{dd}).(argo_fields{a}) ; reshape(Argo.(SO_SNs{f}).(argo_fields{a})(argo_index),[],1)];
                 %             argo_SO.deep.(argo_fields{a}) = [argo_SO.deep.(argo_fields{a}) ; reshape(Argo.(SO_SNs{f}).(argo_fields{a})(deep_index),[],1)];
             end
-            
+
             %             argo_SO.(depth_names{dd}).TALK_LIAR = argo_SO.(depth_names{dd}).TALK_LIAR.*argo_SO.(depth_names{dd}).PDENS./1000; % convert to umol / l
-            
+
             clear argo_index max_depth min_depth
         end
         %         disp(f)
-        
+
         % manually add MLD to the surface list, probably along with a
         % separate GMT that doesn't have a repeated field.
-        
+
         ML_index = Argo.(SO_SNs{f}).Lat<=lat_lims_SO(2) & Argo.(SO_SNs{f}).Lat>=lat_lims_SO(1);
-        
+
         argo_SO.ml.GMT_Matlab = [argo_SO.ml.GMT_Matlab ; Argo.(SO_SNs{f}).GMT_Matlab(ML_index)];
         argo_SO.ml.Lat = [argo_SO.ml.Lat ; Argo.(SO_SNs{f}).Lat(ML_index)];
         argo_SO.ml.Lon = [argo_SO.ml.Lon ; Argo.(SO_SNs{f}).Lon(ML_index)];
         argo_SO.ml.MLD = [argo_SO.ml.MLD ; Argo.(SO_SNs{f}).MLD(ML_index)];
-        
-        
+
+
         clear temp_rep_GMT temp_rep_lat temp_rep_lon surf_index deep_index ML_index
     else
         disp(['No Pdens: ' SO_SNs{f}])
     end
-    
+
 end
 
 for dd = 1:length(depth_levs)
     argo_SO.(depth_names{dd}).DIC_LIAR = argo_SO.(depth_names{dd}).DIC_LIAR.*argo_SO.(depth_names{dd}).in_situ_dens./1000; % convert to umol / l
     argo_SO.(depth_names{dd}).TALK_LIAR = argo_SO.(depth_names{dd}).TALK_LIAR.*argo_SO.(depth_names{dd}).in_situ_dens./1000; % convert to umol / l
-    
+
 end
 
 % argo_SO.deep.DIC_LIAR = argo_SO.deep.DIC_LIAR.*argo_SO.deep.PDENS./1000; % convert to umol / l
@@ -1712,18 +1718,18 @@ for dd = 1:length(depth_levs)
     end
     gdap_index = gdap_SO.G2latitude<=lat_lims_SO(2) & gdap_SO.G2latitude>=lat_lims_SO(1) & ... % filter by latitude bounds
         gdap_SO.G2pressure<max_depth & gdap_SO.G2pressure>=min_depth & gdap_SO.GMT_Matlab>=gdap_startdate; % and by depth
-    
+
     % deep_index = gdap_SO.filt.G2pressure>deep_depth-deep_depth_bnds & gdap_SO.filt.G2pressure<deep_depth+deep_depth_bnds;
     % surf_index = gdap_SO.filt.G2pressure<surf_depth;
-    
+
     % gdap_SO_fields = fieldnames(gdap_SO.filt);
-    
-    
+
+
     for g = 1:length(gdap_SO_fields)
         %         if ~isstruct(gdap_SO.(gdap_SO_fields{g}))
         gdap_SO.(depth_names{dd}).(gdap_SO_fields{g}) = gdap_SO.(gdap_SO_fields{g})(gdap_index);
         %             gdap_SO.deep.(gdap_SO_fields{g}) = gdap_SO.filt.(gdap_SO_fields{g})(deep_index);
-        
+
         %         end
     end
     clear max_depth min_depth gdap_index
@@ -1737,23 +1743,23 @@ disp('argo started')
 for dd = 1:length(depth_levs)
     disp(depth_names{dd})
     argo_SO.(depth_names{dd}).gridded = [];
-    
+
     argo_vec = datevec(argo_SO.(depth_names{dd}).GMT_Matlab);
     for a = [5 6] %5:length(argo_fields) % ignore all variables except bgc parameters
         disp(argo_fields{a})
         argo_SO.(depth_names{dd}).gridded.(argo_fields{a}) = NaN(360,180,12);
-        
+
         for mon = 1:12
             disp(mon)
             for lo = 1:length(CMIP.spco2.lon)
                 for la = 1:61 % length(CMIP.spco2.lat) % only need to grid through to a latitude of ~30deg
-                    
+
                     argo_index = argo_SO.(depth_names{dd}).Lat>= CMIP.spco2.lat(la)-0.5 & argo_SO.(depth_names{dd}).Lat< CMIP.spco2.lat(la)+0.5 & ...
                         argo_SO.(depth_names{dd}).Lon>= CMIP.spco2.lon(lo) & argo_SO.(depth_names{dd}).Lon< CMIP.spco2.lon(lo)+1 & ...
                         argo_vec(:,2)==mon;
-                    
+
                     argo_SO.(depth_names{dd}).gridded.(argo_fields{a})(lo, la, mon) = nanmean(argo_SO.(depth_names{dd}).(argo_fields{a})(argo_index));
-                    
+
                     clear argo_index
                 end
             end
@@ -1767,25 +1773,25 @@ clear a mon lo la dd
 disp('gdap started')
 for dd = 1:length(depth_levs)
     disp(depth_names{dd})
-    
+
     gdap_SO.(depth_names{dd}).gridded = [];
-    
+
     gdap_vec = datevec(gdap_SO.(depth_names{dd}).GMT_Matlab);
     for a = [12 13] %4:length(gdap_SO_fields) % ignore all variables except bgc parameters
         disp(gdap_SO_fields{a})
         gdap_SO.(depth_names{dd}).gridded.(gdap_SO_fields{a}) = NaN(360,180,12);
-        
+
         for mon = 1:12
             disp(mon)
             for lo = 1:length(CMIP.spco2.lon)
                 for la = 11:61 % length(CMIP.spco2.lat) % only need to grid through to a latitude of ~30deg
-                    
+
                     gdap_index = gdap_SO.(depth_names{dd}).G2latitude>= CMIP.spco2.lat(la)-0.5 & gdap_SO.(depth_names{dd}).G2latitude< CMIP.spco2.lat(la)+0.5 & ...
                         gdap_SO.(depth_names{dd}).G2longitude>= CMIP.spco2.lon(lo) & gdap_SO.(depth_names{dd}).G2longitude< CMIP.spco2.lon(lo)+1 & ...
                         gdap_vec(:,2)==mon;
-                    
+
                     gdap_SO.(depth_names{dd}).gridded.(gdap_SO_fields{a})(lo, la, mon) = nanmean(gdap_SO.(depth_names{dd}).(gdap_SO_fields{a})(gdap_index));
-                    
+
                     clear gdap_index
                 end
             end
@@ -1806,13 +1812,13 @@ depth_names = fieldnames(argo_SO);
 for dd = 1:length(depth_levs)
     combined_SO.(depth_names{dd}).gridded.dissic = NaN(360,180,12);
     combined_SO.(depth_names{dd}).gridded.talk = NaN(360,180,12);
-    
+
     for mon = 1:12
         combined_SO.(depth_names{dd}).gridded.dissic(:,:,mon) = nanmean(cat(3, gdap_SO.(depth_names{dd}).gridded.G2tco2(:,:,mon),  argo_SO.(depth_names{dd}).gridded.DIC_LIAR(:,:,mon)),3);
         combined_SO.(depth_names{dd}).gridded.talk(:,:,mon) = nanmean(cat(3, gdap_SO.(depth_names{dd}).gridded.G2talk(:,:,mon),  argo_SO.(depth_names{dd}).gridded.TALK_LIAR(:,:,mon)),3);
-        
+
     end
-    
+
 end
 clear dd mon
 %% calculate a weighted mean for dissic and talk
@@ -1822,46 +1828,46 @@ obs.dissic.out_seasonal = NaN(12,2,length(depth_levs));
 obs.talk.out_seasonal = NaN(12,2,length(depth_levs));
 
 for dd = 1:length(depth_levs)
-    
+
     % lat_index = WOA_SSS.lat<=lat_lims(2) & WOA_SSS.lat>=lat_lims(1);
-    
-    
+
+
     for mon = 1:12
-        
+
         SO_var = combined_SO.(depth_names{dd}).gridded.dissic(:, :, mon);
         SO_var(~NOAA_SST.SAF_mask)=nan;
-        
+
         temp_area = C_input.Neur.y2021.area';
         temp_area(isnan(SO_var)) = nan;
         % creating an area weighting:
         grid_weights = temp_area./nansum(reshape(temp_area,[],1));
-        
-        
+
+
         % sum the product of grid_weights and SO_var to get the area weighted
         % mean
         obs.dissic.out_seasonal(mon,1,dd) = nansum(reshape(SO_var.*grid_weights,[],1));
         obs.dissic.out_seasonal(mon,2,dd) = nanstd(reshape(SO_var,[],1));
-        
+
         clear time_index SO_var temp_area grid_weights
-        
-        
+
+
         SO_var = combined_SO.(depth_names{dd}).gridded.talk(:, :, mon);
         SO_var(~NOAA_SST.SAF_mask)=nan;
-        
+
         temp_area = C_input.Neur.y2021.area';
         temp_area(isnan(SO_var)) = nan;
         % creating an area weighting:
         grid_weights = temp_area./nansum(reshape(temp_area,[],1));
-        
-        
+
+
         % sum the product of grid_weights and SO_var to get the area weighted
         % mean
         obs.talk.out_seasonal(mon,1,dd) = nansum(reshape(SO_var.*grid_weights,[],1));
         obs.talk.out_seasonal(mon,2,dd) = nanstd(reshape(SO_var,[],1));
-        
+
         clear time_index SO_var temp_area grid_weights
     end
-    
+
     clear mon
 end
 
@@ -1894,29 +1900,29 @@ years = C_input.years;
 % end
 % Mapped_pCO2.Neur.units = 'muatm';
 % time_neural =  ncread([neural_dir run_filenames{1}], 'time'); % 'seconds since 2000-01-01'
-% 
+%
 % Mapped_pCO2.Neur.time_Matlab = double(time_neural)/60/60/24 + datenum('jan-01-2000');  % days since 2000-01-01
 % lat_neur = double(lat_neur);
 % lon_neur = double(lon_neur);
-% 
+%
 % [X_lon_neur, Y_lat_neur] = meshgrid(lon_neur, lat_neur);
-% 
+%
 % temp_lon_neur = X_lon_neur;
 % temp_lon_neur(temp_lon_neur>180) = temp_lon_neur(temp_lon_neur>180)-360;
-% 
+%
 % Mapped_pCO2.Neur.lon = lon_neur;
 % Mapped_pCO2.Neur.lat = lat_neur;
-% 
+%
 % Mapped_pCO2.Neur.lon_grid = temp_lon_neur';
 % Mapped_pCO2.Neur.lat_grid = Y_lat_neur';
-% 
+%
 % clear time_neural temp_lon_neur X_lon_neur Y_lat_neur lat_neur lon_neur q neural_dir
 
 % %  Neural network pCO2 seasonal cycle
 % % 2022_06_24 changing to a mean of NN and JCS, 2021 editions
 % % runs = {'SOCAT_only'; 'SOCCOM_SOCAT'};
 % % yr = 'y2018'; % using y2018 for now bc NN 2021 has fCO2 and I need matched SST - ask Peter
-% 
+%
 % % average datasets
 % TT = double(C_input.Neur.(yr).spco2.(runs{q}));
 % QQ = C_input.Jena.(yr).spco2.(runs{q});
@@ -1952,38 +1958,38 @@ for p = 1:length(product_names)
             for mon=1:12
                 time_index = C_input.(product_names{p}).(years{y}).date_vec(:,2)==mon & ...
                     C_input.(product_names{p}).(years{y}).date_vec(:,1)>=2015;
-                
+
                 SO_spco2 = C_input.(product_names{p}).(years{y}).spco2.(runs{q})(:, :, time_index);
                 %             SO_spco2 = Mapped_pCO2.Neur.SOCCOM_SOCAT(:, :, time_index);
                 % for each year, mask out the non SAF_S region:
                 for zz = 1:size(SO_spco2,3)
                     TT = SO_spco2(:,:,zz);
                     TT(~C_input.Neur.y2021.index.SAF_S_mask) = nan;
-                    
+
                     temp_area = C_input.Neur.y2021.area';
                     temp_area(isnan(TT)) = nan;
                     % creating an area weighting:
                     grid_weights = temp_area./nansum(reshape(temp_area,[],1));
-                    
+
                     SO_spco2(:,:,zz) = TT.*grid_weights; % weight each value - now to get the annual mean you will sum these together
                     clear TT grid_weights temp_area
                 end
                 clear zz
-                
-                
+
+
                 % sum each year into a single month, then take the mean and std:
                 zonal_sum = nansum(SO_spco2,1);
                 box_sum = squeeze(nansum(zonal_sum,2));
-                
+
                 obs.spco2.(product_names{p}).(years{y}).(runs{q}).out_seasonal(mon,1) = nanmean(box_sum);
                 obs.spco2.(product_names{p}).(years{y}).(runs{q}).out_seasonal(mon,2) = nanstd(box_sum);
-                
+
                 %                 obs.spco2.out_seasonal (mon,1) = nanmean(box_sum);
                 %                 obs.spco2.out_seasonal (mon,2) = nanstd(box_sum);
-                
+
                 clear SO_spco2 zonal_sum box_sum
             end
-            
+
             clear lat_index mod_vec time_index mon
         end
     end
@@ -1996,7 +2002,7 @@ clear p q y
 for p=1:length(product_names)
     % y=1;
     % q = 1;
-    
+
     % mod_vec = datevec(Neur_input.time_Matlab);
     for y = 1:length(years)
         % for p = 1:2
@@ -2004,66 +2010,66 @@ for p=1:length(product_names)
             %         lat_index = C_input.(product_names{p}).(years{y}).lat<=lat_lims(2) & C_input.(product_names{p}).(years{y}).lat>=lat_lims(1);
             obs.fgco2.(product_names{p}).(years{y}).(runs{q}).out_seasonal = NaN(12,2);
             obs.fgco2_mol_C_m2_yr.(product_names{p}).(years{y}).(runs{q}).out_seasonal = NaN(12,2);
-            
+
             for mon=1:12
                 time_index = C_input.(product_names{p}).(years{y}).date_vec(:,2)==mon & C_input.(product_names{p}).(years{y}).date_vec(:,1)>=2015;
-                
+
                 SO_fgco2 = C_input.(product_names{p}).(years{y}).Pg_mon.(runs{q})(:, :, time_index);
-                
-                
+
+
                 % for each year, mask out the non SAF_S region:
                 for zz = 1:size(SO_fgco2,3)
                     TT = SO_fgco2(:,:,zz);
                     TT(~C_input.Neur.y2021.index.SAF_S_mask) = nan;
                     SO_fgco2(:,:,zz) = TT;
                     clear tt grid_weights
-                    
+
                 end
                 clear zz
-                
+
                 % sum each year into a single month, then take the mean and std:
                 zonal_sum = nansum(SO_fgco2,1);
                 box_sum = squeeze(nansum(zonal_sum,2));
-                
+
                 %     % collapse all years into one mean map for each month
                 %     SO_fgco2_mean = nanmean(SO_fgco2,3);
-                
+
                 % sum all grid cells to calculate a total flux
                 obs.fgco2.(product_names{p}).(years{y}).(runs{q}).out_seasonal(mon,1) = nanmean(box_sum)*1000; % Pg to Tg
                 obs.fgco2.(product_names{p}).(years{y}).(runs{q}).out_seasonal(mon,2) = nanstd(box_sum)*1000;
-                
+
                 clear SO_fgco2 zonal_sum box_sum
-                
+
                 % separately calculate avg flux density
                 SO_fgco2_mol_m2_yr = C_input.(product_names{p}).(years{y}).(runs{q})(:, :, time_index);
-                
+
                 % for each year, mask out the non SAF_S region:
                 for zz = 1:size(SO_fgco2_mol_m2_yr,3)
                     TT = SO_fgco2_mol_m2_yr(:,:,zz);
                     TT(~C_input.Neur.y2021.index.SAF_S_mask) = nan;
-                    
+
                     temp_area = C_input.Neur.y2021.area';
                     temp_area(isnan(TT)) = nan;
                     % creating an area weighting:
                     grid_weights = temp_area./nansum(reshape(temp_area,[],1));
-                    
+
                     SO_fgco2_mol_m2_yr(:,:,zz) = TT.*grid_weights; % weight each value - now to get the annual mean you will sum these together
                     clear TT grid_weights temp_area
                 end
                 clear zz
-                
-                
+
+
                 % sum each year into a single month, then take the mean and std:
                 zonal_sum = nansum(SO_fgco2_mol_m2_yr,1);
                 box_sum = squeeze(nansum(zonal_sum,2));
-                
+
                 obs.fgco2_mol_C_m2_yr.(product_names{p}).(years{y}).(runs{q}).out_seasonal(mon,1) = nanmean(box_sum);
                 obs.fgco2_mol_C_m2_yr.(product_names{p}).(years{y}).(runs{q}).out_seasonal(mon,2) = nanstd(box_sum);
-                
+
                 clear SO_fgco2_mol_m2_yr zonal_sum box_sum
-                
+
             end
-            
+
             clear lat_index mod_vec time_index mon
         end
     end
@@ -2115,8 +2121,8 @@ for p = 1:length(product_names)
             p1 = plot(d1, 1:12, obs.spco2.(product_names{p}).(years{y}).(runs{q}).out_seasonal(:,1), 'linewidth', 2, ...
                 'color', c_map(line_index,:));
             plot_handles = [plot_handles ; p1];
-            plot_names = [plot_names; [product_names{p} '_' runs{q}]]; 
-            
+            plot_names = [plot_names; [product_names{p} '_' runs{q}]];
+
             plot(d2, 1:12, obs.spco2.(product_names{p}).(years{y}).(runs{q}).out_seasonal(:,1) - ...
                 nanmean(obs.spco2.(product_names{p}).(years{y}).(runs{q}).out_seasonal(:,1)), 'linewidth', 2, ...
                 'color', c_map(line_index,:));
@@ -2138,25 +2144,25 @@ load([data_dir 'ARGO_O2_Floats/Front_definitions/Gray_5_regions/regional_boundar
 % mask
 obs.mlotst.out_seasonal = NaN(12,2);
 for mon=1:12
-    
-    
+
+
     TTT = squeeze(h_t.mld_da_mean(mon,:,:));
     TTT(~C_input.Neur.y2021.index.SAF_S_mask) = nan;
-    
+
     temp_area = C_input.Neur.y2021.area';
     temp_area(isnan(TTT)) = nan;
     % creating an area weighting:
     grid_weights = temp_area./nansum(reshape(temp_area,[],1));
-    
-    
+
+
     obs.mlotst.out_seasonal(mon,1) =  nansum(reshape(TTT.*grid_weights,[],1));
     obs.mlotst.out_seasonal(mon,2) = nanstd(reshape(TTT,[],1));
-    
+
     clear grid_weights temp_area
 end
 
 %% Loading NPP
-disp('Startign  NPP load')
+disp('Starting  NPP load')
 
 npp_types = {'CbPM', 'VGPM', 'CAFE'};
 clear NPP_obs
@@ -2164,42 +2170,42 @@ clear NPP_obs
 for f = 1:length(npp_types)
     NPP_dir = [data_dir 'Data_Products/NPP/' npp_types{f} '/'];
     npp_files = dir([NPP_dir '*.hdf']);
-    
-    
+
+
     m = 1080;
     n = 2160;
-    
+
     lat_step = (90--90)/(m-1);
     lon_step = (180--180)/(n-1);
-    
+
     npp_lat = 90:-lat_step:-90;
     npp_lon = -180:lon_step:180;
-    
+
     [X, Y] = meshgrid(npp_lon, npp_lat);
-    
+
     NPP_obs.(npp_types{f}).Matlab_date = NaN(length(npp_files),1);
     NPP_obs.lat = npp_lat;
     NPP_obs.lon = npp_lon;
     NPP_obs.lat_grid = Y;
     NPP_obs.lon_grid = X;
-    
+
     NPP_obs.(npp_types{f}).npp = NaN(m,n,length(npp_files));
-    
-    
+
+
     % read in individual npp files (currently 2008-2016)
     for q = 1:length(npp_files)
-        
+
         BB = npp_files(q).name(6:12);
         NPP_obs.(npp_types{f}).Matlab_date(q) = datenum(BB(1:4), 'YYYY')-1 + str2double(BB(5:7)) + 15;
-        
+
         month_npp = hdfread([NPP_dir npp_files(q).name], '/npp', 'Index', {[1  1],[1  1],[m  n]}); % mgC m-2 d-1
         month_npp = double(month_npp);
         month_npp(month_npp<-50)=nan;
-        
+
         NPP_obs.(npp_types{f}).npp(:,:,q) = month_npp;
         clear month_npp BB
     end
-    
+
     clear X Y npp_lat npp_lon lon_step lat_step m n NPP_dir npp_files q
 end
 
@@ -2222,38 +2228,38 @@ NPP_obs.area = (lat_deg_step.*ones(length(NPP_obs.lat),1).*m_per_deg.*cosd(NPP_o
 % of all three
 for f = 1:length(npp_types)
     obs.intpp.(npp_types{f}).out_seasonal = NaN(12,2);
-    
+
     % for m = 1:size(NPP_obs_out_seasonal,1)
     mod_vec = datevec(NPP_obs.(npp_types{f}).Matlab_date);
-    
+
     for mon = 1:12
         time_index = mod_vec(:,2)==mon & mod_vec(:,1)>=2010;
-        
+
         SO_pp = NPP_obs.(npp_types{f}).npp(:, :, time_index);
-        
+
         % for each year, mask out the non SAF_S region:
         for zz = 1:size(SO_pp,3)
             TT = SO_pp(:,:,zz);
             TT(~NPP_obs.SAF_S_mask) = nan;
             temp_area = NPP_obs.area;
-            
+
             temp_area(isnan(TT)) = nan;
             % creating an area weighting:
             grid_weights = temp_area./nansum(reshape(temp_area,[],1));
-            
+
             SO_pp(:,:,zz) = TT.*grid_weights; % weight each value - now to get the annual mean you will sum these together
             clear TT grid_weights temp_area
         end
         clear zz
-        
+
         % sum each year into a single month, then take the mean and std:
         zonal_sum = nansum(SO_pp,1);
         box_sum = squeeze(nansum(zonal_sum,2));
-        
+
         % area weighted mean and std deviation (representing the time variance)
         obs.intpp.(npp_types{f}).out_seasonal(mon,1) = nanmean(box_sum);
         obs.intpp.(npp_types{f}).out_seasonal(mon,2) = nanstd(box_sum);
-        
+
         clear  time_index  SO_pp zonal_sum box_sum
     end
 end
@@ -2282,16 +2288,16 @@ cmip_names.(variables{v}) = {};
 
 model_index = 0;
 for m = 1:length(cmip_names.dissic)
-    
+
     % find the matching model talk
     mod_match = strcmp(cmip_names.talk, cmip_names.dissic{m});
-    
+
     if sum(mod_match)==0
         continue
     end
     model_index = model_index + 1;
     CMIP.(variables{v}).out_seasonal(model_index,:) = CMIP.dissic.out_seasonal(m,:,1) - CMIP.talk.out_seasonal(mod_match,:,1);
-    
+
     cmip_names.(variables{v}) = [cmip_names.(variables{v}) ; cmip_names.dissic{m}];
 end
 %
@@ -2313,17 +2319,17 @@ new_bounds.lon_lat_saf_360 = sortrows([new_bounds.lon_saf_360' new_bounds.lat_sa
 title_size = 7;
 
 for v=1:length(variables)
-    
+
     for r = 1:2
-        
+
         clf
         set(gcf, 'units', 'inches')
         paper_w = 11; paper_h = 8.5;
         set(gcf,'PaperSize',[paper_w paper_h],'PaperPosition', [0 0 paper_w paper_h]);
-        
+
         d = NaN(20);
         p_index=0;
-        
+
         if r==1
             first = 1;
             last = 20;
@@ -2332,63 +2338,63 @@ for v=1:length(variables)
             last = length(cmip_names.(variables{v}));
         end
         plot_filename = ['Figure S2_Mean_Surface_CO2flux_all_models_' num2str(r) '_v2'];
-        
-        
-        
+
+
+
         SO_lat_index = CMIP.(variables{v}).lat<=-35;
         [lon_grid, lat_grid] = meshgrid(CMIP.(variables{v}).lon, CMIP.(variables{v}).lat);
-        
+
         CMIP.lon_grid = lon_grid';
         CMIP.lat_grid = lat_grid';
         clear lon_grid lat_grid
-        
-        
+
+
         set(gcf, 'colormap', flipud(brewermap(30, 'RdBu')))
-        
-        
+
+
         if v==9 % eventually should add your observed
             p_index = p_index+1;
-            
+
             date_index =  C_input.Neur.y2021.Pg_mon.date_vec(:,1)>=2015;
             CC = C_input.Neur.y2021.Pg_mon.SOCCOM_SOCAT(:, SO_lat_index, date_index); % Pg mon-1
-            
+
             annual_neur = nansum(CC,3)./(size(CC,3)./12); % Pg yr-1
-            
-            
+
+
             SO_mean_var_lon_shift = NaN(size(annual_neur,1), size(annual_neur,2), size(annual_neur,3));
             SO_mean_var_lon_shift(1:180, :, :) = annual_neur(181:end,:,:);
             SO_mean_var_lon_shift(181:end, :, :) = annual_neur(1:180,:,:);
-            
+
             SO_mean_var_lon_shift = SO_mean_var_lon_shift./C_input.Neur.y2021.area(SO_lat_index,:)'.*10^15; % g C m-2 yr-1 from Pg C yr-1 ; %
             SO_mean_var_lon_shift = SO_mean_var_lon_shift./12./1000; %  Tg C mon-1 from Pg C yr-1
-            
+
             d(p_index) = subplot(5,4,p_index);
-            
+
             pcolor(CMIP.lon_grid(:,SO_lat_index), CMIP.lat_grid(:,SO_lat_index), SO_mean_var_lon_shift); shading flat; %colorbar
             hold on
-            
+
             plot(new_bounds.lon_lat_saf_360(:,1), new_bounds.lon_lat_saf_360(:,2), 'k-', 'linewidth', 2)
             plot([1 360], [poleward_lat_lim poleward_lat_lim], 'k-', 'linewidth',2)
-            
+
             caxis(var_lims(v,:))
             title('SOCCOM SOCAT', 'fontsize', title_size)
             set(gca, 'fontsize', 6)
             set(gca, 'ylim', [-80 -35])
-            
+
         end
-        
+
         for m = first:last % length(cmip_names.(variables{v}))
             if ~isfield(CMIP.thetao, (cmip_names.(variables{v}){m}))
                 continue
             end
             p_index = p_index+1;
-            
+
             if isfield(CMIP.(variables{v}).(cmip_names.(variables{v}){m}), 'depth')
                 num_depths = length(CMIP.(variables{v}).(cmip_names.(variables{v}){m}).depth);
             else
                 num_depths =1;
             end
-            
+
             for dd = [1 round(num_depths./2) num_depths]
                 %             clf
                 %             set(gcf, 'units', 'inches')
@@ -2398,22 +2404,22 @@ for v=1:length(variables)
                 %             set(gcf, 'colormap', var_cmaps.(variables{v}));
                 mod_vec = datevec(CMIP.(variables{v}).(cmip_names.(variables{v}){m}).GMT_Matlab);
                 time_index = mod_vec(:,1)>=2010 & mod_vec(:,1)<2020;
-                
+
                 if num_depths==1
                     SO_var = CMIP.(variables{v}).(cmip_names.(variables{v}){m}).(variables{v})(:, SO_lat_index, time_index);
                 else
                     SO_var = squeeze(CMIP.(variables{v}).(cmip_names.(variables{v}){m}).(variables{v})(:, SO_lat_index, dd, time_index));
                 end
-                
+
                 SO_mean_var = mean(SO_var,3, 'omitnan'); % Tg C mon-1
-                
+
                 %             if v==9
                 %             SO_mean_var = SO_mean_var./C_input.Neur.y2021.area(SO_lat_index,:)'.*12.*10^12; % g C m-2 yr-1 from Tg C mon-1
                 %             end
                 %             subplot(1,1,1)
                 d(p_index) = subplot(5,4,p_index);
-                
-                
+
+
                 pcolor(CMIP.lon_grid(:,SO_lat_index), CMIP.lat_grid(:,SO_lat_index), SO_mean_var); shading flat
                 hold on
                 plot(CMIP.thetao.lon, CMIP.thetao.(cmip_names.(variables{v}){m}).SAF, 'k-', 'linewidth', 2)
@@ -2422,9 +2428,9 @@ for v=1:length(variables)
                 %             ylabel('Latitude')
                 %             c1 = colorbar;
                 %             ylabel(c1, [variables{v} ' (' CMIP.(variables{v}).(cmip_names.(variables{v}){m}).units ')'], 'interpreter', 'none')
-                
+
                 title(cmip_names.(variables{v}){m}, 'interpreter', 'none', 'fontsize', title_size)
-                
+
                 %             if num_depths==1
                 %                 title([cmip_names.(variables{v}){m} ' ' variables{v}], 'interpreter', 'none')
                 %             else
@@ -2435,48 +2441,47 @@ for v=1:length(variables)
                 %             caxis(var_lims(v,:))
                 caxis(var_lims(v,:))
                 set(gca, 'ylim', [-80 -35])
-                
-                
+
+
             end
         end
         %     pause
         if num_depths==1
             plot_filename = ['All_models_' variables{v} '_Surface_' cmip_names.(variables{v}){m} '_' num2str(r)];
-            
+
         else
             plot_filename = ['All_models_' variables{v} '_' cmip_names.(variables{v}){m} '_' num2str(CMIP.(variables{v}).(cmip_names.(variables{v}){m}).depth(dd)) 'm' '_' num2str(r)];
         end
-        
+
         print(gcf, '-dpdf', '-r400', [Plot_out_dir variables{v} '/' plot_filename '_v1.pdf'])
-        
-        
+
+
         if r==1
             c1 = colorbar;
-            
+
             ylabel(c1, [variables{v} ' (' CMIP.(variables{v}).(cmip_names.(variables{v}){m}).units ')'], 'interpreter', 'none')
-            
+
             print(gcf, '-dpdf', '-r400', [Plot_out_dir variables{v} '/' plot_filename 'w_colorbar.pdf'])
         end
         clear SO_var SO_mean_var plot_filename SO_SSS time_index mod_vec
-        
+
     end
-    
+
     clear m c1 SO_lat_index paper_h paper_w dd num_depths
 end
 %% save out seasonal data / seasonal cycles so you don't have to re-read in observations
-
-%% remove data from CMIP so that you have a reduced dataset to save / load
+% remove data from CMIP so that you have a reduced dataset to save / load
 
 for v = 1:14%length(variables)
     for m = 1:length(cmip_names.(variables{v}))
-        
+
         % find all large arrays:
         temp_fields = fieldnames(CMIP.(variables{v}).(cmip_names.(variables{v}){m}));
-        
+
         for tt = 1:length(temp_fields)
-            
+
             field_size = size(CMIP.(variables{v}).(cmip_names.(variables{v}){m}).(temp_fields{tt}));
-            
+
             if length(field_size)>2 && field_size(1)==360 && field_size(2)==180
                 % make arrays blank to reduce size prior to saving out
                 CMIP.(variables{v}).(cmip_names.(variables{v}){m}).(temp_fields{tt}) = [];
@@ -2498,7 +2503,7 @@ save([home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/data/seasonal_cycles
 %% 0. Taylor calculations and diagram using Kathy Kelly's tools
 q = 2; % SOCCOM SOCAT
 p = 3; % Combined
-y = 1; % 
+y = 1; %
 
 years = C_input.years;
 product_names = C_input.product_names;
@@ -2507,7 +2512,7 @@ runs = C_input.runs;
 regions = C_input.regions;
 
 for v = 1:14%length(variables)
-    
+
     % currently skipping psl and wmo
     if sum(strcmp(variables{v}, {'psl'; 'wmo';'dissic_yr';'talk_yr';'thetao'}))>0
         continue
@@ -2516,14 +2521,14 @@ for v = 1:14%length(variables)
     obs.(variables{v}).correlation = NaN(size(CMIP.(variables{v}).out_seasonal,1),1);
     obs.(variables{v}).ratio = NaN(size(CMIP.(variables{v}).out_seasonal,1),1);
     obs.(variables{v}).norm_error = NaN(size(CMIP.(variables{v}).out_seasonal,1),1);
-    
+
     if v==9
         obs.fgco2_mol_C_m2_yr.correlation = NaN(size(CMIP.(variables{v}).out_seasonal,1),1);
         obs.fgco2_mol_C_m2_yr.ratio = NaN(size(CMIP.(variables{v}).out_seasonal,1),1);
         obs.fgco2_mol_C_m2_yr.norm_error = NaN(size(CMIP.(variables{v}).out_seasonal,1),1);
-        
+
     end
-    
+
     for m = 1:length(cmip_names.(variables{v}))
         if v==9 || v==1
             % calculate fit for total flux (but different areas b/c of different SAFs,
@@ -2531,7 +2536,7 @@ for v = 1:14%length(variables)
             [obs.(variables{v}).correlation(m),obs.(variables{v}).ratio(m),obs.(variables{v}).norm_error(m)]=...
                 taylor_eval(obs.(variables{v}).(product_names{p}).(years{y}).(runs{q}).out_seasonal(:,1), ...
                 CMIP.(variables{v}).out_seasonal(m,:,1));
-            
+
             % record which products are used:
             obs.(variables{v}).run_used = [(product_names{p}) '_' (years{y}) '_' (runs{q})];
             if v==9
@@ -2542,18 +2547,18 @@ for v = 1:14%length(variables)
                     obs.fgco2_mol_C_m2_yr.norm_error(m)]= ...
                     taylor_eval(obs.fgco2_mol_C_m2_yr.(product_names{p}).(years{y}).(runs{q}).out_seasonal(:,1), ...
                     CMIP.(variables{v}).out_seasonal_mol_C_m2_yr(m,:,1));
-                
-                 % record which products are used:
-            obs.fgco2_mol_C_m2_yr.run_used = [(product_names{p}) '_' (years{y}) '_' (runs{q})];
+
+                % record which products are used:
+                obs.fgco2_mol_C_m2_yr.run_used = [(product_names{p}) '_' (years{y}) '_' (runs{q})];
             end
-            
+
             % 		elseif sum(strcmp(variables{v}, {'dissic'; 'talk'}))>0
             % 			% surface only for dissic or talk
             % 			[obs.(variables{v}).correlation(m),obs.(variables{v}).ratio(m),obs.(variables{v}).norm_error(m)]=taylor_eval(squeeze(obs.(variables{v}).out_seasonal(1,:,1)),CMIP.(variables{v}).out_seasonal(m,:,1));
-            
+
         else
             [obs.(variables{v}).correlation(m),obs.(variables{v}).ratio(m),obs.(variables{v}).norm_error(m)]=taylor_eval(obs.(variables{v}).out_seasonal(:,1,1), CMIP.(variables{v}).out_seasonal(m,:,1));
-            
+
         end
     end
 end
@@ -2575,42 +2580,42 @@ for sv =  6:8%:length(seas_comp_var)%9%[1 2 4 5 6 7 8 9 14 15]
     if length(v)>1 % cludge since dissic and dissic_yr were getting confused
         v = strmatch(seas_comp_vars{sv}, variables, 'exact');
     end
-    
-        if v == 1 || v==9
-            plot_filename = ['Taylor ' seas_comp_vars{sv} ' ' obs.(seas_comp_vars{sv}).run_used];
-        else
-            plot_filename = ['Taylor ' seas_comp_vars{sv}];
-        end
+
+    if v == 1 || v==9
+        plot_filename = ['Taylor ' seas_comp_vars{sv} ' ' obs.(seas_comp_vars{sv}).run_used];
+    else
+        plot_filename = ['Taylor ' seas_comp_vars{sv}];
+    end
     clf
     set(gcf, 'units', 'inches')
     paper_w = 14; paper_h =8;
     set(gcf,'PaperSize',[paper_w paper_h],'PaperPosition', [0 0 paper_w paper_h]);
-    
+
     if ~isempty(strfind(seas_comp_vars{sv}, 'fgco2'))
         %         if flux_density==0
         DDD = taylor_dist_smb(obs.(seas_comp_vars{sv}).correlation, obs.(seas_comp_vars{sv}).ratio, [], cmip_names.(variables{v}), color_model, cmap, legend_on, ...
             rms_cutoff_for_good, out_of_phase_corr_cutoff);
-        
+
         %         else
         %             DDD = taylor_dist_smb(obs.fgco2_mol_C_m2_yr.correlation, obs.fgco2_mol_C_m2_yr.ratio, [], cmip_names.(variables{v}), color_model, cmap, legend_on, rms_cutoff_for_good, out_of_phase_corr_cutoff);
         %             DDD = taylor_dist_smb(obs.fgco2_mol_C_m2_yr.correlation, obs.fgco2_mol_C_m2_yr.ratio, [], cmip_names.(variables{v}), color_model, cmap, legend_on, [], []);
-        
+
         %         end
     else
         DDD = taylor_dist_smb(obs.(seas_comp_vars{sv}).correlation, obs.(seas_comp_vars{sv}).ratio, [], cmip_names.(variables{v}), color_model, cmap, legend_on, [], []);
     end
-    
+
     if v == 1 || v==9
         title([seas_comp_vars{sv} ' ' obs.(seas_comp_vars{sv}).run_used], 'interpreter', 'none')
-        
+
     else
-        
+
         title(seas_comp_vars{sv}, 'interpreter', 'none')
     end
     set(gca, 'fontsize', 12)
-    
-        print(gcf, '-dpng', [Plot_out_dir seas_comp_vars{sv} '/' plot_filename '_leg ' num2str(legend_on) plot_ver '.png'])
-        
+
+    print(gcf, '-dpng', [Plot_out_dir seas_comp_vars{sv} '/' plot_filename '_leg ' num2str(legend_on) plot_ver '.png'])
+
 end
 
 clear paper_w paper_h legend_on sv
@@ -2636,20 +2641,20 @@ d(1) = subplot(1,3,1); hold on; grid on; title(d(1), 'Correlation')
 d(2) = subplot(1,3,2);hold on; grid on; title(d(2), 'Ratio')
 d(3) = subplot(1,3,3);hold on; grid on; title(d(3), 'Norm Error')
 for m=1:length(temp.(seas_comp_vars{sv}).(run_comparison{1}).(comparisons{1}))
-        if isnan(temp.(seas_comp_vars{sv}).(run_comparison{1}).correlation(m))
-            continue
-        end
+    if isnan(temp.(seas_comp_vars{sv}).(run_comparison{1}).correlation(m))
+        continue
+    end
     plot_order = find(sort(temp.(seas_comp_vars{sv}).(run_comparison{1}).correlation) == ...
         temp.(seas_comp_vars{sv}).(run_comparison{1}).correlation(m));
-    
+
 
     for c = 1:length(comparisons)
-   
+
         plot(d(c), [plot_order plot_order], [temp.(seas_comp_vars{sv}).(run_comparison{1}).(comparisons{c})(m) ...
             temp.(seas_comp_vars{sv}).(run_comparison{2}).(comparisons{c})(m)]);
         plot(d(c), plot_order, temp.(seas_comp_vars{sv}).(run_comparison{1}).(comparisons{c})(m), '^')
         plot(d(c), plot_order, temp.(seas_comp_vars{sv}).(run_comparison{2}).(comparisons{c})(m), 's');
-        
+
     end
 end
 
@@ -2691,7 +2696,7 @@ clear v q
 % model type:
 mod_index=0;
 for m=1:length(color_model)
-    
+
     for q = 1:length(model_types)
         mod_index = strcmp(color_model{m,1}, model_group_names.(model_types{q}));
         if sum(mod_index)>0
@@ -2701,6 +2706,15 @@ for m=1:length(color_model)
 end
 
 clear q m mod_index
+
+%% Save out seasonal data with model types assigned
+
+save([home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/data/seasonal_cycles_w_model_type_matched_' datestr(now, 'YYYY_mm_dd') '.mat'], 'CMIP', 'combined_SO', 'NOAA_SST', 'WOA_SSS',...
+    'cmip_names', 'obs', 'color_model', 'variables', 'var_type', 'cmap', 'model_group_colors', ...
+    'var_lims', 'depth_levs', 'poleward_lat_lim', 'depth_names', 'plot_ver', 'model_group_names')
+
+
+
 %% Taylor diagram by model group
 
 for sv =  10%:length(seas_comp_var)%9%[1 2 4 5 6 7 8 9 14 15]
@@ -2709,26 +2723,26 @@ for sv =  10%:length(seas_comp_var)%9%[1 2 4 5 6 7 8 9 14 15]
         v = strmatch(seas_comp_vars{sv}, variables, 'exact');
     end
     plot_filename = ['Taylor ' seas_comp_vars{sv} ' by model group'];
-    
+
     clf
     set(gcf, 'units', 'inches')
     paper_w = 14; paper_h =8;
     set(gcf,'PaperSize',[paper_w paper_h],'PaperPosition', [0 0 paper_w paper_h]); clear paper_w paper_h
-    
-    
+
+
     for q = length(model_types):-1:1
         model_list = CMIP.(variables{v}).model_groups.(model_types{q});
-        
+
         % make a temp colormap that is all one model type's color
         temp_color_model = model_group_colors(q,:);
         temp_cmap = repmat(temp_color_model, length(cmap),1);
-        
+
         taylor_dist_smb(obs.(seas_comp_vars{sv}).correlation(model_list), obs.(seas_comp_vars{sv}).ratio(model_list), [], cmip_names.(variables{v})(model_list), color_model, temp_cmap, 0, [], []);
-        
+
     end
     title(variables{v})
     set(gca, 'fontsize', 16)
-    
+
     print(gcf, '-dpng', [Plot_out_dir seas_comp_vars{sv} '/' plot_filename '_v8_theta.png'])
 end
 %% plotting Taylor RMS vs each other
@@ -2741,36 +2755,37 @@ end
 tests = {'norm_error';'correlation' ; 'ratio'};
 % legend_on=0;
 group_color = 2;
-
+set(gcf, 'colormap', turbo)
 v3 = 4; % variable for harmonic fit scatter color
 
 harm_comp = 'offset';
-for sv = 4% [1 2 3 4 5 6 8 9 10] %1:length(seas_comp_vars)
-    
-    for tt = 1:length(tests)
-        for qq = 1:length(tests)
+
+for sv = 9% [1 2 3 4 5 6 8 9 10] %1:length(seas_comp_vars)
+
+    for tt = 3%1:length(tests)
+        for qq = 1%:length(tests)
             %             if strcmp(variables{v}, 'wmo') || strcmp(variables{v}, 'psl') || strcmp(variables{v}, 'dissic_yr') || strcmp(variables{v}, 'talk_yr') || strcmp(variables{v}, 'thetao')
             %                 continue
             %             end
-            
+
             % find matching v
             v = find(strncmp(seas_comp_vars{sv}, variables, 4));
             if length(v)>1 % cludge since dissic and dissic_yr were getting confused
                 v = strmatch(seas_comp_vars{sv}, variables, 'exact');
             end
-            
+
             clf
             set(gcf, 'units', 'inches')
             paper_w = 15; paper_h =8;
             set(gcf,'PaperSize',[paper_w paper_h],'PaperPosition', [0 0 paper_w paper_h]); clear paper_w paper_h
-            
+
             plot_index = 0;
-            
+
             plot_filename = ['Taylor ' seas_comp_vars{sv} ' ' tests{qq} ' vs. ' tests{tt} ' other vars_model_groups=' num2str(group_color) ' filter ' num2str(filter_on)];
             if group_color==2
-            plot_filename = ['Taylor ' seas_comp_vars{sv} ' ' tests{qq} ' vs. ' tests{tt} ' other vars_model_groups=' num2str(group_color) '_' variables{v3} '_' ...
-                harm_comp ' filter ' num2str(filter_on)];
-                
+                plot_filename = ['Taylor ' seas_comp_vars{sv} ' ' tests{qq} ' vs. ' tests{tt} ' other vars_model_groups=' num2str(group_color) '_' variables{v3} '_' ...
+                    harm_comp ' filter ' num2str(filter_on)];
+
             end
             for sv2 = [1 2 3 4 5 6 8 9 10]
                 if sv2==sv
@@ -2778,47 +2793,47 @@ for sv = 4% [1 2 3 4 5 6 8 9 10] %1:length(seas_comp_vars)
                     %                 elseif strcmp(variables{v2}, 'wmo') || strcmp(variables{v2}, 'psl') || strcmp(variables{v2}, 'dissic_yr') || strcmp(variables{v2}, 'talk_yr') || strcmp(variables{v2}, 'thetao')
                     %                     continue
                 end
-                
+
                 v2 = find(strncmp(seas_comp_vars{sv2}, variables, 4));
                 if length(v2)>1 % cludge since dissic and dissic_yr were getting confused
                     v2 = strmatch(seas_comp_vars{sv2}, variables, 'exact');
                 end
-                
+
                 plot_index = plot_index+1;
-                
+
                 subplot(3,3,plot_index)
-                
+
                 hold on
                 grid on
-                
+
                 %         legend_list = [];
                 temp_array = [];
                 temp_color = [];
                 for m = 1:length(cmip_names.(variables{v}))
-                    
-                    
+
+
                     % find the matching model
                     mod_match = strcmp(cmip_names.(variables{v2}), cmip_names.(variables{v}){m});
-                    
+
                     if sum(mod_match)>0
                         if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
-                            
+
                             if group_color==1
                                 plot_color = model_group_colors(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3},:);
                             elseif group_color==0
                                 plot_color = cmap(strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),:);
-                                
+
                             end
-                            
+
                             if group_color==0 || group_color==1
-                            plot(obs.(variables{v}).(tests{qq})(m), obs.(variables{v2}).(tests{tt})(mod_match), '.', 'color', ...
-                                plot_color, 'markersize', 20)
+                                plot(obs.(variables{v}).(tests{qq})(m), obs.(variables{v2}).(tests{tt})(mod_match), '.', 'color', ...
+                                    plot_color, 'markersize', 20)
                             elseif group_color==2 % plotting color based on harmonic fit info
                                 mod_match_2 = strcmp(cmip_names.(variables{v3}), cmip_names.(variables{v}){m});
 
                                 if sum(mod_match_2)>0
                                     harm_diff = harm_mod.(variables{v3}).(harm_comp)(mod_match_2) - harm.(variables{v3}).(harm_comp); % difference in phase between model and obs
-                                    
+
                                     scatter(obs.(variables{v}).(tests{qq})(m), obs.(variables{v2}).(tests{tt})(mod_match), 40, harm_diff, 'filled');
                                     c1 = colorbar;
                                     temp_color(end+1) = harm_diff;
@@ -2833,25 +2848,25 @@ for sv = 4% [1 2 3 4 5 6 8 9 10] %1:length(seas_comp_vars)
                             %         legend_list = [legend_list ; {cmip_names.(variables{v}){m}}];
                             temp_array(end+1,1) = obs.(variables{v}).(tests{qq})(m);
                             temp_array(end,2) = obs.(variables{v2}).(tests{tt})(mod_match);
-                            
+
                         end
                     end
                     clear plot_color
                 end
                 if group_color==2
                     c_lim = caxis;
-%                     caxis([-max(abs(c_lim)) max(abs(c_lim))])
+                    %                     caxis([-max(abs(c_lim)) max(abs(c_lim))])
                     caxis([-nanstd(temp_color) nanstd(temp_color)]*1.5)
                 end
-                
+
                 xlabel( [variables{v} ' ' tests{qq}], 'interpreter', 'none')
                 ylabel([variables{v2} ' ' tests{tt}], 'interpreter', 'none')
                 if filter_on==1
                     temp_array(temp_array(:,1)>3,1)=nan;
                     temp_array = temp_array(~isnan(temp_array(:,1)),:);
-                    
+
                 end
-                
+
                 [m,b,r,~,~]=lsqfitgm(temp_array(:,1),temp_array(:,2));
                 x_plot = min(temp_array(:,1)):(max(temp_array(:,1))-min(temp_array(:,1)))./10 : max(temp_array(:,1));
                 y_plot = m.*x_plot+b;
@@ -2864,30 +2879,30 @@ for sv = 4% [1 2 3 4 5 6 8 9 10] %1:length(seas_comp_vars)
                 if tt>1
                     plot(get(gca, 'xlim'), [1 1], '-k')
                 end
-                
+
                 if tt==3
                     orig_y_lim = get(gca, 'ylim');
-                    
+
                     if orig_y_lim(1)<0
                         orig_y_lim(1)=0;
                     end
-                    
+
                     set(gca, 'ylim', orig_y_lim)
                 end
-                
+
                 if tt==2
                     orig_y_lim = get(gca, 'ylim');
-                    
+
                     if orig_y_lim(1)<-1
                         orig_y_lim(1)=-1;
                     end
                     if orig_y_lim(2)>1
                         orig_y_lim(2)=1;
                     end
-                    
+
                     set(gca, 'ylim', orig_y_lim)
                 end
-                
+
                 if qq>1
                     plot([1 1], get(gca, 'ylim'), '-k')
                 end
@@ -2896,20 +2911,20 @@ for sv = 4% [1 2 3 4 5 6 8 9 10] %1:length(seas_comp_vars)
                 subplot(3,3,9)
                 hold on
                 legend_names = {};
-                
+
                 for m = 1:length(cmip_names.fgco2)
                     if ~isempty(color_model{strcmp(cmip_names.fgco2{m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
-                        
+
                         plot(0,0, '.', 'color', cmap(strcmp(cmip_names.fgco2{m}, color_model(:,1)),:), 'markersize', 25)
-                        
+
                         legend_names{end+1,1} = cmip_names.fgco2{m};
                     end
                 end
                 l1 = legend(legend_names, 'numcolumns', 3, 'interpreter', 'none');
                 leg_pos = get(l1, 'position');
-                
+
                 set(l1, 'position', leg_pos+[.07 0.02 0 0])
-                
+
                 % 				set(l1, 'interpreter', 'none', 'position', [0.8973    0.0801    0.1005    0.5704]);
             end
             %             subplot(3,3,9)
@@ -2919,8 +2934,9 @@ for sv = 4% [1 2 3 4 5 6 8 9 10] %1:length(seas_comp_vars)
             %
             %             end
             %             if legend_on ==1
-            
+
             %             end
+            annotation('textbox', [0.05, 0.05, 1, 0], 'String', plot_filename, 'EdgeColor', 'none', 'interpreter', 'none');
             print(gcf, '-dpng', [Plot_out_dir variables{v} '/' plot_filename '_v8_test.png'])
         end
     end
@@ -2988,7 +3004,7 @@ for m =  1:length(cmip_names.(variables{v}))
     else
         plot(1:12, CMIP.(variables{v}).(seasonal_name)(m,:,1), 'color', cmap(strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),:), 'linewidth', 3);
     end
-    
+
     legend_names{end+1,1} = cmip_names.(variables{v}){m};
 end
 
@@ -3009,7 +3025,7 @@ end
 
 if strcmp(seas_comp_vars{sv}, 'fgco2_mol_C_m2_yr')
     ylabel([seas_comp_vars{sv} ' ' anomaly_text ' (mol C m-2 yr-1)'], 'interpreter', 'none')
-    
+
 else
     ylabel([seas_comp_vars{sv} ' ' anomaly_text ' (' (CMIP.(variables{v}).(cmip_names.(variables{v}){1}).units) ')'], 'interpreter', 'none')
 end
@@ -3032,13 +3048,13 @@ set(gcf,'PaperSize',[paper_w paper_h],'PaperPosition', [0 0 paper_w paper_h]);
 plot_filename = ['Obs model Seasonal ' anomaly_text '_' seas_comp_vars{sv} 'split_by_model_types_v9'];
 
 for q = 1:length(model_types)
-    
-    
+
+
     subplot(2,2,q)
     hold on
-    
+
     grid on; set(gca, 'gridalpha', .4)
-    
+
     model_list = CMIP.(variables{v}).model_groups.(model_types{q});
     for m = 1: length(model_list)
         % [l, a] = boundedline(1:12, DIC_out_seasonal(m,:,1), DIC_out_seasonal(m,:,2));
@@ -3050,7 +3066,7 @@ for q = 1:length(model_types)
             plot(1:12, CMIP.(variables{v}).(seasonal_name)(model_list(m),:,1), 'color', cmap(strcmp(cmip_names.(variables{v}){model_list(m)}, color_model(:,1)),:), 'linewidth', 2);
         end
     end
-    
+
     if v==9
         if anomaly==1
             e1 = errorbar(1:12, obs.(seas_comp_vars{sv}).Neur.y2021.SOCCOM_SOCAT.out_seasonal(:,1)-nanmean(obs.(seas_comp_vars{sv}).Neur.y2021.SOCCOM_SOCAT.out_seasonal(:,1)), obs.(seas_comp_vars{sv}).Neur.y2021.SOCCOM_SOCAT.out_seasonal(:,2), 'linewidth', 3, 'color', 'k', 'linestyle', '--');
@@ -3063,32 +3079,32 @@ for q = 1:length(model_types)
         else
             e1 = plot(1:12, obs.(seas_comp_vars{sv}).out_seasonal(:,1), 'linewidth', 3, 'color', 'k', 'linestyle', '--');
         end
-        
+
     end
-    
+
     if strcmp(seas_comp_vars{sv}, 'fgco2_mol_C_m2_yr')
         ylabel([seas_comp_vars{sv} ' ' anomaly_text ' (mol C m-2 yr-1)'], 'interpreter', 'none')
-        
+
     else
         ylabel([seas_comp_vars{sv} ' ' anomaly_text ' (' (CMIP.(variables{v}).(cmip_names.(variables{v}){1}).units) ')'], 'interpreter', 'none')
     end    %     xlabel('Month')
     set(gca, 'fontsize', 16)
-    
+
     if strcmp(seas_comp_vars{sv}, 'fgco2_mol_C_m2_yr')
-        
+
     elseif anomaly==1
         set(gca, 'ylim', var_anom_lims(v,:))
     else
         set(gca, 'ylim', var_mean_lims(v,:))
-        
+
     end
     set(gca , 'xtick', [1 3 5 7 9 11])
     set(gca, 'xticklabel',{'Jan.', 'Mar.', 'May', 'July', 'Sept.', 'Nov.'} )
-    
+
     l1 = legend([cmip_names.(variables{v})(model_list) ; 'Obs'], 'interpreter', 'none', 'location', 'eastoutside');
     set(l1, 'fontsize', 10)
     title(['Seasonal ' variables{v} ': ' model_types{q}], 'interpreter', 'none')
-    
+
     % pause
     clear m
 end
@@ -3108,26 +3124,26 @@ for v = [7 5 1 8 15 6 4 2]
     harm_mod.(variables{v}).frac = NaN(length(cmip_names.(variables{v})),1);
     harm_mod.(variables{v}).offset = NaN(length(cmip_names.(variables{v})),1);
     harm_mod.(variables{v}).residual = NaN(length(cmip_names.(variables{v})),12);
-    
+
     harm_mod.(variables{v}).seasonal_fit = NaN(length(cmip_names.(variables{v})), 12);
-    
+
     for m = 1:length(cmip_names.(variables{v}))
-        
+
         if ~isnan(CMIP.(variables{v}).out_seasonal(m,1,1))
             [harm_mod.(variables{v}).amp(m), harm_mod.(variables{v}).phase(m), harm_mod.(variables{v}).frac(m), harm_mod.(variables{v}).offset(m), harm_mod.(variables{v}).residual(m,:)]= ...
                 fit_harmonics(CMIP.(variables{v}).out_seasonal(m,:,1), year_days, nharm, L, cutoff);
-            
+
             % recreate the seasonal cycle from the initial harmonic fit
             yt = harm_mod.(variables{v}).offset(m).*ones(12,1);
             yt=yt+(harm_mod.(variables{v}).amp(m).*cos(2.*pi.*j.*[year_days]./L + harm_mod.(variables{v}).phase(m)))';
-            
+
             harm_mod.(variables{v}).seasonal_fit(m,:) = yt;
-            
+
         end
     end
 end
 
-%% Needed %% - 3. creating a seasonal dic that is internally consistent with pCO2 and TALK 
+%% Needed %% - 3. creating a seasonal dic that is internally consistent with pCO2 and TALK
 
 [harm.spco2.amp,harm.spco2.phase,harm.spco2.frac,harm.spco2.offset,harm.spco2.residual]= ...
     fit_harmonics(obs.spco2.Combined.y2021.SOCCOM_SOCAT.out_seasonal(:,1), year_days, nharm, L, cutoff);
@@ -3210,32 +3226,56 @@ for v = [7 5 1 8 6 4]
     clear yt
 end
 %% Sensitivity tests for individual models - can we fix models by adjusting certain parameters
+q = 2; % SOCCOM SOCAT
+p = 3; % Combined
+y = 1; %
+runs = C_input.runs;
+product_names = C_input.product_names;
+years = C_input.years;
 
 dDICdT_lims = [-25 5];
 
+% dataTable_out = table();
+varNames = {'model_name'};
+varTypes = {'string'};
+dataTable_out = table('Size', [0, numel(varNames)], 'VariableNames', varNames, 'VariableTypes', varTypes);
+
 for m = 1:length(cmip_names.spco2) % spco2 model number
+    disp(cmip_names.spco2{m})
     end_plot = 0;
-    
-    n_rows = 9;
+
+    n_rows = 12;
     n_cols = 4;
-    
-    plot_filename = ['Sensitivity_tests_' cmip_names.spco2{m} '_v2'];
-    
+
+    plot_filename = ['Sensitivity_tests_' cmip_names.spco2{m} plot_ver];
+
     % test_out_table = table(dissic_phase, dissic_amp);
-    
+
     clf
     set(gcf, 'units', 'inches')
-    paper_w = 12; paper_h =18;
+    paper_w = 12; paper_h =21;
     set(gcf,'PaperSize',[paper_w paper_h],'PaperPosition', [0 0 paper_w paper_h]);
-    
+
     subplot_index = 0;
-    
+
     clear modeled_var
-    
+    if m==1
+        dataTable_out = [dataTable_out  ; {cmip_names.spco2{m}}];
+    else
+        newRow = table('Size', [1, width(dataTable_out)], 'VariableTypes', repmat({'double'}, 1, width(dataTable_out)));
+        newRow.Properties.VariableNames = dataTable_out .Properties.VariableNames;
+
+        % Set the 'model_name' value in the new row
+%         newRow.model_name = {cmip_names.spco2{m}};
+
+        % Add the new row to the existing table
+        dataTable_out = [dataTable_out; newRow];
+        dataTable_out.model_name(m) = {cmip_names.spco2{m}};
+    end
     % check to see if models have required variables for this analysis:
     for v = [7 5 8 15 1 6]
         mod_match_index = strcmp(cmip_names.(variables{v}), cmip_names.spco2{m});
-        
+
         if sum(mod_match_index)==0
             disp([cmip_names.spco2{m} ' missing ' variables{v}])
             end_plot = 1;
@@ -3247,135 +3287,188 @@ for m = 1:length(cmip_names.spco2) % spco2 model number
         continue
     end
     sn = NaN(n_cols,1);
-    
+
+    % calculate pco2 changes due to solubility and non-solubility
+    v=5;
+    mod_match_index = strcmp(cmip_names.(variables{v}), cmip_names.spco2{m});
+
+    sst_mean_minus_obs = nanmean(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1))-CMIP.(variables{v}).out_seasonal(mod_match_index,:,1);
+
+    sst_obs_minus_mean = CMIP.(variables{v}).out_seasonal(mod_match_index,:,1) - nanmean(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1));
+
+    v=1;
+    mod_match_index = strcmp(cmip_names.(variables{v}), cmip_names.spco2{m});
+
+    pCO2_at_t_mean = CMIP.(variables{v}).out_seasonal(mod_match_index,:,1).*exp(0.0423*(sst_mean_minus_obs)); % Takahashi et al 2002 eq. 1 - non-solubility component
+    pCO2_at_t_obs = nanmean(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1)).*exp(0.0423*(sst_obs_minus_mean)); % Takahashi et al. 2002 eq. 2 solubility component
+
+    delta_pco2_bio = max(pCO2_at_t_mean) - min(pCO2_at_t_mean);
+    delta_pco2_temp = max(pCO2_at_t_obs) - min(pCO2_at_t_obs);
+
+    dataTable_out.T_B_ratio(m) = delta_pco2_temp./delta_pco2_bio;
+
     for v = [7 5 8 1 6] %[7 5 8 15 16 1 6]
+
+        %%%% Original data - harmonic fit %%%%
         if v~=16
             mod_match_index = strcmp(cmip_names.(variables{v}), cmip_names.spco2{m});
         end
         if v~=6 % want to have Salinity seasonal cycle but not plot it
             subplot_index = subplot_index+1;
-            
+
             sn(subplot_index) = subplot(n_rows,n_cols,subplot_index);
-            
+
             if v==16
                 continue
             end
-            
-            plot(obs.(variables{v}).out_seasonal(:,1,1)-nanmean(obs.(variables{v}).out_seasonal(:,1,1)), 'k-', 'linewidth', 2)
+
+            if strcmp(variables{v}, 'spco2')
+                seasonal_var = obs.(variables{v}).(product_names{p}).(years{y}).(runs{q}).out_seasonal(:,1);
+            else
+                seasonal_var = obs.(variables{v}).out_seasonal(:,1,1);
+            end
+
+            plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 2)
             hold on
             %         plot(harm.(variables{v}).seasonal_fit-nanmean(harm.(variables{v}).seasonal_fit),
             %         'g-', 'linewidth', 2) % plotting harmonic fit if you decide to go
             %         that way instead of original mean obs
-            
+
             plot(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1) - nanmean(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1)), 'b', 'linewidth', 2)
-            
+
+            phase_shift = harm.(variables{v}).phase - harm_mod.(variables{v}).phase(mod_match_index);
+            phase_shift_days = phase_shift.*365.25./(2*pi); % number of days off a model is in phase - negative is early, positive is late
+
+            amp_shift = harm_mod.(variables{v}).amp(mod_match_index)-harm.(variables{v}).amp; % amplitude off in umol/kg or degrees
+
+            temp_var_match(v,1:4) = {variables{v} phase_shift_days ...
+                amp_shift obs.(variables{v}).norm_error(mod_match_index)};
+
             title(variables{v})
-            
+
         end
         % plot harmonic fits :
         % DIC timing (phase):
-        
+
         phase_adjust = 1;
         amp_adjust = 1;
         offset_adjust = 0;
         % rebuild
-        
+
         yt = harm_mod.(variables{v}).offset(mod_match_index).*ones(12,1)+offset_adjust;
-        
+
         modeled_var.(variables{v}) =yt+(harm_mod.(variables{v}).amp(mod_match_index).*amp_adjust.*cos(2.*pi.*j.*[year_days]./L + harm_mod.(variables{v}).phase(mod_match_index).*phase_adjust))';
-        
+
         if v==6 && strncmp(cmip_names.spco2{m}, 'CESM1_BGC', 8)
             modeled_var.(variables{v}) = harm.sos.seasonal_fit;
         end
-        
+
         if v~=6
             plot(modeled_var.(variables{v}) - nanmean(modeled_var.(variables{v})), 'b--', 'linewidth', 2)
         end
-        
+
         if subplot_index==1
             y_lim = get(gca, 'ylim');
-            
+
             text( -5, y_lim(2)+10, cmip_names.spco2{m}, 'interpreter', 'none', 'fontweight', 'bold')
         end
     end
-    
+
     % recalculate pCO2 based on harmonic fits for dic and alk
-    
+
     [DATA,~,~]=CO2SYSSOCCOM_smb(modeled_var.talk, ...
         modeled_var.dissic, ...
         1,2, modeled_var.sos, modeled_var.tos, modeled_var.tos,...
         1,1,SI,PO4,1,10,3);
     pco2_test = DATA(:,4);
-    
-    
+
+
     %     plot(pco2_test - nanmean(pco2_test), 'r-', 'linewidth', 2) %
     %     commenting out first pco2_test plot, since it is confusing
     % taylor calc on pco2_test
-    [test_out.correlation, test_out.ratio, test_out.norm_error]=taylor_eval(obs.spco2.Combined.y2021.SOCCOM_SOCAT.out_seasonal(:,1),pco2_test);
+    [test_out.correlation, test_out.ratio, test_out.norm_error] = taylor_eval(obs.spco2.Combined.y2021.SOCCOM_SOCAT.out_seasonal(:,1), pco2_test);
     y_lim = get(gca, 'ylim');
     text(2, y_lim(1)+4, ['E: ' num2str(test_out.norm_error, 2) '; C: ' num2str(test_out.correlation, 2) '; R: ' num2str(test_out.ratio, 2)], 'fontsize', 12, 'fontweight', 'bold')
-    clear pco2_test
-    
-    %     % plot delta dic/delta t
-    %     plot(sn(5), diff(harm.dissic.seasonal_fit)./diff(harm.tos.seasonal_fit), 'k', 'linewidth', 2)
-    %     hold(sn(5), 'on')
-    %
-    %     title(sn(5), 'dDIC/dT')
-    %     plot(sn(5), diff(modeled_var.dissic)./diff(modeled_var.tos), 'b--', 'linewidth', 2)
-    %     set(sn(subplot_index-1), 'ylim', dDICdT_lims);
-    
+
+
+    dataTable_out.orig_pco2_corr(m)= test_out.correlation;
+    dataTable_out.orig_pco2_amp_ratio(m) = test_out.ratio;
+    dataTable_out.orig_pco2_error(m) = test_out.norm_error;
+
+
+    dataTable_out.orig_dic_phase_offset_days(m)= temp_var_match{strcmp(temp_var_match(:,1), 'dissic'),2};
+    dataTable_out.orig_dic_amp_offset(m) = temp_var_match{strcmp(temp_var_match(:,1), 'dissic'),3};
+    dataTable_out.orig_dic_error(m) = temp_var_match{strcmp(temp_var_match(:,1), 'dissic'),4};
+
+
+
+    dataTable_out.orig_sst_phase_offset_days(m)= temp_var_match{strcmp(temp_var_match(:,1), 'tos'),2};
+    dataTable_out.orig_sst_amp_offset(m) = temp_var_match{strcmp(temp_var_match(:,1), 'tos'),3};
+    dataTable_out.orig_sst_error(m) = temp_var_match{strcmp(temp_var_match(:,1), 'tos'),4};
+
+
+    dataTable_out.orig_talk_phase_offset_days(m)= temp_var_match{strcmp(temp_var_match(:,1), 'talk'),2};
+    dataTable_out.orig_talk_amp_offset(m) = temp_var_match{strcmp(temp_var_match(:,1), 'talk'),3};
+    dataTable_out.orig_talk_error(m) = temp_var_match{strcmp(temp_var_match(:,1), 'talk'),4};
+
+    clear pco2_test temp_var_match test_out phase_adjust amp_adjust offset_adjust yt v phase_shift_days phase_shift amp_shift DATA y_lim
+
+
     % tests:
-    % difference between model and real phase, can just look at difference?
-    % DIC phase adjustment
+    %%%%% DIC phase adjustment %%%%
     modeled_var.adjust = [];
     v = 7;
-    
+
     mod_match_index = strcmp(cmip_names.(variables{v}), cmip_names.spco2{m});
-    
+
     offset_adjust = 0;
     phase_shift = harm_mod.(variables{v}).phase(mod_match_index) - harm.(variables{v}).phase;
-    
+
     phase_shift_days = phase_shift.*365.25./(2*pi);
     amp_adjust = 1;
-    
+
     yt = harm_mod.(variables{v}).offset(mod_match_index).*ones(12,1)+offset_adjust;
-    
+
     modeled_var.adjust.(variables{v}) =yt+(harm_mod.(variables{v}).amp(mod_match_index).*amp_adjust.*cos(2.*pi.*j.*[year_days]./L + (harm_mod.(variables{v}).phase(mod_match_index)-phase_shift)))';
-    
+
     [DATA,~,~]=CO2SYSSOCCOM_smb(modeled_var.talk, ...
         modeled_var.adjust.dissic, ...
         1,2, modeled_var.sos, modeled_var.tos, modeled_var.tos,...
         1,1,SI,PO4,1,10,3);
     pco2_test = DATA(:,4);
-    
+
     modeled_var.adjust.DIC_Alk = modeled_var.adjust.dissic - modeled_var.talk;
     modeled_var.adjust.spco2 = pco2_test;
-    
-    
+
+
     for v = [7 5 8 1]% [7 5 8 15 16 1]
-        
+
         if v~=6 % want to have Salinity seasonal cycle but not plot it
             subplot_index = subplot_index+1;
             sn(subplot_index) = subplot(n_rows,n_cols,subplot_index);
-            
+
             if v==16
                 continue
             end
-            
-            plot(obs.(variables{v}).out_seasonal(:,1,1)-nanmean(obs.(variables{v}).out_seasonal(:,1,1)), 'k-', 'linewidth', 2)
-            
-            
+
+            if strcmp(variables{v}, 'spco2')
+                seasonal_var = obs.(variables{v}).(product_names{p}).(years{y}).(runs{q}).out_seasonal(:,1);
+            else
+                seasonal_var = obs.(variables{v}).out_seasonal(:,1,1);
+            end
+
+            plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 2)
+
             hold on
-            
+
             %         plot(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1) - nanmean(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1)), 'b', 'linewidth', 2)
-            
+
             title(variables{v})
-            
+
         end
-        
+
         plot(modeled_var.(variables{v}) - nanmean(modeled_var.(variables{v})), 'b--', 'linewidth', 2)
-        
-        
+
         if v==7
             plot(modeled_var.adjust.(variables{v}) - nanmean(modeled_var.adjust.(variables{v})), 'r-', 'linewidth', 2)
             title([num2str(phase_shift_days,2), ' days'])
@@ -3383,73 +3476,72 @@ for m = 1:length(cmip_names.spco2) % spco2 model number
             plot(modeled_var.adjust.(variables{v}) - nanmean(modeled_var.adjust.(variables{v})), 'r-', 'linewidth', 2)
         end
     end
-    
+
     plot(modeled_var.adjust.spco2 - nanmean(modeled_var.adjust.spco2), 'r-', 'linewidth', 2)
     % taylor calc on pco2_test
     [test_out.correlation, test_out.ratio, test_out.norm_error]=taylor_eval(obs.spco2.Combined.y2021.SOCCOM_SOCAT.out_seasonal(:,1),pco2_test);
     y_lim = get(gca, 'ylim');
     text(2, y_lim(1)+4, ['E: ' num2str(test_out.norm_error, 2) '; C: ' num2str(test_out.correlation, 2) '; R: ' num2str(test_out.ratio, 2)], 'fontsize', 12, 'fontweight', 'bold')
-    clear pco2_test
-    
-    %     % plot delta dic/delta t
-    %     plot(sn(subplot_index - 1), diff(harm.dissic.seasonal_fit)./diff(harm.tos.seasonal_fit), 'k', 'linewidth', 2)
-    %     hold(sn(subplot_index - 1), 'on')
-    %
-    %     title(sn(subplot_index - 1), 'dDIC/dT')
-    %     plot(sn(subplot_index - 1), diff(modeled_var.dissic)./diff(modeled_var.tos), 'b--', 'linewidth', 2)
-    %
-    %     plot(sn(subplot_index - 1), diff(modeled_var.adjust.dissic)./diff(modeled_var.tos), 'r-', 'linewidth', 2)
-    %     set(sn(subplot_index-1), 'ylim', dDICdT_lims);
-    %
-    %
-    
-    % difference between model and real phase, can just look at difference?
-    % DIC amplitude adjustment
+ 
+    dataTable_out.dic_phase_adj_pco2_corr(m)= test_out.correlation;
+    dataTable_out.dic_phase_adj_pco2_amp_ratio(m) = test_out.ratio;
+    dataTable_out.dic_phase_adj_pco2_error(m) = test_out.norm_error;
+
+    clear pco2_test temp_var_match test_out phase_adjust amp_adjust offset_adjust yt v phase_shift_days phase_shift amp_shift DATA y_lim
+
+
+    %%%%% DIC amplitude adjustment %%%%
     modeled_var.adjust = [];
     v = 7;
-    
+
     mod_match_index = strcmp(cmip_names.(variables{v}), cmip_names.spco2{m});
-    
+
     offset_adjust = 0;
     phase_shift = 0;
-    
+
     % phase_shift_days = phase_shift.*365.25./(2*pi);
     amp_shift = harm_mod.(variables{v}).amp(mod_match_index) - harm.(variables{v}).amp;
-    
+
     yt = harm_mod.(variables{v}).offset(mod_match_index).*ones(12,1)+offset_adjust;
-    
+
     modeled_var.adjust.(variables{v}) =yt+((harm_mod.(variables{v}).amp(mod_match_index)-amp_shift).*cos(2.*pi.*j.*[year_days]./L + (harm_mod.(variables{v}).phase(mod_match_index)-phase_shift)))';
-    
+
     [DATA,~,~]=CO2SYSSOCCOM_smb(modeled_var.talk, ...
         modeled_var.adjust.dissic, ...
         1,2, modeled_var.sos, modeled_var.tos, modeled_var.tos,...
         1,1,SI,PO4,1,10,3);
     pco2_test = DATA(:,4);
-    
+
     modeled_var.adjust.DIC_Alk = modeled_var.adjust.dissic - modeled_var.talk;
     modeled_var.adjust.spco2 = pco2_test;
-    
+
     for v = [7 5 8 1]% [7 5 8 15 16 1]
-        
+
         if v~=6 % want to have Salinity seasonal cycle but not plot it
             subplot_index = subplot_index+1;
             sn(subplot_index) = subplot(n_rows,n_cols,subplot_index);
-            
+
             if v==16
                 continue
             end
-            
-            plot(obs.(variables{v}).out_seasonal(:,1,1)-nanmean(obs.(variables{v}).out_seasonal(:,1,1)), 'k-', 'linewidth', 2)
-            
+
+            if strcmp(variables{v}, 'spco2')
+                seasonal_var = obs.(variables{v}).(product_names{p}).(years{y}).(runs{q}).out_seasonal(:,1);
+            else
+                seasonal_var = obs.(variables{v}).out_seasonal(:,1,1);
+            end
+
+            plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 2)
+
             hold on
-            
+
             %         plot(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1) - nanmean(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1)), 'b', 'linewidth', 2)
-            
+
             title(variables{v})
-            
+
         end
         plot(modeled_var.(variables{v}) - nanmean(modeled_var.(variables{v})), 'b--', 'linewidth', 2)
-        
+
         if v==7
             plot(modeled_var.adjust.(variables{v}) - nanmean(modeled_var.adjust.(variables{v})), 'r-', 'linewidth', 2)
             title([num2str(amp_shift,2), ' umol/kg'])
@@ -3462,67 +3554,68 @@ for m = 1:length(cmip_names.spco2) % spco2 model number
     [test_out.correlation, test_out.ratio, test_out.norm_error]=taylor_eval(obs.spco2.Combined.y2021.SOCCOM_SOCAT.out_seasonal(:,1),pco2_test);
     y_lim = get(gca, 'ylim');
     text(2, y_lim(1)+4, ['E: ' num2str(test_out.norm_error, 2) '; C: ' num2str(test_out.correlation, 2) '; R: ' num2str(test_out.ratio, 2)], 'fontsize', 12, 'fontweight', 'bold')
-    clear pco2_test
-    %
-    %     % plot delta dic/delta t
-    %     plot(sn(subplot_index - 1), diff(harm.dissic.seasonal_fit)./diff(harm.tos.seasonal_fit), 'k', 'linewidth', 2)
-    %     hold(sn(subplot_index - 1), 'on')
-    %
-    %     title(sn(subplot_index - 1), 'dDIC/dT')
-    %     plot(sn(subplot_index - 1), diff(modeled_var.dissic)./diff(modeled_var.tos), 'b--', 'linewidth', 2)
-    %
-    %     plot(sn(subplot_index - 1), diff(modeled_var.adjust.dissic)./diff(modeled_var.tos), 'r-', 'linewidth', 2)
-    %     set(sn(subplot_index-1), 'ylim', dDICdT_lims);
-    %
-    
-    % DIC amplitude and phase adjustment together
+
+
+    dataTable_out.dic_amp_adj_pco2_corr(m)= test_out.correlation;
+    dataTable_out.dic_amp_adj_pco2_amp_ratio(m) = test_out.ratio;
+    dataTable_out.dic_amp_adj_pco2_error(m) = test_out.norm_error;
+
+    clear pco2_test temp_var_match test_out phase_adjust amp_adjust offset_adjust yt v phase_shift_days phase_shift amp_shift DATA y_lim
+
+
+    %%%%   DIC amplitude and phase adjustment together  %%%%
     modeled_var.adjust = [];
     v = 7;
-    
+
     mod_match_index = strcmp(cmip_names.(variables{v}), cmip_names.spco2{m});
-    
+
     offset_adjust = 0;
     phase_shift = harm_mod.(variables{v}).phase(mod_match_index) - harm.(variables{v}).phase;
-    
+
     phase_shift_days = phase_shift.*365.25./(2*pi);
     amp_shift = harm_mod.(variables{v}).amp(mod_match_index) - harm.(variables{v}).amp;
-    
+
     yt = harm_mod.(variables{v}).offset(mod_match_index).*ones(12,1)+offset_adjust;
-    
+
     modeled_var.adjust.(variables{v}) =yt+((harm_mod.(variables{v}).amp(mod_match_index)-amp_shift).*cos(2.*pi.*j.*[year_days]./L + (harm_mod.(variables{v}).phase(mod_match_index)-phase_shift)))';
-    
+
     [DATA,~,~]=CO2SYSSOCCOM_smb(modeled_var.talk, ...
         modeled_var.adjust.dissic, ...
         1,2, modeled_var.sos, modeled_var.tos, modeled_var.tos,...
         1,1,SI,PO4,1,10,3);
     pco2_test = DATA(:,4);
-    
+
     modeled_var.adjust.DIC_Alk = modeled_var.adjust.dissic - modeled_var.talk;
     modeled_var.adjust.spco2 = pco2_test;
-    
-    
+
+
     for v = [7 5 8 1]% [7 5 8 15 16 1]
-        
+
         if v~=6 % want to have Salinity seasonal cycle but not plot it
             subplot_index = subplot_index+1;
             sn(subplot_index) = subplot(n_rows,n_cols,subplot_index);
-            
+
             if v==16
                 continue
             end
-            
-            plot(obs.(variables{v}).out_seasonal(:,1,1)-nanmean(obs.(variables{v}).out_seasonal(:,1,1)), 'k-', 'linewidth', 2)
-            
-            
+
+            if strcmp(variables{v}, 'spco2')
+                seasonal_var = obs.(variables{v}).(product_names{p}).(years{y}).(runs{q}).out_seasonal(:,1);
+            else
+                seasonal_var = obs.(variables{v}).out_seasonal(:,1,1);
+            end
+
+            plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 2)
+
             hold on
-            
+
             %         plot(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1) - nanmean(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1)), 'b', 'linewidth', 2)
-            
+
             title(variables{v})
-            
+
         end
         plot(modeled_var.(variables{v}) - nanmean(modeled_var.(variables{v})), 'b--', 'linewidth', 2)
-        
+
         if v==7
             plot(modeled_var.adjust.(variables{v}) - nanmean(modeled_var.adjust.(variables{v})), 'r-', 'linewidth', 2)
             title([num2str(phase_shift_days,2), ' days and ' num2str(amp_shift,2), ' umol/kg'])
@@ -3535,167 +3628,317 @@ for m = 1:length(cmip_names.spco2) % spco2 model number
     [test_out.correlation, test_out.ratio, test_out.norm_error]=taylor_eval(obs.spco2.Combined.y2021.SOCCOM_SOCAT.out_seasonal(:,1),pco2_test);
     y_lim = get(gca, 'ylim');
     text(2, y_lim(1)+4, ['E: ' num2str(test_out.norm_error, 2) '; C: ' num2str(test_out.correlation, 2) '; R: ' num2str(test_out.ratio, 2)], 'fontsize', 12, 'fontweight', 'bold')
-    clear pco2_test
-    
-    %
-    %     % plot delta dic/delta t
-    %     plot(sn(subplot_index - 1), diff(harm.dissic.seasonal_fit)./diff(harm.tos.seasonal_fit), 'k', 'linewidth', 2)
-    %     hold(sn(subplot_index - 1), 'on')
-    %
-    %     title(sn(subplot_index - 1), 'dDIC/dT')
-    %     plot(sn(subplot_index - 1), diff(modeled_var.dissic)./diff(modeled_var.tos), 'b--', 'linewidth', 2)
-    %
-    %     plot(sn(subplot_index - 1), diff(modeled_var.adjust.dissic)./diff(modeled_var.tos), 'r-', 'linewidth', 2)
-    %     set(sn(subplot_index-1), 'ylim', dDICdT_lims);
-    %
-    
-    % TOS amplitude adjustment
+
+
+    dataTable_out.dic_phase_amp_adj_pco2_corr(m)= test_out.correlation;
+    dataTable_out.dic_phase_amp_adj_pco2_amp_ratio(m) = test_out.ratio;
+    dataTable_out.dic_phase_amp_adj_pco2_error(m) = test_out.norm_error;
+
+    clear pco2_test temp_var_match test_out phase_adjust amp_adjust offset_adjust yt v phase_shift_days phase_shift amp_shift DATA y_lim
+
+    %%%%% TOS phase adjustment %%%%
     modeled_var.adjust = [];
     v = 5;
-    
+
     mod_match_index = strcmp(cmip_names.(variables{v}), cmip_names.spco2{m});
-    
+
     offset_adjust = 0;
-    phase_shift = 0;
-    
-    % phase_shift_days = phase_shift.*365.25./(2*pi);
-    amp_shift = harm_mod.(variables{v}).amp(mod_match_index) - harm.(variables{v}).amp;
-    
+%     phase_shift = 0;
+    phase_shift = harm_mod.(variables{v}).phase(mod_match_index) - harm.(variables{v}).phase;
+
+    phase_shift_days = phase_shift.*365.25./(2*pi);
+    %     amp_shift = harm_mod.(variables{v}).amp(mod_match_index) - harm.(variables{v}).amp;
+    amp_shift = 0;
+
     yt = harm_mod.(variables{v}).offset(mod_match_index).*ones(12,1)+offset_adjust;
-    
+
     modeled_var.adjust.(variables{v}) =yt+((harm_mod.(variables{v}).amp(mod_match_index)-amp_shift).*cos(2.*pi.*j.*[year_days]./L + (harm_mod.(variables{v}).phase(mod_match_index)-phase_shift)))';
-    
+
     [DATA,~,~]=CO2SYSSOCCOM_smb(modeled_var.talk, ...
         modeled_var.dissic, ...
         1,2, modeled_var.sos, modeled_var.adjust.tos, modeled_var.adjust.tos,...
         1,1,SI,PO4,1,10,3);
     pco2_test = DATA(:,4);
-    
-    % modeled_var.adjust.DIC_Alk = modeled_var.adjust.dissic - modeled_var.talk;
+
     modeled_var.adjust.spco2 = pco2_test;
-    
-    
+
+
     for v = [7 5 8 1]% [7 5 8 15 16 1]
-        
+
         if v~=6 % want to have Salinity seasonal cycle but not plot it
             subplot_index = subplot_index+1;
             sn(subplot_index) = subplot(n_rows,n_cols,subplot_index);
-            
+
             if v==16
                 continue
             end
-            
-            plot(obs.(variables{v}).out_seasonal(:,1,1)-nanmean(obs.(variables{v}).out_seasonal(:,1,1)), 'k-', 'linewidth', 2)
-            
-            
+
+            if strcmp(variables{v}, 'spco2')
+                seasonal_var = obs.(variables{v}).(product_names{p}).(years{y}).(runs{q}).out_seasonal(:,1);
+            else
+                seasonal_var = obs.(variables{v}).out_seasonal(:,1,1);
+            end
+
+            plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 2)
+
             hold on
-            
+
             %         plot(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1) - nanmean(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1)), 'b', 'linewidth', 2)
-            
+
             title(variables{v})
-            
+
         end
         plot(modeled_var.(variables{v}) - nanmean(modeled_var.(variables{v})), 'b--', 'linewidth', 2)
-        
+
+        if v==5
+            plot(modeled_var.adjust.(variables{v}) - nanmean(modeled_var.adjust.(variables{v})), 'r-', 'linewidth', 2)
+            title([num2str(phase_shift_days,2), ' days'])
+        end
+    end
+    plot(modeled_var.adjust.spco2 - nanmean(modeled_var.adjust.spco2), 'r-', 'linewidth', 2)
+
+
+    % taylor calc on pco2_test
+    [test_out.correlation, test_out.ratio, test_out.norm_error]=taylor_eval(obs.spco2.Combined.y2021.SOCCOM_SOCAT.out_seasonal(:,1),pco2_test);
+    y_lim = get(gca, 'ylim');
+    text(2, y_lim(1)+4, ['E: ' num2str(test_out.norm_error, 2) '; C: ' num2str(test_out.correlation, 2) '; R: ' num2str(test_out.ratio, 2)], 'fontsize', 12, 'fontweight', 'bold')
+
+    
+    dataTable_out.sst_phase_adj_pco2_corr(m)= test_out.correlation;
+    dataTable_out.sst_phase_adj_pco2_amp_ratio(m) = test_out.ratio;
+    dataTable_out.sst_phase_adj_pco2_error(m) = test_out.norm_error;
+
+    clear pco2_test temp_var_match test_out phase_adjust amp_adjust offset_adjust yt v phase_shift_days phase_shift amp_shift DATA y_lim
+
+
+    %%%%% TOS amplitude adjustment %%%%
+    modeled_var.adjust = [];
+    v = 5;
+
+    mod_match_index = strcmp(cmip_names.(variables{v}), cmip_names.spco2{m});
+
+    offset_adjust = 0;
+    phase_shift = 0;
+
+    % phase_shift_days = phase_shift.*365.25./(2*pi);
+    amp_shift = harm_mod.(variables{v}).amp(mod_match_index) - harm.(variables{v}).amp;
+
+    yt = harm_mod.(variables{v}).offset(mod_match_index).*ones(12,1)+offset_adjust;
+
+    modeled_var.adjust.(variables{v}) =yt+((harm_mod.(variables{v}).amp(mod_match_index)-amp_shift).*cos(2.*pi.*j.*[year_days]./L + (harm_mod.(variables{v}).phase(mod_match_index)-phase_shift)))';
+
+    [DATA,~,~]=CO2SYSSOCCOM_smb(modeled_var.talk, ...
+        modeled_var.dissic, ...
+        1,2, modeled_var.sos, modeled_var.adjust.tos, modeled_var.adjust.tos,...
+        1,1,SI,PO4,1,10,3);
+    pco2_test = DATA(:,4);
+
+    modeled_var.adjust.spco2 = pco2_test;
+
+
+    for v = [7 5 8 1]% [7 5 8 15 16 1]
+
+        if v~=6 % want to have Salinity seasonal cycle but not plot it
+            subplot_index = subplot_index+1;
+            sn(subplot_index) = subplot(n_rows,n_cols,subplot_index);
+
+            if v==16
+                continue
+            end
+
+            if strcmp(variables{v}, 'spco2')
+                seasonal_var = obs.(variables{v}).(product_names{p}).(years{y}).(runs{q}).out_seasonal(:,1);
+            else
+                seasonal_var = obs.(variables{v}).out_seasonal(:,1,1);
+            end
+
+            plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 2)
+
+            hold on
+
+            %         plot(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1) - nanmean(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1)), 'b', 'linewidth', 2)
+
+            title(variables{v})
+
+        end
+        plot(modeled_var.(variables{v}) - nanmean(modeled_var.(variables{v})), 'b--', 'linewidth', 2)
+
         if v==5
             plot(modeled_var.adjust.(variables{v}) - nanmean(modeled_var.adjust.(variables{v})), 'r-', 'linewidth', 2)
             title([num2str(amp_shift,2), ' \circC'])
         end
     end
     plot(modeled_var.adjust.spco2 - nanmean(modeled_var.adjust.spco2), 'r-', 'linewidth', 2)
-    
-    
+
+
     % taylor calc on pco2_test
     [test_out.correlation, test_out.ratio, test_out.norm_error]=taylor_eval(obs.spco2.Combined.y2021.SOCCOM_SOCAT.out_seasonal(:,1),pco2_test);
     y_lim = get(gca, 'ylim');
     text(2, y_lim(1)+4, ['E: ' num2str(test_out.norm_error, 2) '; C: ' num2str(test_out.correlation, 2) '; R: ' num2str(test_out.ratio, 2)], 'fontsize', 12, 'fontweight', 'bold')
-    clear pco2_test
+
     
+    dataTable_out.sst_amp_adj_pco2_corr(m)= test_out.correlation;
+    dataTable_out.sst_amp_adj_pco2_amp_ratio(m) = test_out.ratio;
+    dataTable_out.sst_amp_adj_pco2_error(m) = test_out.norm_error;
+
+    clear pco2_test temp_var_match test_out phase_adjust amp_adjust offset_adjust yt v phase_shift_days phase_shift amp_shift DATA y_lim
+
+
+    %%%%% TOS phase and amplitude adjustment together %%%%
+    modeled_var.adjust = [];
+    v = 5;
+
+    mod_match_index = strcmp(cmip_names.(variables{v}), cmip_names.spco2{m});
+
+    offset_adjust = 0;
+%     phase_shift = 0;
+    phase_shift = harm_mod.(variables{v}).phase(mod_match_index) - harm.(variables{v}).phase;
+
+    phase_shift_days = phase_shift.*365.25./(2*pi);
+    amp_shift = harm_mod.(variables{v}).amp(mod_match_index) - harm.(variables{v}).amp;
+
+    yt = harm_mod.(variables{v}).offset(mod_match_index).*ones(12,1)+offset_adjust;
+
+    modeled_var.adjust.(variables{v}) =yt+((harm_mod.(variables{v}).amp(mod_match_index)-amp_shift).*cos(2.*pi.*j.*[year_days]./L + (harm_mod.(variables{v}).phase(mod_match_index)-phase_shift)))';
+
+    [DATA,~,~]=CO2SYSSOCCOM_smb(modeled_var.talk, ...
+        modeled_var.dissic, ...
+        1,2, modeled_var.sos, modeled_var.adjust.tos, modeled_var.adjust.tos,...
+        1,1,SI,PO4,1,10,3);
+    pco2_test = DATA(:,4);
+
+    modeled_var.adjust.spco2 = pco2_test;
+
+
+    for v = [7 5 8 1]% [7 5 8 15 16 1]
+
+        if v~=6 % want to have Salinity seasonal cycle but not plot it
+            subplot_index = subplot_index+1;
+            sn(subplot_index) = subplot(n_rows,n_cols,subplot_index);
+
+            if v==16
+                continue
+            end
+
+            if strcmp(variables{v}, 'spco2')
+                seasonal_var = obs.(variables{v}).(product_names{p}).(years{y}).(runs{q}).out_seasonal(:,1);
+            else
+                seasonal_var = obs.(variables{v}).out_seasonal(:,1,1);
+            end
+
+            plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 2)
+
+            hold on
+
+            %         plot(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1) - nanmean(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1)), 'b', 'linewidth', 2)
+
+            title(variables{v})
+
+        end
+        plot(modeled_var.(variables{v}) - nanmean(modeled_var.(variables{v})), 'b--', 'linewidth', 2)
+
+        if v==5
+            plot(modeled_var.adjust.(variables{v}) - nanmean(modeled_var.adjust.(variables{v})), 'r-', 'linewidth', 2)
+            title([num2str(phase_shift_days,2), ' days and ' num2str(amp_shift,2), ' \circC'])
+
+        end
+    end
+    plot(modeled_var.adjust.spco2 - nanmean(modeled_var.adjust.spco2), 'r-', 'linewidth', 2)
+
+
+    % taylor calc on pco2_test
+    [test_out.correlation, test_out.ratio, test_out.norm_error]=taylor_eval(obs.spco2.Combined.y2021.SOCCOM_SOCAT.out_seasonal(:,1),pco2_test);
+    y_lim = get(gca, 'ylim');
+    text(2, y_lim(1)+4, ['E: ' num2str(test_out.norm_error, 2) '; C: ' num2str(test_out.correlation, 2) '; R: ' num2str(test_out.ratio, 2)], 'fontsize', 12, 'fontweight', 'bold')
+
     
-    %     % plot delta dic/delta t
-    %     plot(sn(subplot_index - 1), diff(harm.dissic.seasonal_fit)./diff(harm.tos.seasonal_fit), 'k', 'linewidth', 2)
-    %     hold(sn(subplot_index - 1), 'on')
-    %
-    %     title(sn(subplot_index - 1), 'dDIC/dT')
-    %     plot(sn(subplot_index - 1), diff(modeled_var.dissic)./diff(modeled_var.tos), 'b--', 'linewidth', 2)
-    %
-    %     plot(sn(subplot_index - 1), diff(modeled_var.dissic)./diff(modeled_var.adjust.tos), 'r-', 'linewidth', 2)
-    %     set(sn(subplot_index-1), 'ylim', dDICdT_lims);
-    
-    
-    % DIC amplitude, phase and TOS amplitude adjustment together
+    dataTable_out.sst_phase_amp_adj_pco2_corr(m)= test_out.correlation;
+    dataTable_out.sst_phase_amp_adj_pco2_amp_ratio(m) = test_out.ratio;
+    dataTable_out.sst_phase_amp_adj_pco2_error(m) = test_out.norm_error;
+
+    clear pco2_test temp_var_match test_out phase_adjust amp_adjust offset_adjust yt v phase_shift_days phase_shift amp_shift DATA y_lim
+
+
+    %%%%%% DIC amplitude, phase and TOS phase, amplitude adjustment together %%%%%
     modeled_var.adjust = [];
     % DIC amp and phase
     v = 7;
-    
+
     mod_match_index = strcmp(cmip_names.(variables{v}), cmip_names.spco2{m});
-    
+
     offset_adjust = 0;
     phase_shift = harm_mod.(variables{v}).phase(mod_match_index) - harm.(variables{v}).phase;
     % phase_shift = 0;
-    
-    phase_shift_days = phase_shift.*365.25./(2*pi);
+
+    phase_shift_days(v) = phase_shift.*365.25./(2*pi);
     amp_shift(v) = harm_mod.(variables{v}).amp(mod_match_index) - harm.(variables{v}).amp;
-    
+
     yt = harm_mod.(variables{v}).offset(mod_match_index).*ones(12,1)+offset_adjust;
-    
+
     modeled_var.adjust.(variables{v}) =yt+((harm_mod.(variables{v}).amp(mod_match_index)-amp_shift(v)).*cos(2.*pi.*j.*[year_days]./L + (harm_mod.(variables{v}).phase(mod_match_index)-phase_shift)))';
-    
-    % TOS amp
+
+    % TOS amp and phase
     v = 5;
-    
+
     mod_match_index = strcmp(cmip_names.(variables{v}), cmip_names.spco2{m});
-    
+
     offset_adjust = 0;
-    phase_shift = 0;
-    
-    % phase_shift_days = phase_shift.*365.25./(2*pi);
+    %     phase_shift = 0;
+
+    phase_shift = harm_mod.(variables{v}).phase(mod_match_index) - harm.(variables{v}).phase;
+
+    phase_shift_days(v) = phase_shift.*365.25./(2*pi);
     amp_shift(v) = harm_mod.(variables{v}).amp(mod_match_index) - harm.(variables{v}).amp;
-    
+
     yt = harm_mod.(variables{v}).offset(mod_match_index).*ones(12,1)+offset_adjust;
-    
+
     modeled_var.adjust.(variables{v}) =yt+((harm_mod.(variables{v}).amp(mod_match_index)-amp_shift(v)).*cos(2.*pi.*j.*[year_days]./L + (harm_mod.(variables{v}).phase(mod_match_index)-phase_shift)))';
-    
-    
+
+
     [DATA,~,~]=CO2SYSSOCCOM_smb(modeled_var.talk, ...
         modeled_var.adjust.dissic, ...
         1,2, modeled_var.sos, modeled_var.adjust.tos, modeled_var.adjust.tos,...
         1,1,SI,PO4,1,10,3);
     pco2_test = DATA(:,4);
-    
+
     modeled_var.adjust.DIC_Alk = modeled_var.adjust.dissic - modeled_var.talk;
     modeled_var.adjust.spco2 = pco2_test;
-    
-    
+
+
     for v = [7 5 8 1]% [7 5 8 15 16 1]
-        
+
         if v~=6 % want to have Salinity seasonal cycle but not plot it
             subplot_index = subplot_index+1;
             sn(subplot_index) = subplot(n_rows,n_cols,subplot_index);
-            
+
             if v==16
                 continue
             end
-            
-            plot(obs.(variables{v}).out_seasonal(:,1,1)-nanmean(obs.(variables{v}).out_seasonal(:,1,1)), 'k-', 'linewidth', 2)
-            
-            
+
+            if strcmp(variables{v}, 'spco2')
+                seasonal_var = obs.(variables{v}).(product_names{p}).(years{y}).(runs{q}).out_seasonal(:,1);
+            else
+                seasonal_var = obs.(variables{v}).out_seasonal(:,1,1);
+            end
+
+            plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 2)
+
             hold on
-            
+
             %         plot(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1) - nanmean(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1)), 'b', 'linewidth', 2)
-            
+
             title(variables{v})
-            
+
         end
         plot(modeled_var.(variables{v}) - nanmean(modeled_var.(variables{v})), 'b--', 'linewidth', 2)
-        
+
         if v==7
             plot(modeled_var.adjust.(variables{v}) - nanmean(modeled_var.adjust.(variables{v})), 'r-', 'linewidth', 2)
-            title([num2str(phase_shift_days,2), ' days and ' num2str(amp_shift(v),2), ' umol/kg'])
+            title([num2str(phase_shift_days(v),2), ' days and ' num2str(amp_shift(v),2), ' umol/kg'])
         elseif v==5
             plot(modeled_var.adjust.(variables{v}) - nanmean(modeled_var.adjust.(variables{v})), 'r-', 'linewidth', 2)
-            title([num2str(amp_shift(v),2), ' \circC'])
-            
+            title([num2str(phase_shift_days(v),2), ' days and ' num2str(amp_shift(v),2), ' \circC'])
+
         elseif v==15
             plot(modeled_var.adjust.(variables{v}) - nanmean(modeled_var.adjust.(variables{v})), 'r-', 'linewidth', 2)
         end
@@ -3705,71 +3948,70 @@ for m = 1:length(cmip_names.spco2) % spco2 model number
     [test_out.correlation, test_out.ratio, test_out.norm_error]=taylor_eval(obs.spco2.Combined.y2021.SOCCOM_SOCAT.out_seasonal(:,1),pco2_test);
     y_lim = get(gca, 'ylim');
     text(2, y_lim(1)+4, ['E: ' num2str(test_out.norm_error, 2) '; C: ' num2str(test_out.correlation, 2) '; R: ' num2str(test_out.ratio, 2)], 'fontsize', 12, 'fontweight', 'bold')
-    clear pco2_test
-    
-    
-    %     % plot delta dic/delta t
-    %     plot(sn(subplot_index - 1), diff(harm.dissic.seasonal_fit)./diff(harm.tos.seasonal_fit), 'k', 'linewidth', 2)
-    %     hold(sn(subplot_index - 1), 'on')
-    %
-    %     title(sn(subplot_index - 1), 'dDIC/dT')
-    %     plot(sn(subplot_index - 1), diff(modeled_var.dissic)./diff(modeled_var.tos), 'b--', 'linewidth', 2)
-    %
-    %     plot(sn(subplot_index - 1), diff(modeled_var.adjust.dissic)./diff(modeled_var.adjust.tos), 'r-', 'linewidth', 2)
-    %     set(sn(subplot_index-1), 'ylim', dDICdT_lims);
-    
-    
-    % Alk phase adjustment
+
+    dataTable_out.dic_phase_amp_sst_phase_amp_adj_pco2_corr(m)= test_out.correlation;
+    dataTable_out.dic_phase_amp_sst_phase_amp_adj_pco2_amp_ratio(m) = test_out.ratio;
+    dataTable_out.dic_phase_amp_sst_phase_amp_adj_pco2_error(m) = test_out.norm_error;
+
+    clear pco2_test temp_var_match test_out phase_adjust amp_adjust offset_adjust yt v phase_shift_days phase_shift amp_shift DATA y_lim
+
+
+    %%%%% Alk phase adjustment %%%%%
     modeled_var.adjust = [];
     v = 8;
-    
+
     mod_match_index = strcmp(cmip_names.(variables{v}), cmip_names.spco2{m});
-    
+
     offset_adjust = 0;
     phase_shift = harm_mod.(variables{v}).phase(mod_match_index) - harm.(variables{v}).phase;
-    
+
     phase_shift_days = phase_shift.*365.25./(2*pi);
     amp_adjust = 1;
-    
+
     yt = harm_mod.(variables{v}).offset(mod_match_index).*ones(12,1)+offset_adjust;
-    
+
     modeled_var.adjust.(variables{v}) =yt+(harm_mod.(variables{v}).amp(mod_match_index).*amp_adjust.*cos(2.*pi.*j.*[year_days]./L + (harm_mod.(variables{v}).phase(mod_match_index)-phase_shift)))';
-    
+
     [DATA,~,~]=CO2SYSSOCCOM_smb(modeled_var.adjust.talk, ...
         modeled_var.dissic, ...
         1,2, modeled_var.sos, modeled_var.tos, modeled_var.tos,...
         1,1,SI,PO4,1,10,3);
     pco2_test = DATA(:,4);
-    
+
     modeled_var.adjust.DIC_Alk = modeled_var.dissic - modeled_var.adjust.talk;
     modeled_var.adjust.spco2 = pco2_test;
-    
-    
+
+
     for v = [7 5 8 1]% [7 5 8 15 16 1]
-        
+
         if v~=6 % want to have Salinity seasonal cycle but not plot it
             subplot_index = subplot_index+1;
             sn(subplot_index) = subplot(n_rows,n_cols,subplot_index);
-            
+
             if v==16
                 continue
             end
-            
-            
-            plot(obs.(variables{v}).out_seasonal(:,1,1)-nanmean(obs.(variables{v}).out_seasonal(:,1,1)), 'k-', 'linewidth', 2)
-            
-            
+
+
+            if strcmp(variables{v}, 'spco2')
+                seasonal_var = obs.(variables{v}).(product_names{p}).(years{y}).(runs{q}).out_seasonal(:,1);
+            else
+                seasonal_var = obs.(variables{v}).out_seasonal(:,1,1);
+            end
+
+            plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 2)
+
             hold on
-            
+
             %         plot(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1) - nanmean(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1)), 'b', 'linewidth', 2)
-            
+
             title(variables{v})
-            
+
         end
-        
+
         plot(modeled_var.(variables{v}) - nanmean(modeled_var.(variables{v})), 'b--', 'linewidth', 2)
-        
-        
+
+
         if v==8
             plot(modeled_var.adjust.(variables{v}) - nanmean(modeled_var.adjust.(variables{v})), 'r-', 'linewidth', 2)
             title([num2str(phase_shift_days,2), ' days'])
@@ -3778,72 +4020,72 @@ for m = 1:length(cmip_names.spco2) % spco2 model number
         end
     end
     plot(modeled_var.adjust.spco2 - nanmean(modeled_var.adjust.spco2), 'r-', 'linewidth', 2)
-    
+
     % taylor calc on pco2_test
     [test_out.correlation, test_out.ratio, test_out.norm_error]=taylor_eval(obs.spco2.Combined.y2021.SOCCOM_SOCAT.out_seasonal(:,1),pco2_test);
     y_lim = get(gca, 'ylim');
     text(2, y_lim(1)+4, ['E: ' num2str(test_out.norm_error, 2) '; C: ' num2str(test_out.correlation, 2) '; R: ' num2str(test_out.ratio, 2)], 'fontsize', 12, 'fontweight', 'bold')
-    clear pco2_test
-    
-    %     % plot delta dic/delta t
-    %     plot(sn(subplot_index - 1), diff(harm.dissic.seasonal_fit)./diff(harm.tos.seasonal_fit), 'k', 'linewidth', 2)
-    %     hold(sn(subplot_index - 1), 'on')
-    %
-    %     title(sn(subplot_index - 1), 'dDIC/dT')
-    %     plot(sn(subplot_index - 1), diff(modeled_var.dissic)./diff(modeled_var.tos), 'b--', 'linewidth', 2)
-    %
-    %     % plot(sn(subplot_index - 1), diff(modeled_var.adjust.dissic)./diff(modeled_var.tos), 'r-', 'linewidth', 2)
-    %     set(sn(subplot_index-1), 'ylim', dDICdT_lims);
-    %
-    
-    % Alk amplitude adjustment
+
+    dataTable_out.talk_phase_adj_pco2_corr(m)= test_out.correlation;
+    dataTable_out.talk_phase_adj_pco2_amp_ratio(m) = test_out.ratio;
+    dataTable_out.talk_phase_adj_pco2_error(m) = test_out.norm_error;
+
+    clear pco2_test temp_var_match test_out phase_adjust amp_adjust offset_adjust yt v phase_shift_days phase_shift amp_shift DATA y_lim
+
+
+    %%%%% Alk amplitude adjustment %%%%%
     modeled_var.adjust = [];
     v = 8;
-    
+
     mod_match_index = strcmp(cmip_names.(variables{v}), cmip_names.spco2{m});
-    
+
     offset_adjust = 0;
     phase_shift = 0;
-    
+
     % phase_shift_days = phase_shift.*365.25./(2*pi);
     amp_shift = harm_mod.(variables{v}).amp(mod_match_index) - harm.(variables{v}).amp;
-    
+
     yt = harm_mod.(variables{v}).offset(mod_match_index).*ones(12,1)+offset_adjust;
-    
+
     modeled_var.adjust.(variables{v}) =yt+((harm_mod.(variables{v}).amp(mod_match_index)-amp_shift).*cos(2.*pi.*j.*[year_days]./L + (harm_mod.(variables{v}).phase(mod_match_index)-phase_shift)))';
-    
+
     [DATA,~,~]=CO2SYSSOCCOM_smb(modeled_var.adjust.talk, ...
         modeled_var.dissic, ...
         1,2, modeled_var.sos, modeled_var.tos, modeled_var.tos,...
         1,1,SI,PO4,1,10,3);
     pco2_test = DATA(:,4);
-    
+
     modeled_var.adjust.DIC_Alk = modeled_var.dissic - modeled_var.adjust.talk;
     modeled_var.adjust.spco2 = pco2_test;
-    
-    
+
+
     for v = [7 5 8 1]% [7 5 8 15 16 1]
-        
+
         if v~=6 % want to have Salinity seasonal cycle but not plot it
             subplot_index = subplot_index+1;
             sn(subplot_index) = subplot(n_rows,n_cols,subplot_index);
-            
+
             if v==16
                 continue
             end
-            
-            plot(obs.(variables{v}).out_seasonal(:,1,1)-nanmean(obs.(variables{v}).out_seasonal(:,1,1)), 'k-', 'linewidth', 2)
-            
-            
+
+            if strcmp(variables{v}, 'spco2')
+                seasonal_var = obs.(variables{v}).(product_names{p}).(years{y}).(runs{q}).out_seasonal(:,1);
+            else
+                seasonal_var = obs.(variables{v}).out_seasonal(:,1,1);
+            end
+
+            plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 2)
+
             hold on
-            
+
             %         plot(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1) - nanmean(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1)), 'b', 'linewidth', 2)
-            
+
             title(variables{v})
-            
+
         end
         plot(modeled_var.(variables{v}) - nanmean(modeled_var.(variables{v})), 'b--', 'linewidth', 2)
-        
+
         if v==8
             plot(modeled_var.adjust.(variables{v}) - nanmean(modeled_var.adjust.(variables{v})), 'r-', 'linewidth', 2)
             title([num2str(amp_shift,2), ' umol/kg'])
@@ -3856,107 +4098,182 @@ for m = 1:length(cmip_names.spco2) % spco2 model number
     [test_out.correlation, test_out.ratio, test_out.norm_error]=taylor_eval(obs.spco2.Combined.y2021.SOCCOM_SOCAT.out_seasonal(:,1),pco2_test);
     y_lim = get(gca, 'ylim');
     text(2, y_lim(1)+4, ['E: ' num2str(test_out.norm_error, 2) '; C: ' num2str(test_out.correlation, 2) '; R: ' num2str(test_out.ratio, 2)], 'fontsize', 12, 'fontweight', 'bold')
-    clear pco2_test
+   
     
-    %     % plot delta dic/delta t
-    %     plot(sn(subplot_index - 1), diff(harm.dissic.seasonal_fit)./diff(harm.tos.seasonal_fit), 'k', 'linewidth', 2)
-    %     hold(sn(subplot_index - 1), 'on')
-    %
-    %     title(sn(subplot_index - 1), 'dDIC/dT')
-    %     plot(sn(subplot_index - 1), diff(modeled_var.dissic)./diff(modeled_var.tos), 'b--', 'linewidth', 2)
-    %
-    %     % plot(sn(subplot_index - 1), diff(modeled_var.adjust.dissic)./diff(modeled_var.tos), 'r-', 'linewidth', 2)
-    %     set(sn(subplot_index-1), 'ylim', dDICdT_lims);
-    
-    
-    % DIC amplitude, phase TOS amplitude, % Alk phase, amp adjustment all together
+    dataTable_out.talk_amp_adj_pco2_corr(m)= test_out.correlation;
+    dataTable_out.talk_amp_adj_pco2_amp_ratio(m) = test_out.ratio;
+    dataTable_out.talk_amp_adj_pco2_error(m) = test_out.norm_error;
+
+    clear pco2_test temp_var_match test_out phase_adjust amp_adjust offset_adjust yt v phase_shift_days phase_shift amp_shift DATA y_lim
+
+    %%%%% Alk amplitude and phase adjustment together %%%%
+    modeled_var.adjust = [];
+    v = 8;
+
+    mod_match_index = strcmp(cmip_names.(variables{v}), cmip_names.spco2{m});
+
+    offset_adjust = 0;
+%     phase_shift = 0;
+
+    phase_shift = harm_mod.(variables{v}).phase(mod_match_index) - harm.(variables{v}).phase;
+
+    phase_shift_days = phase_shift.*365.25./(2*pi);
+    amp_shift = harm_mod.(variables{v}).amp(mod_match_index) - harm.(variables{v}).amp;
+
+    yt = harm_mod.(variables{v}).offset(mod_match_index).*ones(12,1)+offset_adjust;
+
+    modeled_var.adjust.(variables{v}) =yt+((harm_mod.(variables{v}).amp(mod_match_index)-amp_shift).*cos(2.*pi.*j.*[year_days]./L + (harm_mod.(variables{v}).phase(mod_match_index)-phase_shift)))';
+
+    [DATA,~,~]=CO2SYSSOCCOM_smb(modeled_var.adjust.talk, ...
+        modeled_var.dissic, ...
+        1,2, modeled_var.sos, modeled_var.tos, modeled_var.tos,...
+        1,1,SI,PO4,1,10,3);
+    pco2_test = DATA(:,4);
+
+    modeled_var.adjust.DIC_Alk = modeled_var.dissic - modeled_var.adjust.talk;
+    modeled_var.adjust.spco2 = pco2_test;
+
+
+    for v = [7 5 8 1]% [7 5 8 15 16 1]
+
+        if v~=6 % want to have Salinity seasonal cycle but not plot it
+            subplot_index = subplot_index+1;
+            sn(subplot_index) = subplot(n_rows,n_cols,subplot_index);
+
+            if v==16
+                continue
+            end
+
+            if strcmp(variables{v}, 'spco2')
+                seasonal_var = obs.(variables{v}).(product_names{p}).(years{y}).(runs{q}).out_seasonal(:,1);
+            else
+                seasonal_var = obs.(variables{v}).out_seasonal(:,1,1);
+            end
+
+            plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 2)
+
+            hold on
+
+            %         plot(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1) - nanmean(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1)), 'b', 'linewidth', 2)
+
+            title(variables{v})
+
+        end
+        plot(modeled_var.(variables{v}) - nanmean(modeled_var.(variables{v})), 'b--', 'linewidth', 2)
+
+        if v==8
+            plot(modeled_var.adjust.(variables{v}) - nanmean(modeled_var.adjust.(variables{v})), 'r-', 'linewidth', 2)
+            title([num2str(phase_shift_days,2), ' days and ' num2str(amp_shift,2), ' umol/kg'])
+        elseif v==15
+            plot(modeled_var.adjust.(variables{v}) - nanmean(modeled_var.adjust.(variables{v})), 'r-', 'linewidth', 2)
+        end
+    end
+    plot(modeled_var.adjust.spco2 - nanmean(modeled_var.adjust.spco2), 'r-', 'linewidth', 2)
+    % taylor calc on pco2_test
+    [test_out.correlation, test_out.ratio, test_out.norm_error]=taylor_eval(obs.spco2.Combined.y2021.SOCCOM_SOCAT.out_seasonal(:,1),pco2_test);
+    y_lim = get(gca, 'ylim');
+    text(2, y_lim(1)+4, ['E: ' num2str(test_out.norm_error, 2) '; C: ' num2str(test_out.correlation, 2) '; R: ' num2str(test_out.ratio, 2)], 'fontsize', 12, 'fontweight', 'bold')
+   
+    dataTable_out.talk_phase_amp_adj_pco2_corr(m)= test_out.correlation;
+    dataTable_out.talk_phase_amp_adj_pco2_amp_ratio(m) = test_out.ratio;
+    dataTable_out.talk_phase_amp_adj_pco2_error(m) = test_out.norm_error;
+
+    clear pco2_test temp_var_match test_out phase_adjust amp_adjust offset_adjust yt v phase_shift_days phase_shift amp_shift DATA y_lim
+
+    %%%% DIC amplitude, phase TOS amplitude, % Alk phase, amp adjustment all together %%%%%
     modeled_var.adjust = [];
     % DIC amp and phase
     v = 7;
-    
+
     mod_match_index = strcmp(cmip_names.(variables{v}), cmip_names.spco2{m});
-    
+
     offset_adjust = 0;
     phase_shift = harm_mod.(variables{v}).phase(mod_match_index) - harm.(variables{v}).phase;
     % phase_shift = 0;
-    
+
     phase_shift_days(v) = phase_shift.*365.25./(2*pi);
     amp_shift(v) = harm_mod.(variables{v}).amp(mod_match_index) - harm.(variables{v}).amp;
-    
+
     yt = harm_mod.(variables{v}).offset(mod_match_index).*ones(12,1)+offset_adjust;
-    
+
     modeled_var.adjust.(variables{v}) =yt+((harm_mod.(variables{v}).amp(mod_match_index)-amp_shift(v)).*cos(2.*pi.*j.*[year_days]./L + (harm_mod.(variables{v}).phase(mod_match_index)-phase_shift)))';
-    
+
     % TOS amp
     v = 5;
-    
+
     mod_match_index = strcmp(cmip_names.(variables{v}), cmip_names.spco2{m});
-    
+
     offset_adjust = 0;
-    phase_shift = 0;
-    
-    % phase_shift_days = phase_shift.*365.25./(2*pi);
+%     phase_shift = 0;
+    phase_shift = harm_mod.(variables{v}).phase(mod_match_index) - harm.(variables{v}).phase;
+
+    phase_shift_days(v) = phase_shift.*365.25./(2*pi);
     amp_shift(v) = harm_mod.(variables{v}).amp(mod_match_index) - harm.(variables{v}).amp;
-    
+
     yt = harm_mod.(variables{v}).offset(mod_match_index).*ones(12,1)+offset_adjust;
-    
+
     modeled_var.adjust.(variables{v}) =yt+((harm_mod.(variables{v}).amp(mod_match_index)-amp_shift(v)).*cos(2.*pi.*j.*[year_days]./L + (harm_mod.(variables{v}).phase(mod_match_index)-phase_shift)))';
-    
+
     % Talk amp and phase
     v = 8;
-    
+
     mod_match_index = strcmp(cmip_names.(variables{v}), cmip_names.spco2{m});
-    
+
     offset_adjust = 0;
     phase_shift = harm_mod.(variables{v}).phase(mod_match_index) - harm.(variables{v}).phase;
     % phase_shift = 0;
-    
+
     phase_shift_days(v) = phase_shift.*365.25./(2*pi);
     amp_shift(v) = harm_mod.(variables{v}).amp(mod_match_index) - harm.(variables{v}).amp;
-    
+
     yt = harm_mod.(variables{v}).offset(mod_match_index).*ones(12,1)+offset_adjust;
-    
+
     modeled_var.adjust.(variables{v}) =yt+((harm_mod.(variables{v}).amp(mod_match_index)-amp_shift(v)).*cos(2.*pi.*j.*[year_days]./L + (harm_mod.(variables{v}).phase(mod_match_index)-phase_shift)))';
-    
-    
+
+
     [DATA,~,~]=CO2SYSSOCCOM_smb(modeled_var.adjust.talk, ...
         modeled_var.adjust.dissic, ...
         1,2, modeled_var.sos, modeled_var.adjust.tos, modeled_var.adjust.tos,...
         1,1,SI,PO4,1,10,3);
     pco2_test = DATA(:,4);
-    
+
     modeled_var.adjust.DIC_Alk = modeled_var.adjust.dissic - modeled_var.talk;
     modeled_var.adjust.spco2 = pco2_test;
-    
-    
+
+
     for v = [7 5 8 1]% [7 5 8 15 16 1]
-        
+
         if v~=6 % want to have Salinity seasonal cycle but not plot it
             subplot_index = subplot_index+1;
             sn(subplot_index) = subplot(n_rows,n_cols,subplot_index);
-            
+
             if v==16
                 continue
             end
-            
-            plot(obs.(variables{v}).out_seasonal(:,1,1)-nanmean(obs.(variables{v}).out_seasonal(:,1,1)), 'k-', 'linewidth', 2)
-            
-            
+
+            if strcmp(variables{v}, 'spco2')
+                seasonal_var = obs.(variables{v}).(product_names{p}).(years{y}).(runs{q}).out_seasonal(:,1);
+            else
+                seasonal_var = obs.(variables{v}).out_seasonal(:,1,1);
+            end
+
+            plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 2)
+
             hold on
-            
+
             %         plot(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1) - nanmean(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1)), 'b', 'linewidth', 2)
-            
+
             title(variables{v})
-            
+
         end
         plot(modeled_var.(variables{v}) - nanmean(modeled_var.(variables{v})), 'b--', 'linewidth', 2)
-        
+
         if v==7
             plot(modeled_var.adjust.(variables{v}) - nanmean(modeled_var.adjust.(variables{v})), 'r-', 'linewidth', 2)
             title([num2str(phase_shift_days(v),2), ' days and ' num2str(amp_shift(v),2), ' umol/kg'])
         elseif v==5
             plot(modeled_var.adjust.(variables{v}) - nanmean(modeled_var.adjust.(variables{v})), 'r-', 'linewidth', 2)
-            title([num2str(amp_shift(v),2), ' \circC'])
+            title([num2str(phase_shift_days(v),2), ' days and ' num2str(amp_shift(v),2), ' \circC'])
         elseif v==8
             plot(modeled_var.adjust.(variables{v}) - nanmean(modeled_var.adjust.(variables{v})), 'r-', 'linewidth', 2)
             title([num2str(phase_shift_days(v),2), ' days and ' num2str(amp_shift(v),2), ' umol/kg'])
@@ -3969,43 +4286,137 @@ for m = 1:length(cmip_names.spco2) % spco2 model number
     [test_out.correlation, test_out.ratio, test_out.norm_error]=taylor_eval(obs.spco2.Combined.y2021.SOCCOM_SOCAT.out_seasonal(:,1),pco2_test);
     y_lim = get(gca, 'ylim');
     text(2, y_lim(1)+4, ['E: ' num2str(test_out.norm_error, 2) '; C: ' num2str(test_out.correlation, 2) '; R: ' num2str(test_out.ratio, 2)], 'fontsize', 12, 'fontweight', 'bold')
-    clear pco2_test
-    
-    
-    %     % plot delta dic/delta t
-    %     plot(sn(subplot_index - 1), diff(harm.dissic.seasonal_fit)./diff(harm.tos.seasonal_fit), 'k', 'linewidth', 2)
-    %     hold(sn(subplot_index - 1), 'on')
+
+    dataTable_out.dic_sst_ta_adj_pco2_corr(m)= test_out.correlation;
+    dataTable_out.dic_sst_ta_adj_pco2_amp_ratio(m) = test_out.ratio;
+    dataTable_out.dic_sst_ta_adj_pco2_error(m) = test_out.norm_error;
+    clear pco2_test temp_var_match test_out phase_adjust amp_adjust offset_adjust yt v phase_shift_days phase_shift amp_shift DATA y_lim
     %
-    %     title(sn(subplot_index - 1), 'dDIC/dT')
-    %     plot(sn(subplot_index - 1), diff(modeled_var.dissic)./diff(modeled_var.tos), 'b--', 'linewidth', 2)
-    %
-    %     plot(sn(subplot_index - 1), diff(modeled_var.adjust.dissic)./diff(modeled_var.adjust.tos), 'r-', 'linewidth', 2)
-    %     set(sn(subplot_index-1), 'ylim', dDICdT_lims);
-    %
-    %
-    
+
+%     print(gcf, '-dpdf', [Plot_out_dir 'Sensitivity_tests/' plot_filename])
+end
+
+%% Checking improvement in correlation for various substitutions:
+% set orig pco2 values to NaN
+dataTable_out.orig_pco2_corr(dataTable_out.orig_pco2_corr==0) = nan;
+dataTable_out.orig_pco2_error(dataTable_out.orig_pco2_error==0) = nan;
+clear comparisons
+comparisons.dic = ...
+    {{'orig_dic_phase_offset_days' 'dic_phase' 'pco2_corr_improvement'} {'orig_pco2_corr' 'dic_phase' 'pco2_corr_improvement'}     {'orig_pco2_error' 'dic_phase'}; ...
+    {'orig_dic_amp_offset' 'dic_amp' 'pco2_corr_improvement'}           {'orig_pco2_corr' 'dic_amp' 'pco2_corr_improvement'}       {'orig_pco2_error' 'dic_amp'};...
+    { }                                                                 {'orig_pco2_corr' 'dic_phase_amp' 'pco2_corr_improvement'} {'orig_pco2_error' 'dic_phase_amp' }};
+
+comparisons.sst = ...
+    {{'orig_sst_phase_offset_days' 'sst_phase' 'pco2_corr_improvement'} {'orig_pco2_corr' 'sst_phase' 'pco2_corr_improvement'}     {'orig_pco2_error' 'sst_phase'}; ...
+    {'orig_sst_amp_offset' 'sst_amp' 'pco2_corr_improvement'}           {'orig_pco2_corr' 'sst_amp' 'pco2_corr_improvement'}       {'orig_pco2_error' 'sst_amp'};...
+    { }                                                                 {'orig_pco2_corr' 'sst_phase_amp' 'pco2_corr_improvement'} {'orig_pco2_error' 'sst_phase_amp' }};        
+
+comparisons.talk = ...
+    {{'orig_talk_phase_offset_days' 'talk_phase' 'pco2_corr_improvement'} {'orig_pco2_corr' 'talk_phase' 'pco2_corr_improvement'}     {'orig_pco2_error' 'talk_phase'}; ...
+    {'orig_talk_amp_offset' 'talk_amp' 'pco2_corr_improvement'}           {'orig_pco2_corr' 'talk_amp' 'pco2_corr_improvement'}       {'orig_pco2_error' 'talk_amp'};...
+    { }                                                                 {'orig_pco2_corr' 'talk_phase_amp' 'pco2_corr_improvement'} {'orig_pco2_error' 'talk_phase_amp' }}; 
+
+comparisons.all = ...
+    { {'orig_pco2_corr' 'dic_phase_amp' 'pco2_corr_improvement'}  {'orig_pco2_corr' 'sst_phase_amp' 'pco2_corr_improvement'}   {'orig_pco2_corr' 'dic_phase_amp_sst_phase_amp' 'pco2_corr_improvement'}  {'orig_pco2_corr' 'talk_phase_amp' 'pco2_corr_improvement'}  {'orig_pco2_corr' 'dic_sst_ta' 'pco2_corr_improvement'}}; 
+
+plot_groups = fieldnames(comparisons);
+for p=1:length(plot_groups)
+    plot_filename = ['Substitution_results ' plot_groups{p}];
+    clf
+    set(gcf, 'units', 'inches')
+    paper_w = size(comparisons.(plot_groups{p}),2)*3; paper_h = size(comparisons.(plot_groups{p}),1)*3;
+    set(gcf,'PaperSize',[paper_w paper_h],'PaperPosition', [0 0 paper_w paper_h]);
+
+    plot_index = 0;
+    for i = 1:size(comparisons.(plot_groups{p}),1)
+        for l = 1:size(comparisons.(plot_groups{p}),2)
+            plot_index = plot_index+1;
+            plot_comp = comparisons.(plot_groups{p}){i,l};
+            if isempty(plot_comp)
+                continue
+            end
+            
+            subplot(size(comparisons.(plot_groups{p}),1),size(comparisons.(plot_groups{p}),2),plot_index); hold on
+            plot_comp = comparisons.(plot_groups{p}){i,l};
+            if isempty(plot_comp)
+                continue
+            end
+            for m =  1:length(cmip_names.spco2)
+                color = cmap(strcmp(cmip_names.spco2{m}, color_model(:,1)),:);
+                marker = color_model{strcmp(cmip_names.spco2{m}, color_model(:,1)),4};
+
+                if size(plot_comp,2)==3 && strcmp(plot_comp{3}, 'pco2_corr_improvement')
+
+                    y_data = dataTable_out.([plot_comp{1,2} '_adj_pco2_corr'])(m) - dataTable_out.orig_pco2_corr(m);
+                else
+                    y_data = dataTable_out.([plot_comp{1,2} '_adj_pco2_error'])(m);
+%                     y_label = ''
+                end
+                plot(dataTable_out.(plot_comp{1,1})(m), y_data, 'color', color, 'marker', marker, ...
+                    'markerfacecolor', color, 'markersize', 10)
+            end
+            grid on
+            hold on
+            x_lims = get(gca, 'XLim');
+            plot(x_lims, [0 0], 'k-')
+            y_lims = get(gca, 'YLim');
+            plot([0 0],y_lims,  'k-')
+            xlabel(plot_comp{1,1}, 'interpreter', 'none')
+            if strcmp(plot_comp{1}, 'orig_pco2_corr')
+                plot([1 -1], [0 2], 'k--', 'linewidth', 2)
+                ylabel('pCO_2 corr improvement')
+            elseif strcmp(plot_comp{1}, 'orig_pco2_error')
+                plot(x_lims, x_lims, 'k--', 'linewidth', 2)
+                ylabel('New pCO_2 error')
+            else
+                ylabel('pCO_2 corr improvement')
+                set(gca, 'ylim', [y_lims(1) 2])
+            end
+            title(['Fixing ' plot_comp{1,2}], 'interpreter', 'none')
+        end
+
+    end
     print(gcf, '-dpdf', [Plot_out_dir 'Sensitivity_tests/' plot_filename])
 end
 
-%% Needed %% 5. Parallel attempt: Starting from correct model, recalculating pCO2 for different test cases 
+%% out table for manuscript:
+% only saving pCO2 correlations after tests
+
+columns_out = {'model_name' 'orig_pco2_corr' 'dic_phase_adj_pco2_corr'  'dic_amp_adj_pco2_corr'  'dic_phase_amp_adj_pco2_corr' ...
+    'sst_amp_adj_pco2_corr' ...
+    'talk_phase_adj_pco2_corr'  'talk_amp_adj_pco2_corr'  'talk_phase_amp_adj_pco2_corr'...
+    'dic_phase_amp_sst_phase_amp_adj_pco2_corr' 'dic_sst_ta_adj_pco2_corr' 'T_B_ratio'};
+
+for c = 1:length(columns_out)
+    var_copy = dataTable_out.(columns_out{c});
+    dataTable_correlations_only.(columns_out{c}) = var_copy;
+end
+
+filename = 'dataTable_correlations_only.csv';
+
+writetable(dataTable_correlations_only, [Plot_out_dir 'Sensitivity_tests/' filename]);
+
+
+
+%% Needed %% 5. Parallel attempt: Starting from correct model, recalculating pCO2 for different test cases
 % clf
 % idealized_test_out = table;
 tic
 % clear test_data adjust
-test_index = 0;
-var_list = [7 5 8 6];
-v1 = 7;
-v2 = 5;
-v3 = 8;
-v4 = 6;
+% test_index = 0;
+% var_list = [7 5 8 6];
+% v1 = 7;
+% v2 = 5;
+% v3 = 8;
+% v4 = 6;
 
 % test_data_start = NaN(length(var_list),12);
-% 
+%
 % test_data_start_dissic = harm.(variables{7}).seasonal_fit;
 % test_data_start_talk = harm.(variables{8}).seasonal_fit;
 % test_data_start_tos = harm.(variables{5}).seasonal_fit;
 % test_data_start_sos = harm.(variables{6}).seasonal_fit;
-% 
+%
 % test_data_dissic = test_data_start_dissic;
 % test_data_talk = test_data_start_talk;
 % test_data_tos = test_data_start_tos;
@@ -4014,21 +4425,21 @@ v4 = 6;
 % for v = var_list
 %     test_index = test_index+1;
 %     test_data_start(test_index,:) = harm.(variables{v}).seasonal_fit;
-%     
+%
 % %     adjust.(variables{v}).offset = 0;
 % %     adjust.(variables{v}).phase_shift_days = 0;
 % %     adjust.(variables{v}).amp_percent      = 0;
-% %     
+% %
 % end
 
 adjust_dissic_phase_shift_days =-50:10:50;
 adjust_dissic_amp_percent =-100:10:100;
 % adjust.dissic.amp_percent = 0;
 % adjust.dissic.phase_shift_days = 0 ;
-% 
+%
 % % adjust.talk.phase_shift_days   = -75:25:75;
 % adjust_talk_phase_shift_days   = -75:25:75;
-adjust_talk_phase_shift_days   = 0;
+adjust_talk_phase_shift_days   = -100:100:100;
 
 adjust_talk_amp_percent   =-80:20:20;%[-30 0]; %-80:20:80;
 % adjust_talk_amp_percent   =0;%[-30 0]; %-80:20:80;
@@ -4047,7 +4458,7 @@ adjust_tos_amp_percent    =-100:50:100;
 
 % adjust.sos.phase_shift_days    =-40:20:40;
 % adjust.sos.amp_percent    =-250:50:250;
-% 
+%
 adjust_sos_phase_shift_days    =0;
 adjust_sos_amp_percent    =0;
 
@@ -4109,12 +4520,12 @@ pco2_idealized = NaN(s1, s2, s3, s4, s5, s6, s7, s8, 12);
 parfor dd = 1:length(adjust_dissic_phase_shift_days)
     phase_shift_days = adjust_dissic_phase_shift_days(dd);
     phase_shift_var1 = phase_shift_days.*2.*pi./365.25;
-    
+
     tt = NaN(length(adjust_dissic_amp_percent),...
         length(adjust_tos_phase_shift_days), length(adjust_tos_amp_percent), ...
         length(adjust_talk_phase_shift_days), length(adjust_talk_amp_percent),  ...
         length(adjust_sos_phase_shift_days), length(adjust_sos_amp_percent), 3);
-    
+
     dicv = NaN(s2, s3, s4, s5, s6, s7, s8, 12);
     tosv = NaN(s2, s3, s4, s5, s6, s7, s8, 12);
     sosv = NaN(s2, s3, s4, s5, s6, s7, s8, 12);
@@ -4122,89 +4533,89 @@ parfor dd = 1:length(adjust_dissic_phase_shift_days)
     pco2v = NaN(s2, s3, s4, s5, s6, s7, s8, 12);
 
     for a = 1:length(adjust_dissic_amp_percent)
-        
+
         %          table_index = (dd-1)+1 + ...
         %              (a-1)*length(adjust.(variables{v}).phase_shift_days)
-        
+
         amp_adjust_percent = adjust_dissic_amp_percent(a);
         amp_adjust_v1 = amp_adjust_percent/100 + 1;
-        
+
         % calculate a new test data for variable v
         yt = harm.dissic.offset.*ones(12,1)+offset_adjust;
         test_data_dissic = yt+(harm.dissic.amp.*amp_adjust_v1.*cos(2.*pi.*j.*[year_days]./L + (harm.dissic.phase+phase_shift_var1)))';
-        
+
         %         tos_phase_out = NaN(length(adjust_tos_phase_shift_days),1);
         for ddv2 =  1:length(adjust_tos_phase_shift_days)
             phase_shift_days = adjust_tos_phase_shift_days(ddv2);
             phase_shift_var2 = phase_shift_days.*2.*pi./365.25;
-            
+
             %             pco2_corr_out = NaN(length(adjust_dissic_amp_percent),1);
             %             av2=1;
             for av2 = 1:length(adjust_tos_amp_percent)
                 amp_adjust_percent = adjust_tos_amp_percent(av2);
                 amp_adjust_var2 = amp_adjust_percent/100 + 1;
-                
+
                 % calculate a new test data for variable v2
                 yt = harm.tos.offset.*ones(12,1)+offset_adjust;
                 test_data_tos = yt+(harm.tos.amp.*amp_adjust_var2.*cos(2.*pi.*j.*[year_days]./L + (harm.tos.phase+phase_shift_var2)))';
-                
-                 for ddv3 =  1:length(adjust_talk_phase_shift_days)
-                     phase_shift_days = adjust_talk_phase_shift_days(ddv3);
-                     phase_shift_var3 = phase_shift_days.*2.*pi./365.25;
-                     
-                     %             pco2_corr_out = NaN(length(adjust_dissic_amp_percent),1);
-                     %             av2=1;
-                     for av3 = 1:length(adjust_talk_amp_percent)
-                         amp_adjust_percent = adjust_talk_amp_percent(av3);
-                         amp_adjust_var3 = amp_adjust_percent/100 + 1;
-                         
-                         % calculate a new test data for variable v2
-                         yt = harm.talk.offset.*ones(12,1)+offset_adjust;
-                         test_data_talk = yt+(harm.talk.amp.*amp_adjust_var3.*cos(2.*pi.*j.*[year_days]./L + (harm.talk.phase+phase_shift_var3)))';
-                         
-                         
-                         for ddv4 =  1:length(adjust_sos_phase_shift_days)
-                             phase_shift_days = adjust_sos_phase_shift_days(ddv4);
-                             phase_shift_var4 = phase_shift_days.*2.*pi./365.25;
-                             
-                             %             pco2_corr_out = NaN(length(adjust_dissic_amp_percent),1);
-                             %             av2=1;
-                             for av4 = 1:length(adjust_sos_amp_percent)
-                                 amp_adjust_percent = adjust_sos_amp_percent(av4);
-                                 amp_adjust_var4 = amp_adjust_percent/100 + 1;
-                                 
-                                 % calculate a new test data for variable v2
-                                 yt = harm.sos.offset.*ones(12,1)+offset_adjust;
-                                 test_data_sos = yt+(harm.sos.amp.*amp_adjust_var4.*cos(2.*pi.*j.*[year_days]./L + (harm.sos.phase+phase_shift_var4)))';
-                                 
-                                 
-                                 [DATA,~,~]=CO2SYSSOCCOM_smb(test_data_talk, ...
-                                     test_data_dissic, ...
-                                     1,2, test_data_sos, test_data_tos, test_data_tos,...
-                                     1,1,SI,PO4,1,10,3);
-                                 pco2_test = DATA(:,4);
-                                 
-                                 % taylor calc on pco2_test
-                                 [test_out_correlation, test_out_ratio, test_out_norm_error]=taylor_eval(harm.spco2.seasonal_fit, pco2_test);
-                                 
-                                 %                 pco2_corr_out(a) = test_out_correlation;
-                                 %         idealized_test_out(table_index,10) = test_out_ratio;
-                                 %         idealized_test_out(table_index,11) = test_out_norm_error;
-                                 %             end
-                               
-                                 tt(a, ddv2, av2, ddv3, av3, ddv4, av4, :) = [test_out_correlation test_out_ratio test_out_norm_error];
-                                 dicv(a, ddv2, av2, ddv3, av3, ddv4, av4, :) = test_data_dissic;
-                                 tosv(a, ddv2, av2, ddv3, av3, ddv4, av4, :) = test_data_tos;
-                                 sosv(a, ddv2, av2, ddv3, av3, ddv4, av4, :) = test_data_sos;
-                                 talkv(a, ddv2, av2, ddv3, av3, ddv4, av4, :) = test_data_talk;
-                                 pco2v(a, ddv2, av2, ddv3, av3, ddv4, av4, :) = pco2_test;
 
-                             end
-                         end
-                         %         tt(a,:) = tos_phase_out;
-                     end
-                     
-                 end
+                for ddv3 =  1:length(adjust_talk_phase_shift_days)
+                    phase_shift_days = adjust_talk_phase_shift_days(ddv3);
+                    phase_shift_var3 = phase_shift_days.*2.*pi./365.25;
+
+                    %             pco2_corr_out = NaN(length(adjust_dissic_amp_percent),1);
+                    %             av2=1;
+                    for av3 = 1:length(adjust_talk_amp_percent)
+                        amp_adjust_percent = adjust_talk_amp_percent(av3);
+                        amp_adjust_var3 = amp_adjust_percent/100 + 1;
+
+                        % calculate a new test data for variable v2
+                        yt = harm.talk.offset.*ones(12,1)+offset_adjust;
+                        test_data_talk = yt+(harm.talk.amp.*amp_adjust_var3.*cos(2.*pi.*j.*[year_days]./L + (harm.talk.phase+phase_shift_var3)))';
+
+
+                        for ddv4 =  1:length(adjust_sos_phase_shift_days)
+                            phase_shift_days = adjust_sos_phase_shift_days(ddv4);
+                            phase_shift_var4 = phase_shift_days.*2.*pi./365.25;
+
+                            %             pco2_corr_out = NaN(length(adjust_dissic_amp_percent),1);
+                            %             av2=1;
+                            for av4 = 1:length(adjust_sos_amp_percent)
+                                amp_adjust_percent = adjust_sos_amp_percent(av4);
+                                amp_adjust_var4 = amp_adjust_percent/100 + 1;
+
+                                % calculate a new test data for variable v2
+                                yt = harm.sos.offset.*ones(12,1)+offset_adjust;
+                                test_data_sos = yt+(harm.sos.amp.*amp_adjust_var4.*cos(2.*pi.*j.*[year_days]./L + (harm.sos.phase+phase_shift_var4)))';
+
+
+                                [DATA,~,~]=CO2SYSSOCCOM_smb(test_data_talk, ...
+                                    test_data_dissic, ...
+                                    1,2, test_data_sos, test_data_tos, test_data_tos,...
+                                    1,1,SI,PO4,1,10,3);
+                                pco2_test = DATA(:,4);
+
+                                % taylor calc on pco2_test
+                                [test_out_correlation, test_out_ratio, test_out_norm_error]=taylor_eval(harm.spco2.seasonal_fit, pco2_test);
+
+                                %                 pco2_corr_out(a) = test_out_correlation;
+                                %         idealized_test_out(table_index,10) = test_out_ratio;
+                                %         idealized_test_out(table_index,11) = test_out_norm_error;
+                                %             end
+
+                                tt(a, ddv2, av2, ddv3, av3, ddv4, av4, :) = [test_out_correlation test_out_ratio test_out_norm_error];
+                                dicv(a, ddv2, av2, ddv3, av3, ddv4, av4, :) = test_data_dissic;
+                                tosv(a, ddv2, av2, ddv3, av3, ddv4, av4, :) = test_data_tos;
+                                sosv(a, ddv2, av2, ddv3, av3, ddv4, av4, :) = test_data_sos;
+                                talkv(a, ddv2, av2, ddv3, av3, ddv4, av4, :) = test_data_talk;
+                                pco2v(a, ddv2, av2, ddv3, av3, ddv4, av4, :) = pco2_test;
+
+                            end
+                        end
+                        %         tt(a,:) = tos_phase_out;
+                    end
+
+                end
             end
         end
     end
@@ -4280,18 +4691,18 @@ for ta = 5%1:length(adjust_vars.(sub_var_3_name))
 
     end
     for tt = 1:length(adjust_vars.(sub_var_name))
-        
+
         sub_v_amp_percent=adjust_vars.(sub_var_name)(tt);
         sub_v_shift_days = 0;
-        
+
         subplot_index = subplot_index+1;
         if tt==2
             subplot_index = subplot_index+1;
         end
         subplot(3,2,subplot_index)
-        
+
         pCO2_grid = NaN(length(adjust_vars.(['adjust_' main_var '_amp_percent'])), length(adjust_vars.(['adjust_' main_var '_phase_shift_days'])));
-        
+
         for dd =1: length(adjust_vars.(['adjust_' main_var '_amp_percent']))
             %         var_amp_index = idealized_test_out.([variables{v} '_amp_adjust_percent'])==adjust.(variables{v}).amp_percent(dd) & ...
             %             idealized_test_out.([variables{sub_v} '_amp_adjust_percent'])==sub_v_amp_percent & ...
@@ -4300,12 +4711,12 @@ for ta = 5%1:length(adjust_vars.(sub_var_3_name))
             %           var_amp_index = idealized_test_out.([variables{v} '_amp_adjust_percent'])==adjust.(variables{v}).amp_percent(dd) & ...
             %             idealized_test_out.([variables{sub_v} '_amp_adjust_percent'])==sub_v_amp_percent & ...
             %             idealized_test_out.([variables{sub_v} '_phase_shift_days'])==sub_v_shift_days & idealized_test_out.talk_amp_adjust_percent==-30;
-            
-            
+
+
             %         pCO2_grid(dd,:) = idealized_test_out.pco2_corr(var_amp_index);
             pCO2_grid(dd,:) = idealized_test_out_2(:,dd,1,tt,1,ta,1,1,1);
         end
-        
+
         [C, h] = contourf( adjust_vars.(['adjust_' main_var '_phase_shift_days']), adjust_vars.(['adjust_' main_var '_amp_percent']),pCO2_grid, 'levellist', -1:0.05:1, 'linestyle', 'none'); colorbar; caxis([-1 1])
         hold on
         [C1, h1] = contour( adjust_vars.(['adjust_' main_var '_phase_shift_days']),adjust_vars.(['adjust_' main_var '_amp_percent']), pCO2_grid, 'levellist', [-0.5:0.5:0.5], 'linestyle', '-', 'linewidth', 2, 'color', 'k');
@@ -4313,50 +4724,50 @@ for ta = 5%1:length(adjust_vars.(sub_var_3_name))
         xlabel([variables{v} ' Shift (days)'])
         ylabel([variables{v} ' Amplitude (% diff)'])
         title([(variables{sub_v}) ' amplitude percent ' num2str(sub_v_amp_percent)]);
-        
+
         if model_plot==0
             continue
         end
-        
+
         % overlay scatter plots with models that fit into different sub_v
         % amplitude bins
         % will need to adjust bin ranges if you modify the number of bins here:
         sub_v_amp_bin = 25;
-        
+
         for m = 1:length(cmip_names.spco2)
             mod_talk_index = strcmp(cmip_names.talk, cmip_names.spco2{m});
-            
+
             if sum(mod_talk_index)==0 % if there is no talk, then it is hard to know if talk is at all reasonable and not causing issues
                 continue
             end
-            
+
             mod_sub_v_index = strcmp(cmip_names.(variables{sub_v}), cmip_names.spco2{m});
             sub_v_amp_per_diff = (harm_mod.(variables{sub_v}).amp(mod_sub_v_index) - harm.(variables{sub_v}).amp)./harm.(variables{sub_v}).amp*100;
-            
+
             if isempty(sub_v_amp_per_diff)
                 continue
             end
             % only plot models that fall in each sub_v amplitude range
             if sub_v_amp_per_diff>=sub_v_amp_percent - sub_v_amp_bin && sub_v_amp_per_diff<sub_v_amp_percent + sub_v_amp_bin
-                
+
                 mod_var_index = strcmp(cmip_names.(variables{v}), cmip_names.spco2{m});
-                
-                
-                
+
+
+
                 var_phase_shift_days = (harm_mod.(variables{v}).phase(mod_var_index) - harm.(variables{v}).phase )*365.25./(2*pi);
                 var_amp_per_diff = (harm_mod.(variables{v}).amp(mod_var_index) - harm.(variables{v}).amp)./harm.(variables{v}).amp*100;
-                
+
                 if isempty(var_phase_shift_days)
                     continue
                 end
 
                 if pco2_corr_plot==1
 
-                mod_pco2_corr = obs.spco2.correlation(m);
-                
-                scatter(var_phase_shift_days, var_amp_per_diff, 200, mod_pco2_corr, 'filled', 'markeredgecolor', 'k')
+                    mod_pco2_corr = obs.spco2.correlation(m);
+
+                    scatter(var_phase_shift_days, var_amp_per_diff, 200, mod_pco2_corr, 'filled', 'markeredgecolor', 'k')
                 else
-                   
+
                     mod_match_index = strcmp(cmip_names.(variables{vp}), cmip_names.spco2{m});
                     if sum(mod_match_index)==0
                         disp([cmip_names.spco2{m} ' missing ' variables{v}])
@@ -4371,7 +4782,7 @@ for ta = 5%1:length(adjust_vars.(sub_var_3_name))
                     end
 
                     marker_color = alt_color_map(round((var_c-min_max(1)+grad_step)./(min_max(2) - min_max(1)+grad_step).*length(alt_color_map)),:);
-%                     plot(var_phase_shift_days, var_amp_per_diff, 'markeredgecolor', 'k', 'markerfacecolor', marker_color)
+                    %                     plot(var_phase_shift_days, var_amp_per_diff, 'markeredgecolor', 'k', 'markerfacecolor', marker_color)
                     plot(var_phase_shift_days, var_amp_per_diff, 'o', 'markeredgecolor', 'k', 'markerfacecolor', marker_color, 'markersize', 15)
 
                 end
@@ -4379,13 +4790,13 @@ for ta = 5%1:length(adjust_vars.(sub_var_3_name))
                 disp(m)
                 disp(var_phase_shift_days)
                 disp(var_amp_per_diff)
-                
+
                 disp(mod_pco2_corr)
-                
+
                 %                                 pause
             end
         end
-        
+
     end
 
     if pco2_corr_plot==0
@@ -4415,7 +4826,7 @@ end
 %     length(adjust_talk_phase_shift_days), length(adjust_talk_amp_percent),  ...
 %     length(adjust_sos_phase_shift_days), length(adjust_sos_amp_percent), 3);
 % legend_names = {};
-  
+
 %indexes for different scenarios
 tap = 3;
 talk_ap = 5;
@@ -4434,27 +4845,27 @@ tap = [3 3 3 3 2 4];
 
 for qq = 1:length(dpsd)
     clf
-     set(gcf, 'units', 'inches')
+    set(gcf, 'units', 'inches')
     paper_w = 5; paper_h =6;
     set(gcf,'PaperSize',[paper_w paper_h],'PaperPosition', [0 0 paper_w paper_h]);
 
-    
+
     pco2_test = squeeze(pco2_idealized(dpsd(qq),dap(qq),1,tap(qq),1,talk_ap,1,1,:));
     dic_test = squeeze(dic_idealized(dpsd(qq),dap(qq),1,tap(qq),1,talk_ap,1,1,:));
     tos_test = squeeze(tos_idealized(dpsd(qq),dap(qq),1,tap(qq),1,talk_ap,1,1,:));
-    
+
     pco2_correlation = idealized_test_out_2(dpsd(qq),dap(qq),1,tap(qq),1,talk_ap,1,1,1);
-    
+
     test_name = ['DIC shift ' num2str(adjust_vars.adjust_dissic_phase_shift_days(dpsd(qq))) ...
         ' DIC Amp change ' num2str(adjust_vars.adjust_dissic_amp_percent(dap(qq))) ...
         ' TOS Amp Change ' num2str(adjust_vars.adjust_tos_amp_percent(tap(qq)))];
-%     legend_names = [legend_names test_name];
-    
+    %     legend_names = [legend_names test_name];
+
     d1 = subplot(3,1,3);
     hold on
     p1 = plot(pco2_orig, '-k', 'linewidth', 3);
     ylabel('pCO_2 (\muatm)')
-        set(d1, 'ylim', [360 440])
+    set(d1, 'ylim', [360 440])
     xlabel('Month')
 
     d2 = subplot(3,1,1);
@@ -4463,12 +4874,12 @@ for qq = 1:length(dpsd)
     ylabel('DIC (\mumol kg^-^1)')
     set(d2, 'ylim', [2175 2230])
 
-   
+
     d3 = subplot(3,1,2);
     hold on
     plot(tos_orig, '-k', 'linewidth', 3)
     ylabel('SST (\circC)')
-            set(d3, 'ylim', [1 6])
+    set(d3, 'ylim', [1 6])
 
     plot_filename = 'Toy model pCO2';
     if qq==1
@@ -4476,23 +4887,23 @@ for qq = 1:length(dpsd)
 
         print(gcf, '-dpng', '-r400', [Plot_out_dir 'Sensitivity_tests/' plot_filename plot_ver])
     end
-    
+
     p2 = plot(d1, pco2_test,'--r', 'linewidth', 2);
     title(d1, ['Test pCO_2 correlation: ' num2str(pco2_correlation,2)])
     plot(d2, dic_test,'--r', 'linewidth', 2);
     title(d2, ['DIC shift ' num2str(adjust_vars.adjust_dissic_phase_shift_days(dpsd(qq))) ' Days'...
         '; DIC Amp change ' num2str(adjust_vars.adjust_dissic_amp_percent(dap(qq))) ' %'])
-    
+
     plot(d3, tos_test,'--r', 'linewidth', 2)
     title(d3, [' SST Amp Change ' num2str(adjust_vars.adjust_tos_amp_percent(tap(qq))) ' %'])
     %     taylor_eval(harm.spco2.seasonal_fit, pco2_test)
     %         taylor_eval(pco2_orig, pco2_test)
-    
+
     legend(d1, [p1 p2], 'Original', 'Test', 'location', 'northwest')
     plot_filename = [plot_filename ' ' test_name];
     print(gcf, '-dpng', '-r400', [Plot_out_dir 'Sensitivity_tests/' plot_filename plot_ver])
-    
-%     pause
+
+    %     pause
 end
 % legend(d1, legend_names, 'location', 'northwest')
 % plot(d1, harm.spco2.seasonal_fit, 'k--')
@@ -4505,11 +4916,11 @@ idealized_test_out = table;
 clear test_data adjust test_data_start
 % for v = [5 6 7 8]
 %     test_data_start.(variables{v}) = harm.(variables{v}).seasonal_fit;
-%     
+%
 % %     adjust.(variables{v}).offset = 0;
 % %     adjust.(variables{v}).phase_shift_days = 0;
 % %     adjust.(variables{v}).amp_percent      = 0;
-% %     
+% %
 % end
 
 % adjust.dissic.phase_shift_days =-50:10:50;
@@ -4518,7 +4929,7 @@ adjust.dissic.phase_shift_days =-50:50:50;
 adjust.dissic.amp_percent =-100:200:100;
 % adjust.dissic.amp_percent = 0;
 % adjust.dissic.phase_shift_days = 0 ;
-% 
+%
 % adjust.talk.phase_shift_days   = -75:25:75;
 % adjust.talk.amp_percent   =[-30 0]; %-80:20:80;
 
@@ -4534,7 +4945,7 @@ adjust.tos.amp_percent    = -100:200:100;
 
 % adjust.sos.phase_shift_days    =-40:20:40;
 % adjust.sos.amp_percent    =-250:50:250;
-% 
+%
 adjust.sos.phase_shift_days    =0;
 adjust.sos.amp_percent    =0;
 
@@ -4549,97 +4960,97 @@ v=7;
 % test_data = test_data_start;
 
 for dd = 1:length(adjust.(variables{v}).phase_shift_days)
-    
+
     %     for a = 1:length(adjust.(variables{v}).amp_percent)
-    
-    
+
+
     % calculate a new test_data for this variable, just using the new
     % phase shift
     phase_shift_days = adjust.(variables{v}).phase_shift_days(dd);
     phase_shift.(variables{v}) = phase_shift_days.*2.*pi./365.25;
-    
+
     % also step through range of amplitude percentages for this
     % variable
     for a = 1:length(adjust.(variables{v}).amp_percent)
-        
+
         amp_adjust_percent = adjust.(variables{v}).amp_percent(a);
         amp_adjust.(variables{v}) = amp_adjust_percent/100 + 1;
-        
+
         % calculate a new test data for variable v
         yt = harm.(variables{v}).offset.*ones(12,1)+offset_adjust;
         test_data.(variables{v}) = yt+(harm.(variables{v}).amp.*amp_adjust.(variables{v}).*cos(2.*pi.*j.*[year_days]./L + (harm.(variables{v}).phase+phase_shift.(variables{v}))))';
-        
+
         v2 = 5;
         for ddv2 =  1:length(adjust.(variables{v2}).phase_shift_days)
             phase_shift_days = adjust.(variables{v2}).phase_shift_days(ddv2);
             phase_shift.(variables{v2}) = phase_shift_days.*2.*pi./365.25;
-            
+
             for av2 = 1:length(adjust.(variables{v2}).amp_percent)
                 amp_adjust_percent = adjust.(variables{v2}).amp_percent(av2);
                 amp_adjust.(variables{v2}) = amp_adjust_percent/100 + 1;
-                
+
                 % calculate a new test data for variable v2
                 yt = harm.(variables{v2}).offset.*ones(12,1)+offset_adjust;
                 test_data.(variables{v2}) = yt+(harm.(variables{v2}).amp.*amp_adjust.(variables{v2}).*cos(2.*pi.*j.*[year_days]./L + (harm.(variables{v2}).phase+phase_shift.(variables{v2}))))';
-                
+
                 % add a new set of variables for alkalinity:
-                
+
                 v3 = 8;
                 for ddv3 =  1:length(adjust.(variables{v3}).phase_shift_days)
                     phase_shift_days = adjust.(variables{v3}).phase_shift_days(ddv3);
                     phase_shift.(variables{v3}) = phase_shift_days.*2.*pi./365.25;
-                    
+
                     for av3 = 1:length(adjust.(variables{v3}).amp_percent)
                         amp_adjust_percent = adjust.(variables{v3}).amp_percent(av3);
                         amp_adjust.(variables{v3}) = amp_adjust_percent/100 + 1;
-                        
+
                         % calculate a new test data for variable v3
                         yt = harm.(variables{v3}).offset.*ones(12,1)+offset_adjust;
                         test_data.(variables{v3}) = yt+(harm.(variables{v3}).amp.*amp_adjust.(variables{v3}).*cos(2.*pi.*j.*[year_days]./L + ...
                             (harm.(variables{v3}).phase+phase_shift.(variables{v3}))))';
-                        
+
                         % final set of variables for salinity:
                         v4 = 6;
                         for ddv4 =  1:length(adjust.(variables{v4}).phase_shift_days)
                             phase_shift_days = adjust.(variables{v4}).phase_shift_days(ddv4);
                             phase_shift.(variables{v4}) = phase_shift_days.*2.*pi./365.25;
-                            
+
                             for av4 = 1:length(adjust.(variables{v4}).amp_percent)
                                 amp_adjust_percent = adjust.(variables{v4}).amp_percent(av4);
                                 amp_adjust.(variables{v4}) = amp_adjust_percent/100 + 1;
-                                
+
                                 % calculate a new test data for variable v3
                                 yt = harm.(variables{v4}).offset.*ones(12,1)+offset_adjust;
                                 test_data.(variables{v4}) = yt+(harm.(variables{v4}).amp.*amp_adjust.(variables{v4}).*cos(2.*pi.*j.*[year_days]./L + ...
                                     (harm.(variables{v4}).phase+phase_shift.(variables{v4}))))';
-                                
-                                
+
+
                                 table_index = table_index+1;
-                                
+
                                 idealized_test_out.([variables{v} '_phase_shift_days'])(table_index) = adjust.(variables{v}).phase_shift_days(dd);
                                 idealized_test_out.([variables{v} '_amp_adjust_percent'])(table_index) = adjust.(variables{v}).amp_percent(a);
-                                
+
                                 idealized_test_out.([variables{v2} '_phase_shift_days'])(table_index) = adjust.(variables{v2}).phase_shift_days(ddv2);
                                 idealized_test_out.([variables{v2} '_amp_adjust_percent'])(table_index) = adjust.(variables{v2}).amp_percent(av2);
-                                
+
                                 idealized_test_out.([variables{v3} '_phase_shift_days'])(table_index) = adjust.(variables{v3}).phase_shift_days(ddv3);
                                 idealized_test_out.([variables{v3} '_amp_adjust_percent'])(table_index) = adjust.(variables{v3}).amp_percent(av3);
-                                
-                                
+
+
                                 idealized_test_out.([variables{v4} '_phase_shift_days'])(table_index) = adjust.(variables{v4}).phase_shift_days(ddv4);
                                 idealized_test_out.([variables{v4} '_amp_adjust_percent'])(table_index) = adjust.(variables{v4}).amp_percent(av4);
-                                
-                                
+
+
                                 % for now, other variables stay the same
                                 [DATA,~,~]=CO2SYSSOCCOM_smb(test_data.talk, ...
                                     test_data.dissic, ...
                                     1,2, test_data.sos, test_data.tos, test_data.tos,...
                                     1,1,SI,PO4,1,10,3);
                                 pco2_test = DATA(:,4);
-                                
+
                                 % taylor calc on pco2_test
                                 [test_out.correlation, test_out.ratio, test_out.norm_error]=taylor_eval(harm.spco2.seasonal_fit, pco2_test);
-                                
+
                                 idealized_test_out.pco2_corr(table_index) = test_out.correlation;
                                 idealized_test_out.pco2_ratio(table_index) = test_out.ratio;
                                 idealized_test_out.pco2_norm_error(table_index) = test_out.norm_error;
@@ -4653,144 +5064,164 @@ for dd = 1:length(adjust.(variables{v}).phase_shift_days)
 end
 toc
 %%  Trying to evaluate intpp magnitude vs. vars (rather than using taylor evaluation for intpp)
-clf
-set(gcf, 'units', 'inches')
-paper_w = 7; paper_h =5;
-set(gcf,'PaperSize',[paper_w paper_h],'PaperPosition', [0 0 paper_w paper_h]); clear paper_w paper_h
 
-subplot(1,1,1);
-hold on
-
-seas_amplitude = 0;
+% y axis variable choices
+seas_amplitude = 1;
 dissic_vert_gradient=0;
-dd = 12;
-mon = 1;
-
-wmo_on = 0;
-
-if wmo_on==0
-    sv = 10;
-    v = find(strncmp(seas_comp_vars{sv}, variables, 4));
-    if length(v)>1 % cludge since dissic and dissic_yr were getting confused
-        v = strmatch(seas_comp_vars{sv}, variables, 'exact');
-    end
-else
-    v=10;
-end
-
-alt_x=0;
-
-sv2 = 6;
-tests = {'norm_error';'correlation' ; 'ratio'};
-tt = 2;
-
+sv2 = 1;
 v2 = find(strncmp(seas_comp_vars{sv2}, variables, 4));
 if length(v2)>1 % cludge since dissic and dissic_yr were getting confused
     v2 = strmatch(seas_comp_vars{sv2}, variables, 'exact');
 end
 
-temp_array =[];
-temp_names = {};
-for m = 1:length(cmip_names.(variables{v}))
-    mod_match = strcmp(cmip_names.(variables{v2}), cmip_names.(variables{v}){m});
-    
-    if sum(mod_match)>0
-        if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
-            plot_color = cmap(strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),:);
-            
-            if seas_amplitude ==1
-                var_2 = max(CMIP.(variables{v2}).out_seasonal(mod_match,:,1)) - min(CMIP.(variables{v2}).out_seasonal(mod_match,:,1)) ;
-            else
-                var_2 = obs.(variables{v2}).(tests{tt})(mod_match);
-                
-            end
-            
-            if dissic_vert_gradient==1
-                if CMIP.dissic_yr.out_annual(m,1,1)==0 % there is an error in CESM2_6 depth coordinate so the interpolation is not working properly
+% %% only applies if seas_amplitude is off
+tests = {'norm_error';'correlation' ; 'ratio'};
+tt = 2;
+% %%
+
+
+% x-axis variable choices
+alt_x=0; % 0: x axis is one individual month for variable sv
+% 1: x axis is ratio of max to min
+% 2: x axis is seasonal amplitude of sv
+for mon = 1:12
+    clf
+    set(gcf, 'units', 'inches')
+    paper_w = 7; paper_h =5;
+    set(gcf,'PaperSize',[paper_w paper_h],'PaperPosition', [0 0 paper_w paper_h]); clear paper_w paper_h
+
+    subplot(1,1,1);
+    hold on
+
+    dd = 12;
+
+    wmo_on = 0; % takes precedence over alt_x
+    if wmo_on==0
+        sv = 9;
+        v = find(strncmp(seas_comp_vars{sv}, variables, 4));
+        if length(v)>1 % cludge since dissic and dissic_yr were getting confused
+            v = strmatch(seas_comp_vars{sv}, variables, 'exact');
+        end
+    else
+        v=10;
+    end
+
+    temp_array =[];
+    temp_names = {};
+    for m = 1:length(cmip_names.(variables{v}))
+        mod_match = strcmp(cmip_names.(variables{v2}), cmip_names.(variables{v}){m});
+
+        if sum(mod_match)>0
+            if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
+                plot_color = cmap(strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),:);
+
+                model_marker = color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),4};
+
+                if seas_amplitude ==1
+                    var_2 = max(CMIP.(variables{v2}).out_seasonal(mod_match,:,1)) - min(CMIP.(variables{v2}).out_seasonal(mod_match,:,1)) ;
+                else
+                    var_2 = obs.(variables{v2}).(tests{tt})(mod_match);
+
+                end
+
+                if dissic_vert_gradient==1
+                    if CMIP.dissic_yr.out_annual(m,1,1)==0 % there is an error in CESM2_6 depth coordinate so the interpolation is not working properly
+                        continue
+                    end
+                    var_1 = CMIP.dissic_yr.out_annual(m,1,1) - CMIP.dissic_yr.out_annual(m,dd,1) ;
+
+                else
+                    if wmo_on==1
+                        var_1 = CMIP.wmo.out_seasonal(m,dd,mon,1) ;
+                    elseif alt_x==0
+                        var_1 = CMIP.(variables{v}).out_seasonal(m,mon,1);
+                    elseif alt_x==1
+                        var_1 = max(CMIP.(variables{v}).out_seasonal(m,:,1))./min(CMIP.(variables{v}).out_seasonal(m,:,1)) ;
+                    elseif alt_x==2
+                        var_1 = max(CMIP.(variables{v}).out_seasonal(m,:,1)) - min(CMIP.(variables{v}).out_seasonal(m,:,1)) ;
+                    end
+                end
+                if isnan(var_1) || isnan(var_2)
                     continue
                 end
-                var_1 = CMIP.dissic_yr.out_annual(m,1,1) - CMIP.dissic_yr.out_annual(m,dd,1) ;
-                
-            else
-                if wmo_on==1
-                    var_1 = CMIP.wmo.out_seasonal(m,dd,mon,1) ;
-                elseif alt_x==0
-                    var_1 = CMIP.(variables{v}).out_seasonal(m,mon,1);
-                else
-                    var_1 = max(CMIP.(variables{v}).out_seasonal(m,:,1))./min(CMIP.(variables{v}).out_seasonal(m,:,1)) ;
+                plot(var_1,	var_2 , '.', 'color', ...
+                    plot_color, 'markerfacecolor', plot_color, 'markersize', 15, 'marker', model_marker)
+                if alt_x==1 && var_1>20
+                    disp(['withholding ' cmip_names.(variables{v}){m} ' from regression'])
+                    continue
                 end
+                if alt_x==2 && var_1>300
+                    disp(['withholding ' cmip_names.(variables{v}){m} ' from regression'])
+                    continue
+                end
+                temp_names{end+1,1} = cmip_names.(variables{v}){m};
+                temp_array(end+1,1) = var_1;
+                temp_array(end,2) = var_2;
             end
-            if isnan(var_1) || isnan(var_2)
-                continue
-            end
-            plot(var_1,	var_2 , '.', 'color', ...
-                plot_color, 'markersize', 50)
-            if alt_x==1 && var_1>20
-                disp(['withholding ' cmip_names.(variables{v}){m} ' from regression'])
-                continue
-            end
-            temp_names{end+1,1} = cmip_names.(variables{v}){m};
-            temp_array(end+1,1) = var_1;
-            temp_array(end,2) = var_2;
+        end
+
+
+
+    end
+
+    if seas_amplitude~=1 && tt~=1 % if plotting correlation or ratio, "obs" equals 1.
+        obs_y = 1;
+    elseif seas_amplitude~=1 % if plotting normalized error, "obs" equals 0
+        obs_y=0;
+    elseif seas_amplitude==1
+        obs_y = max(obs.(variables{v2}).out_seasonal(:,1)) - min(obs.(variables{v2}).out_seasonal(:,1));
+    end
+
+    if wmo_on==0
+        if dissic_vert_gradient==1
+            obs_annual_mean = squeeze(nanmean(obs.dissic.out_seasonal(:,1,:),1));
+            var_1_obs = obs_annual_mean(1,1) - obs_annual_mean(dd,1);
+        elseif alt_x==1
+            var_1_obs = max(obs.(variables{v}).out_seasonal(:,1))./(min(obs.(variables{v}).out_seasonal(:,1)));
+        elseif alt_x==0
+            var_1_obs = obs.(variables{v}).out_seasonal(mon,1);
+        elseif alt_x==2
+            var_1_obs = max(obs.(variables{v}).out_seasonal(:,1)) - (min(obs.(variables{v}).out_seasonal(:,1)));
+
+        end
+
+        plot(var_1_obs, obs_y, 'xk', 'linewidth', 2, 'markersize', 10)
+    end
+
+    if seas_amplitude==1
+        comp_label = [seas_comp_vars{sv2} ' seasonal amplitude'];
+    else
+        comp_label = [seas_comp_vars{sv2} ' ' tests{tt}];
+    end
+
+    if dissic_vert_gradient==1
+        x_label = ['dissic vert gradient ' num2str(obs.dissic.depth_levs(dd))];
+    elseif wmo_on==1
+        x_label = [variables{v} ' value from Month= ' num2str(mon) ' and depth ' num2str(CMIP.wmo.CMCC_CESM.depth(dd))];
+    else
+        if alt_x==0
+            x_label = [variables{v} ' value from Month= ' num2str(mon)];
+        elseif alt_x==1
+            x_label = [variables{v} ' max divided by min'];
+        elseif alt_x==2
+            x_label = [variables{v} ' max minus min'];
+
         end
     end
-    
-    
-    
+    xlabel( x_label, 'interpreter', 'none')
+    ylabel([comp_label], 'interpreter', 'none')
+
+    [m,b,r,~,~]=lsqfitgm(temp_array(:,1),temp_array(:,2));
+    x_plot = min(temp_array(:,1)):(max(temp_array(:,1))-min(temp_array(:,1)))./10 : max(temp_array(:,1));
+    y_plot = m.*x_plot+b;
+    plot(x_plot, y_plot, 'k-')
+    title(['r= ' num2str(r,2)])
+
+    set(gca, 'fontsize', 16)
+    plot_filename = ['Var_comparison ' x_label ' vs. ' comp_label ];
+
+    print(gcf, '-dpng', [Plot_out_dir variables{v} '/' plot_filename '.png'])
 end
-
-if seas_amplitude~=1 && tt~=1 % if plotting correlation or ratio, "obs" equals 1.
-    obs_y = 1;
-elseif seas_amplitude~=1 % if plotting normalized error, "obs" equals 0
-    obs_y=0;
-elseif seas_amplitude==1
-    obs_y = max(obs.(variables{v2}).out_seasonal(:,1)) - min(obs.(variables{v2}).out_seasonal(:,1));
-end
-
-if wmo_on==0
-if dissic_vert_gradient==1
-    obs_annual_mean = squeeze(nanmean(obs.dissic.out_seasonal(:,1,:),1));
-    var_1_obs = obs_annual_mean(1,1) - obs_annual_mean(dd,1);
-elseif alt_x==1 
-    var_1_obs = max(obs.(variables{v}).out_seasonal(:,1))./(min(obs.(variables{v}).out_seasonal(:,1)));
-elseif alt_x==0
-    var_1_obs = obs.(variables{v}).out_seasonal(mon,1);
-end
-
-    plot(var_1_obs, obs_y, 'xk', 'linewidth', 2, 'markersize', 10)
-end
-
-if seas_amplitude==1
-    comp_label = [seas_comp_vars{sv2} ' seasonal amplitude'];
-else
-    comp_label = [seas_comp_vars{sv2} ' ' tests{tt}];
-end
-
-if dissic_vert_gradient==1
-    x_label = ['dissic vert gradient ' num2str(obs.dissic.depth_levs(dd))];
-elseif wmo_on==1
-    x_label = [variables{v} ' value from Month= ' num2str(mon) ' and depth ' num2str(CMIP.wmo.CMCC_CESM.depth(dd))];
-else
-    if alt_x==0
-        x_label = [variables{v} ' value from Month= ' num2str(mon)];
-    else
-        x_label = [variables{v} ' max divided by min'];
-    end
-end
-xlabel( x_label, 'interpreter', 'none')
-ylabel([comp_label], 'interpreter', 'none')
-
-[m,b,r,~,~]=lsqfitgm(temp_array(:,1),temp_array(:,2));
-x_plot = min(temp_array(:,1)):(max(temp_array(:,1))-min(temp_array(:,1)))./10 : max(temp_array(:,1));
-y_plot = m.*x_plot+b;
-plot(x_plot, y_plot, 'k-')
-title(['r= ' num2str(r,2)])
-
-set(gca, 'fontsize', 16)
-plot_filename = ['Var_comparison ' x_label ' vs. ' comp_label ];
-
-print(gcf, '-dpng', [Plot_out_dir variables{v} '/' plot_filename '.png'])
-
 %%
 clear mon seas_amplitude m b r x_plot y_plot var_2 var_1 temp_array temp_names v2 v sv sv2
 %% plotting vertical DIC gradients
@@ -4805,20 +5236,20 @@ for m = 1:length(cmip_names.(variables{v}))
     if CMIP.dissic_yr.out_annual(m,1,1)==0 % there is an error in CESM2_6 depth coordinate so the interpolation is not working properly
         continue
     end
-    
+
     plot_color = cmap(strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),:);
-    
+
     plot(CMIP.(variables{v}).out_annual(m,:,1) - CMIP.(variables{v}).out_annual(m,1,1), depth_levs, 'color', plot_color)
-    
+
     % find the winter MLD and plot as well
     mod_match = strcmp(cmip_names.(variables{v2}), cmip_names.(variables{v}){m});
     if sum(mod_match)>0
-        
-        
+
+
         mod_MLD = CMIP.(variables{v2}).out_seasonal(mod_match, wint_mon,1) ;
-        
+
         matched_DIC = interp1(depth_levs, CMIP.(variables{v}).out_annual(m,:,1), mod_MLD);
-        
+
         plot(matched_DIC - CMIP.(variables{v}).out_annual(m,1,1), mod_MLD, 'x', 'linewidth', 3, 'color', plot_color, 'markersize', 10)
     end
     clear mod_match matched_DIC mod_MLD
@@ -4844,20 +5275,20 @@ harm_mod_vars = fieldnames(harm_mod);
 
 for hv = 1:length(harm_mod_vars)
     if strcmp(harm_mod_vars{hv}, 'DIC_Alk')
-        continue 
+        continue
     end
     v = find(strncmp(harm_mod_vars{hv}, variables, 4));
     if length(v)>1 % cludge since dissic and dissic_yr were getting confused
         v = strmatch(harm_mod_vars{hv}, variables, 'exact');
     end
-    
+
     for tt = 1:length(fits)
         for qq = 1:length(fits)
             clf
             set(gcf, 'units', 'inches')
             paper_w = 15; paper_h =8;
             set(gcf,'PaperSize',[paper_w paper_h],'PaperPosition', [0 0 paper_w paper_h]); clear paper_w paper_h
-            
+
             plot_index = 0;
             plot_filename = ['Harmonic_fits ' harm_mod_vars{hv} ' ' fits{qq} ' vs. ' fits{tt}];
             for hv2 = 1:length(harm_mod_vars)
@@ -4869,43 +5300,46 @@ for hv = 1:length(harm_mod_vars)
                     v2 = strmatch(harm_mod_vars{hv2}, variables, 'exact');
                 end
                 plot_index = plot_index+1;
-                
+
                 subplot(2,3,plot_index)
                 hold on
                 grid on
                 temp_array = [];
                 for m = 1:length(cmip_names.(variables{v}))
                     mod_match = strcmp(cmip_names.(variables{v2}), cmip_names.(variables{v}){m});
-                    
+                    disp(sum(mod_match))
                     if sum(mod_match)>0
                         if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
                             plot_color = cmap(strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),:);
-                          
+
                             plot(harm_mod.(variables{v}).(fits{qq})(m), harm_mod.(variables{v2}).(fits{tt})(mod_match), '.', 'color', ...
                                 plot_color, 'markersize', 15)
-                            
+
                             temp_array(end+1,1) = harm_mod.(variables{v}).(fits{qq})(m);
                             temp_array(end,2) = harm_mod.(variables{v2}).(fits{tt})(mod_match);
                             clear plot_color
-                            
+                            disp(cmip_names.(variables{v2}){mod_match})
+
+                            %                             pause
                         end
-                        
+
                     end
+                    %                     pause
                 end
                 xlabel( [variables{v} ' ' fits{qq}], 'interpreter', 'none')
                 ylabel([variables{v2} ' ' fits{tt}], 'interpreter', 'none')
-                
+
                 [m,b,r,~,~]=lsqfitgm(temp_array(:,1),temp_array(:,2));
                 x_plot = min(temp_array(:,1)):(max(temp_array(:,1))-min(temp_array(:,1)))./10 : max(temp_array(:,1));
                 y_plot = m.*x_plot+b;
                 plot(x_plot, y_plot, 'k-')
-                
+
                 title(['r= ' num2str(r,2)])
 
                 % add obs
                 plot(harm.(variables{v}).(fits{qq}), harm.(variables{v2}).(fits{tt}), 'xk', 'markersize', 30)
             end
-            print(gcf, '-dpng', [Plot_out_dir variables{v} '/' plot_filename '.png'])
+%             print(gcf, '-dpng', [Plot_out_dir variables{v} '/' plot_filename '.png'])
 
         end
     end
