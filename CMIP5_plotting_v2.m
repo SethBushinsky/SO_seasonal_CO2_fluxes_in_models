@@ -113,7 +113,7 @@ load([Project_dir 'data/' c_input_file])
 
 % clear neural_dir
 %% Multi var load CMIP
-variables = {'spco2';'intpp'; 'psl';'mlotst';'tos';'sos'; 'dissic'; 'talk'; 'fgco2';'wmo'; 'dissic_yr'; 'talk_yr'; 'thetao';'so'};
+variables = {'spco2';'intpp'; 'psl';'mlotst';'tos';'sos'; 'dissic'; 'talk'; 'fgco2';'wmo'; 'dissic_yr'; 'talk_yr'; 'thetao';'mld'};
 var_type = {'Omon'; 'Omon'; 'Amon';'Omon';'Omon';'Omon'; 'Omon'; 'Omon'; 'Omon'; 'Omon'; 'Oyr'; 'Oyr'; 'Omon'; 'Omon'};
 var_lims = [350 450 ;  0 7e2; 980 1020 ; 0 500 ; -1 25; 29 35.5; 1950 2300;2200 2500;-5e-2 5e-2;-3e7 3e7;1950 2300; 2200 2500; -1 25; 30 35];
 %%
@@ -132,7 +132,7 @@ plot_ver = '_v16'; % trying MLD calculations offline - this involves processing 
 % int_levels = [12,25,50,75,100,125,150,175,200,250,300,350,400];
 % bgc_levels = [10,25,50,75,100,125,150,175,200,300,400,500,600,700,800,900,1000,1200,1400,1600,1800,2000];
 
-for v= [1 2 4 5 6 7 8 9 13 14]% 1:length(variables)[%1, 4, 6, 13 14]
+for v= [1, 14]%[1 2 4 5 6 7 8 9 13 14]% 1:length(variables)[%1, 4, 6, 13 14]
     
     disp([ '     <strong> Starting ' variables{v} ' processing </strong>' ])
 
