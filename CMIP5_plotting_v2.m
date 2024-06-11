@@ -115,7 +115,7 @@ load([Project_dir 'data/' c_input_file])
 %% Multi var load CMIP
 variables = {'spco2';'intpp'; 'psl';'mlotst';'tos';'sos'; 'dissic'; 'talk'; 'fgco2';'wmo'; 'dissic_yr'; 'talk_yr'; 'thetao';'mld'};
 var_type = {'Omon'; 'Omon'; 'Amon';'Omon';'Omon';'Omon'; 'Omon'; 'Omon'; 'Omon'; 'Omon'; 'Oyr'; 'Oyr'; 'Omon'; 'Omon'};
-var_lims = [350 450 ;  0 7e2; 980 1020 ; 0 500 ; -1 25; 29 35.5; 1950 2300;2200 2500;-5e-2 5e-2;-3e7 3e7;1950 2300; 2200 2500; -1 25; 30 35];
+var_lims = [350 450 ;  0 7e2; 980 1020 ; 0 500 ; -1 25; 29 35.5; 1950 2300;2200 2500;-5e-2 5e-2;-3e7 3e7;1950 2300; 2200 2500; -1 25; 0 500];
 %%
 
 plot_ver = '_v16'; % trying MLD calculations offline - this involves processing so, and using thetao the same as everything else (i.e. initially not as a time mean)
@@ -132,7 +132,7 @@ plot_ver = '_v16'; % trying MLD calculations offline - this involves processing 
 % int_levels = [12,25,50,75,100,125,150,175,200,250,300,350,400];
 % bgc_levels = [10,25,50,75,100,125,150,175,200,300,400,500,600,700,800,900,1000,1200,1400,1600,1800,2000];
 
-for v= [1, 14]%[1 2 4 5 6 7 8 9 13 14]% 1:length(variables)[%1, 4, 6, 13 14]
+for v= [13, 14]%[1 2 4 5 6 7 8 9 11 12 13 14]% 1:length(variables)[%1, 4, 6, 13 14]
     
     disp([ '     <strong> Starting ' variables{v} ' processing </strong>' ])
 
@@ -213,7 +213,7 @@ for v= [1, 14]%[1 2 4 5 6 7 8 9 13 14]% 1:length(variables)[%1, 4, 6, 13 14]
 
         cmip_names.(variables{v}){f} = mod_name;
 
-        clear mod_name time_temp first_index second_index
+        clear mod_name time_temp first_index second_index temp_var_load
     end
 
     clear cmip_files CMIP_dir
@@ -264,8 +264,10 @@ for v= [1, 14]%[1 2 4 5 6 7 8 9 13 14]% 1:length(variables)[%1, 4, 6, 13 14]
         CMIP.(variables{v}).(mod_name).(variables{v}) = squeeze(ncread([CMIP_dir cmip_files(f).name], var_load));
         CMIP.(variables{v}).(mod_name).units = ncreadatt([CMIP_dir cmip_files(f).name], var_load, 'units');
         CMIP.(variables{v}).(mod_name).long_name = ncreadatt([CMIP_dir cmip_files(f).name], var_load, 'long_name');
-        CMIP.(variables{v}).(mod_name).standard_name = ncreadatt([CMIP_dir cmip_files(f).name], var_load, 'standard_name');
-
+        try
+            CMIP.(variables{v}).(mod_name).standard_name = ncreadatt([CMIP_dir cmip_files(f).name], var_load, 'standard_name');
+        catch
+        end
 
         if numel(size(CMIP.(variables{v}).(mod_name).(variables{v})))==4 || strcmp(variables{v}, 'thetao')
             try
@@ -364,82 +366,79 @@ for v= [1, 14]%[1 2 4 5 6 7 8 9 13 14]% 1:length(variables)[%1, 4, 6, 13 14]
             CMIP.(variables{v}).(mod_name).ensemble_member_hist = cmip_files_hist(hh).name(second_index+11:third_index-1);
             CMIP.(variables{v}).(mod_name).GMT_Matlab = [temp_Matlab_time;  CMIP.(variables{v}).(mod_name).GMT_Matlab];
 
-            % commenting this out, as I am now using thetao the same as
-            % other variables (i.e. time varying). Will have to add
-            % averaging to the SAF calculation
-            % if ~strcmp(variables{v}, 'thetao')
+            if ~strcmp(variables{v}, 'thetao')
                 time_dimension = find(size(CMIP.(variables{v}).(mod_name).(variables{v}))==length(time_temp));
                 CMIP.(variables{v}).(mod_name).(variables{v}) = cat(time_dimension,squeeze(ncread([CMIP_dir_hist cmip_files_hist(hh).name], var_load)), ...
                     CMIP.(variables{v}).(mod_name).(variables{v}));
 
                 clear time_dimension
-            % else
-            %     % for thetao, you only have one temporal mean, so you don't
-            %     % want to concatenate, you want to average. Except that you
-            %     % first need to check if there should be interpolation:
-            %     temp_var_hist = ncread([CMIP_dir_hist cmip_files_hist(hh).name], var_load);
-            %     if strcmp(variables{v}, 'thetao')
-            %         try
-            %             CMIP.(variables{v}).(mod_name).depth_hist = ncread([CMIP_dir_hist cmip_files_hist(hh).name], 'zlev');
-            %             CMIP.(variables{v}).(mod_name).depth_units_orig_hist = ncreadatt([CMIP_dir_hist cmip_files_hist(hh).name], 'zlev', 'units');
-            % 
-            %         catch
-            %             try
-            %                 CMIP.(variables{v}).(mod_name).depth_hist = ncread([CMIP_dir_hist cmip_files_hist(hh).name], 'lev');
-            %                 try
-            %                     CMIP.(variables{v}).(mod_name).depth_units_orig_hist = ncreadatt([CMIP_dir_hist cmip_files_hist(hh).name], 'lev', 'units');
-            % 
-            %                 catch
-            %                     disp(['No units for ' cmip_files(f).name ' lev'])
-            % 
-            %                 end
-            %             catch
-            %                 try
-            %                     CMIP.(variables{v}).(mod_name).depth_hist = ncread([CMIP_dir_hist cmip_files_hist(hh).name], 'olevel');
-            %                     CMIP.(variables{v}).(mod_name).depth_units_orig_hist = ncreadatt([CMIP_dir_hist cmip_files_hist(hh).name], 'olevel', 'units');
-            %                 catch
-            %                     CMIP.(variables{v}).(mod_name).depth_hist = ncread([CMIP_dir_hist cmip_files_hist(hh).name], 'depth');
-            %                     CMIP.(variables{v}).(mod_name).depth_units_orig_hist = ncreadatt([CMIP_dir_hist cmip_files_hist(hh).name], 'depth', 'units');
-            %                 end
-            %             end
-            %         end
-            %     end
-            % 
-            %     % 2022_06_24 - removing as this should be fixed in cdo now
-            % 
-            %     %                 % check units and adjust if centimeters (CESM2_6 only so far)
-            %     %                 if isfield(CMIP.(variables{v}).(mod_name), 'depth_units_orig') && strcmp(CMIP.(variables{v}).(mod_name).depth_units_orig, 'centimeters')
-            %     %                     CMIP.(variables{v}).(mod_name).depth_hist =  CMIP.(variables{v}).(mod_name).depth_hist./100;
-            %     %                     CMIP.(variables{v}).(mod_name).depth_hist_units =  'm';
-            %     %
-            %     %                 end
-            % 
-            %     % 2022_06_24 - removing as this should be fixed in cdo now
-            %     %                 % if there are more than 13 depths and var is thetao, the file has not been
-            %     %                 % interpolated already in depth. Perform an interpolation at each
-            %     %                 % grid cell.
-            %     %                 if length(CMIP.(variables{v}).(mod_name).depth_hist)>13 && strcmp(variables{v}, 'thetao')
-            %     %                     %                 CMIP.(variables{v}).(mod_name).([variables{v} '_raw_hist']) = temp_var; clear temp_var
-            %     %
-            %     %                     temp_var_hist_interp = NaN(length(CMIP.(variables{v}).lon), length(CMIP.(variables{v}).lat), length(int_levels));
-            %     %                     for lo = 1:length(CMIP.(variables{v}).lon)
-            %     %                         for la = 1:length(CMIP.(variables{v}).lat)
-            %     %                             temp_var_hist_interp(lo, la, :) = ...
-            %     %                                 interp1(CMIP.(variables{v}).(mod_name).depth_hist, squeeze(temp_var_hist(lo, la, :)), int_levels);
-            %     %                         end
-            %     %                     end
-            %     %                     clear lo la
-            %     %                     temp_var_hist = temp_var_hist_interp;
-            %     %                 end
-            % 
-            %     % first concatenate thetao datasets, then take the mean
-            %     % along the new time dimension, leaving a lon x lat x depth
-            %     % array
-            %     CMIP.(variables{v}).(mod_name).(variables{v}) = ...
-            %         nanmean(cat(4, CMIP.(variables{v}).(mod_name).(variables{v}), temp_var_hist),4);
-            % 
-            %     clear temp_var_hist_interp temp_var_hist
-            % end
+            else
+                % for thetao, you only have one temporal mean, so you don't
+                % want to concatenate, you want to average. Except that you
+                % first need to check if there should be interpolation:
+                temp_var_hist = ncread([CMIP_dir_hist cmip_files_hist(hh).name], var_load);
+                if strcmp(variables{v}, 'thetao')
+                    try
+                        CMIP.(variables{v}).(mod_name).depth_hist = ncread([CMIP_dir_hist cmip_files_hist(hh).name], 'zlev');
+                        CMIP.(variables{v}).(mod_name).depth_units_orig_hist = ncreadatt([CMIP_dir_hist cmip_files_hist(hh).name], 'zlev', 'units');
+
+                    catch
+                        try
+                            CMIP.(variables{v}).(mod_name).depth_hist = ncread([CMIP_dir_hist cmip_files_hist(hh).name], 'lev');
+                            try
+                                CMIP.(variables{v}).(mod_name).depth_units_orig_hist = ncreadatt([CMIP_dir_hist cmip_files_hist(hh).name], 'lev', 'units');
+
+                            catch
+                                disp(['No units for ' cmip_files(f).name ' lev'])
+
+                            end
+                        catch
+                            try
+                                CMIP.(variables{v}).(mod_name).depth_hist = ncread([CMIP_dir_hist cmip_files_hist(hh).name], 'olevel');
+                                CMIP.(variables{v}).(mod_name).depth_units_orig_hist = ncreadatt([CMIP_dir_hist cmip_files_hist(hh).name], 'olevel', 'units');
+                            catch
+                                CMIP.(variables{v}).(mod_name).depth_hist = ncread([CMIP_dir_hist cmip_files_hist(hh).name], 'depth');
+                                CMIP.(variables{v}).(mod_name).depth_units_orig_hist = ncreadatt([CMIP_dir_hist cmip_files_hist(hh).name], 'depth', 'units');
+                            end
+                        end
+                    end
+                end
+
+                % 2022_06_24 - removing as this should be fixed in cdo now
+
+                %                 % check units and adjust if centimeters (CESM2_6 only so far)
+                %                 if isfield(CMIP.(variables{v}).(mod_name), 'depth_units_orig') && strcmp(CMIP.(variables{v}).(mod_name).depth_units_orig, 'centimeters')
+                %                     CMIP.(variables{v}).(mod_name).depth_hist =  CMIP.(variables{v}).(mod_name).depth_hist./100;
+                %                     CMIP.(variables{v}).(mod_name).depth_hist_units =  'm';
+                %
+                %                 end
+                %
+                %     % 2022_06_24 - removing as this should be fixed in cdo now
+                %     %                 % if there are more than 13 depths and var is thetao, the file has not been
+                %     %                 % interpolated already in depth. Perform an interpolation at each
+                %     %                 % grid cell.
+                %     %                 if length(CMIP.(variables{v}).(mod_name).depth_hist)>13 && strcmp(variables{v}, 'thetao')
+                %     %                     %                 CMIP.(variables{v}).(mod_name).([variables{v} '_raw_hist']) = temp_var; clear temp_var
+                %     %
+                %     %                     temp_var_hist_interp = NaN(length(CMIP.(variables{v}).lon), length(CMIP.(variables{v}).lat), length(int_levels));
+                %     %                     for lo = 1:length(CMIP.(variables{v}).lon)
+                %     %                         for la = 1:length(CMIP.(variables{v}).lat)
+                %     %                             temp_var_hist_interp(lo, la, :) = ...
+                %     %                                 interp1(CMIP.(variables{v}).(mod_name).depth_hist, squeeze(temp_var_hist(lo, la, :)), int_levels);
+                %     %                         end
+                %     %                     end
+                %     %                     clear lo la
+                %     %                     temp_var_hist = temp_var_hist_interp;
+                %     %                 end
+                %
+                %     % first concatenate thetao datasets, then take the mean
+                %     % along the new time dimension, leaving a lon x lat x depth
+                %     % array
+                CMIP.(variables{v}).(mod_name).(variables{v}) = ...
+                    nanmean(cat(4, CMIP.(variables{v}).(mod_name).(variables{v}), temp_var_hist),4);
+
+                clear temp_var_hist_interp temp_var_hist
+            end
 
 
 
@@ -587,6 +586,20 @@ if isfield(cmip_names, variables{v})
     CMIP.tos.INM_CM4_8_6.tos(CMIP.tos.INM_CM4_8_6.tos==0) = nan;
 end
 clear v m
+
+% for "mld" that I calculated myself in python I did not change the
+% calendar or date settings, so let's replace the GMT_Matlab for all models
+% with one from thetao
+v = find(strcmp(variables, 'mld'));
+if isfield(cmip_names, variables{v})
+    for m=1:length(cmip_names.(variables{v}))
+        
+        mod_match = strcmp(cmip_names.thetao, cmip_names.(variables{v}){m});
+        CMIP.(variables{v}).(cmip_names.(variables{v}){m}).GMT_Matlab = CMIP.(variables{v}).(cmip_names.thetao{mod_match}).GMT_Matlab;
+    end
+end
+clear v m mod_match
+
 
 v = find(strcmp(variables, 'thetao'));
 if isfield(cmip_names, variables{v})
@@ -826,30 +839,30 @@ for w = 1% 1:2
         end
 
         % for thetao
-        % if v==13
-        %     % first take the mean in time
-        %     temp_var = nanmean(CMIP.(variables{v}).(mod_name).(variables{v}),4);
-        %     % then select the 400m depth
-        %     CMIP.([variables{v}]).(mod_name).depth = ncread([SOSE_dir sose_file{sv}], 'Z').*-1;
-        %     target_depth = 400;
-        %     depth_index = min(abs(CMIP.([variables{v}]).(mod_name).depth - target_depth)) == abs(CMIP.([variables{v}]).(mod_name).depth - target_depth);
-        % 
-        %     % create a new temporary variable that is 360 x 180 x 13;
-        %     % fill the new depth # 13 with bSOSE theta at 400 m
-        % 
-        %     temp_var_matched_depths = NaN(360, 180, 13);
-        %     temp_var_matched_depths(:,:,13) = temp_var(:,:, depth_index);
-        % 
-        %     % put the new array back into the thetao spot
-        %     CMIP.(variables{v}).(mod_name).(variables{v}) = temp_var_matched_depths;
-        % 
-        %     % and save the new depth scale as well:
-        %     CMIP.([variables{v}]).(mod_name).depth = CMIP.([variables{v}]).(cmip_names.(variables{v}){1}).depth;
-        % 
-        %     % overwrite the time with a mean time value
-        %     CMIP.([variables{v}]).(mod_name).GMT_Matlab = nanmean(CMIP.([variables{v}]).(mod_name).GMT_Matlab);
-        %     clear target_depth temp_var temp_var_matched_depths depth_index
-        % end
+        if v==13
+            % first take the mean in time
+            temp_var = nanmean(CMIP.(variables{v}).(mod_name).(variables{v}),4);
+            % then select the 400m depth
+            CMIP.([variables{v}]).(mod_name).depth = ncread([SOSE_dir sose_file{sv}], 'Z').*-1;
+            target_depth = 400;
+            depth_index = min(abs(CMIP.([variables{v}]).(mod_name).depth - target_depth)) == abs(CMIP.([variables{v}]).(mod_name).depth - target_depth);
+
+            % create a new temporary variable that is 360 x 180 x 13;
+            % fill the new depth # 13 with bSOSE theta at 400 m
+
+            temp_var_matched_depths = NaN(360, 180, 13);
+            temp_var_matched_depths(:,:,13) = temp_var(:,:, depth_index);
+
+            % put the new array back into the thetao spot
+            CMIP.(variables{v}).(mod_name).(variables{v}) = temp_var_matched_depths;
+
+            % and save the new depth scale as well:
+            CMIP.([variables{v}]).(mod_name).depth = CMIP.([variables{v}]).(cmip_names.(variables{v}){1}).depth;
+
+            % overwrite the time with a mean time value
+            CMIP.([variables{v}]).(mod_name).GMT_Matlab = nanmean(CMIP.([variables{v}]).(mod_name).GMT_Matlab);
+            clear target_depth temp_var temp_var_matched_depths depth_index
+        end
 
         % for NPP, calculate the vertical integral to match CMIP models
         if v==2
@@ -973,39 +986,39 @@ end
 
 clear m v q
 %% calculate MLD
-variables = [variables ; 'MLD_03'];
-var_type = [var_type ; 'Omon'];
-var_lims(end+1,:) = [0 500];
-cmip_names.MLD_03 = {};
-CMIP.MLD_03.lat = CMIP.spco2.lat;
-CMIP.MLD_03.lon = CMIP.spco2.lon;
-
-temp_MLD_all = NaN(360, 180, 120, length(cmip_names.thetao));
-
-parfor m = 1:length(cmip_names.thetao)
-    % loop through all 360 lon and -90 to -20 deg S
-    % la = 40;
-    temp_MLD = NaN(360, 180, 120);
-
-
-    for mon = 1:120
-        for lo = 1:length(CMIP.MLD_03.lon)
-            for la = 1:70
-                temp_MLD(lo, la, mon) = mld_dbm_v3(squeeze(CMIP.thetao.(cmip_names.thetao{m}).thetao(lo, la, :, mon)), squeeze(CMIP.so.(cmip_names.thetao{m}).so(lo, la, :, mon)), CMIP.so.(cmip_names.thetao{m}).depth, 1, 1, 0.03);
-            end
-        end
-    end
-    % temporarily save out temp_MLD so that it can be loaded back in
-    % save([Project_dir 'data/temp_MLD_files/MLD_calc_' cmip_names.thetao{m}], 'temp_MLD')
-    temp_MLD_all(:,:,:,m) = temp_MLD;
-end
-%% save MLDs back into CMIP structure
-for m = 1:length(cmip_names.thetao)
-    CMIP.MLD_03.(cmip_names.thetao{m}).GMT_Matlab = CMIP.thetao.(cmip_names.thetao{m}).GMT_Matlab;
-
-    CMIP.MLD_03.(cmip_names.thetao{m}).MLD_03 = temp_MLD_all(:,:,:,m);
-    CMIP.MLD_03.(cmip_names.thetao{m}).units = 'm';
-end
+% variables = [variables ; 'MLD_03'];
+% var_type = [var_type ; 'Omon'];
+% var_lims(end+1,:) = [0 500];
+% cmip_names.MLD_03 = {};
+% CMIP.MLD_03.lat = CMIP.spco2.lat;
+% CMIP.MLD_03.lon = CMIP.spco2.lon;
+% 
+% temp_MLD_all = NaN(360, 180, 120, length(cmip_names.thetao));
+% 
+% parfor m = 1:length(cmip_names.thetao)
+%     % loop through all 360 lon and -90 to -20 deg S
+%     % la = 40;
+%     temp_MLD = NaN(360, 180, 120);
+% 
+% 
+%     for mon = 1:120
+%         for lo = 1:length(CMIP.MLD_03.lon)
+%             for la = 1:70
+%                 temp_MLD(lo, la, mon) = mld_dbm_v3(squeeze(CMIP.thetao.(cmip_names.thetao{m}).thetao(lo, la, :, mon)), squeeze(CMIP.so.(cmip_names.thetao{m}).so(lo, la, :, mon)), CMIP.so.(cmip_names.thetao{m}).depth, 1, 1, 0.03);
+%             end
+%         end
+%     end
+%     % temporarily save out temp_MLD so that it can be loaded back in
+%     % save([Project_dir 'data/temp_MLD_files/MLD_calc_' cmip_names.thetao{m}], 'temp_MLD')
+%     temp_MLD_all(:,:,:,m) = temp_MLD;
+% end
+% %% save MLDs back into CMIP structure
+% for m = 1:length(cmip_names.thetao)
+%     CMIP.MLD_03.(cmip_names.thetao{m}).GMT_Matlab = CMIP.thetao.(cmip_names.thetao{m}).GMT_Matlab;
+% 
+%     CMIP.MLD_03.(cmip_names.thetao{m}).MLD_03 = temp_MLD_all(:,:,:,m);
+%     CMIP.MLD_03.(cmip_names.thetao{m}).units = 'm';
+% end
 
 
 
@@ -1020,7 +1033,8 @@ subplot(3,1,1); pcolor(CMIP.lon_grid, CMIP.lat_grid, CMIP.mlotst.CNRM_CM5.mlotst
 
 % note that this expects a 2D variable will be run first to create a mask
 % south of the SAF if one does not already exist
-for v=[1 2 4:9 11 12 14, 15] %[1:12 14] % skip thetao as it is only used for the mask
+
+for v=[14]%[1 2 4:9 11 12 14, 15] %[1:12 14] % skip thetao as it is only used for the mask
     if ~isfield(cmip_names, variables{v})
         continue
     end
@@ -1054,7 +1068,9 @@ for v=[1 2 4:9 11 12 14, 15] %[1:12 14] % skip thetao as it is only used for the
 
             % only create a new mask if there isn't one already made
             if ~isfield(CMIP.thetao.(cmip_names.(variables{v}){m}), 'SAF_S_mask')
-                SAF_S_mask = CMIP.thetao.(cmip_names.(variables{v}){m}).thetao(:,:,13)<=5 & lat_grid<-30  & lat_grid>poleward_lat_lim;
+                % need to find depth of thetao at 400m
+                depth_index = CMIP.thetao.(cmip_names.(variables{v}){m}).depth==400;
+                SAF_S_mask = CMIP.thetao.(cmip_names.(variables{v}){m}).thetao(:,:,depth_index)<=5 & lat_grid<-30  & lat_grid>poleward_lat_lim;
                 CMIP.thetao.(cmip_names.(variables{v}){m}).SAF_S_mask = SAF_S_mask;
                 clear SAF_S_mask
 
@@ -1073,9 +1089,10 @@ for v=[1 2 4:9 11 12 14, 15] %[1:12 14] % skip thetao as it is only used for the
                 old_SAF = CMIP.thetao.(cmip_names.(variables{v}){m}).SAF;
                 old_SAF_w_lon = [CMIP.thetao.lon old_SAF];
                 old_SAF_w_lon = old_SAF_w_lon(~isnan(old_SAF_w_lon(:,2)),:);
-                new_SAF = interp1(old_SAF_w_lon(:,1), old_SAF_w_lon(:,2), CMIP.thetao.lon);
-                CMIP.thetao.(cmip_names.(variables{v}){m}).SAF = new_SAF;
-
+                if size(old_SAF_w_lon,1)>0
+                    new_SAF = interp1(old_SAF_w_lon(:,1), old_SAF_w_lon(:,2), CMIP.thetao.lon);
+                    CMIP.thetao.(cmip_names.(variables{v}){m}).SAF = new_SAF;
+                end
                 clear old_SAF old_SAF_w_lon new_SAF
 
                 % find points in SAF mask that are South of SAF and
@@ -1197,7 +1214,10 @@ for v=[1 2 4:9 11 12 14, 15] %[1:12 14] % skip thetao as it is only used for the
 
             % only create a new mask if there isn't one already made
             if ~isfield(CMIP.thetao.(cmip_names.(variables{v}){m}), 'SAF_S_mask')
-                SAF_S_mask = CMIP.thetao.(cmip_names.(variables{v}){m}).thetao(:,:,13)<=5 & lat_grid<-30  & lat_grid>poleward_lat_lim;
+                % need to find depth of thetao at 400m
+                depth_index = CMIP.thetao.(cmip_names.(variables{v}){m}).depth==400;
+
+                SAF_S_mask = CMIP.thetao.(cmip_names.(variables{v}){m}).thetao(:,:,depth_index)<=5 & lat_grid<-30  & lat_grid>poleward_lat_lim;
                 CMIP.thetao.(cmip_names.(variables{v}){m}).SAF_S_mask = SAF_S_mask;
                 clear SAF_S_mask
 
@@ -1274,7 +1294,7 @@ clear v dd m
 
 Plot_out_dir = [home_dir 'Work/Projects/2019_05 SO_C_flux_model_comparison/Plots/'];
 % v = 5;
-for v=1%:length(variables) % 4%[2 4 7 8]% 1 2 4 5 6 7 8 9]%9%13:length(variables)
+for v=[14]%:length(variables) % 4%[2 4 7 8]% 1 2 4 5 6 7 8 9]%9%13:length(variables)
     if ~isfield(cmip_names, variables{v})
         continue
     end
@@ -1283,7 +1303,7 @@ for v=1%:length(variables) % 4%[2 4 7 8]% 1 2 4 5 6 7 8 9]%9%13:length(variables
     CMIP.lon_grid = lon_grid';
     CMIP.lat_grid = lat_grid';
     clear lon_grid lat_grid
-    for m = 1%:length(cmip_names.(variables{v}))
+    for m = 1:length(cmip_names.(variables{v}))
 
         if isfield(CMIP.(variables{v}).(cmip_names.(variables{v}){m}), 'depth')
             num_depths = length(CMIP.(variables{v}).(cmip_names.(variables{v}){m}).depth);
@@ -2477,7 +2497,7 @@ argo_MLD_lat_index =CMIP.lat_grid(1,:)>= argo_MLD.Y(1) & CMIP.lat_grid(1,:)<=arg
 
 argo_MLD.mld_lon_match(:,argo_MLD_lat_index,:) = argo_MLD.mld(:,:, argo_MLD_time_index);
 
-obs.mlotst.out_seasonal2 = NaN(12,2);
+obs.mld.out_seasonal = NaN(12,2);
 for mon=1:12
 
 
@@ -2490,13 +2510,13 @@ for mon=1:12
     grid_weights = temp_area./nansum(reshape(temp_area,[],1));
 
 
-    obs.mlotst.out_seasonal2(mon,1) =  nansum(reshape(TTT.*grid_weights,[],1));
-    obs.mlotst.out_seasonal2(mon,2) = nanstd(reshape(TTT,[],1));
+    obs.mld.out_seasonal(mon,1) =  nansum(reshape(TTT.*grid_weights,[],1));
+    obs.mld.out_seasonal(mon,2) = nanstd(reshape(TTT,[],1));
 
     clear grid_weights temp_area
 end
 
-var_name = 'mlotst';
+var_name = 'mld';
 lon_grid = CMIP.lon_grid;
 lat_grid = CMIP.lat_grid;
 SO_var = mean(argo_MLD.mld_lon_match,3, 'omitnan');
@@ -2513,6 +2533,7 @@ npp_types = {'CbPM', 'VGPM', 'CAFE'};
 clear NPP_obs
 
 for f = 1:length(npp_types)
+    disp(['loading ' npp_types{f}])
     NPP_dir = [data_dir 'Data_Products/NPP/' npp_types{f} '/'];
     npp_files = dir([NPP_dir '*.hdf']);
 
@@ -2863,7 +2884,7 @@ end
 %     'var_lims', 'depth_levs', 'poleward_lat_lim', 'depth_names')
 save([home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/data/seasonal_cycles_' datestr(now, 'YYYY_mm_dd') '.mat'], 'CMIP', 'combined_SO', 'NOAA_SST', 'WOA_SSS',...
     'cmip_names', 'obs', 'color_model', 'variables', 'var_type', 'cmap', 'model_group_colors', ...
-    'var_lims', 'depth_levs', 'poleward_lat_lim', 'depth_names', 'plot_ver', 'p_year')
+    'var_lims', 'depth_levs', 'poleward_lat_lim', 'depth_names', 'plot_ver', 'p_year', '-v7.3')
 
 %% Taylor diagrams:
 % 0.0 Run Carbon_mapped_product_analysis
@@ -2941,7 +2962,7 @@ legend_on = 1;
 % flux_density = 1;
 seas_comp_vars = fieldnames(obs);
 
-for sv =  7%1:length(seas_comp_vars)%9%[1 2 4 5 6 7 8 9 14 15]
+for sv =  [9 10] %1:length(seas_comp_vars)%9%[1 2 4 5 6 7 8 9 14 15]
     v = find(strncmp(seas_comp_vars{sv}, variables, 4));
     if length(v)>1 % cludge since dissic and dissic_yr were getting confused
         v = strmatch(seas_comp_vars{sv}, variables, 'exact');
@@ -3080,7 +3101,7 @@ clear q m mod_index
 
 save([home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/data/seasonal_cycles_w_model_type_matched_' datestr(now, 'YYYY_mm_dd') '.mat'], 'CMIP', 'combined_SO', 'NOAA_SST', 'WOA_SSS',...
     'cmip_names', 'obs', 'color_model', 'variables', 'var_type', 'cmap', 'model_group_colors', ...
-    'var_lims', 'depth_levs', 'poleward_lat_lim', 'depth_names', 'plot_ver', 'model_group_names', 'p_year')
+    'var_lims', 'depth_levs', 'poleward_lat_lim', 'depth_names', 'plot_ver', 'model_group_names', 'p_year', '-v7.3')
 
 
 
@@ -3315,15 +3336,15 @@ end
 % cmap = distinguishable_colors(20);
 var_mean_lims = var_lims;
 
-var_mean_lims(2,:) = [0 1200];
-var_mean_lims(4,:) = [0 450];
-var_mean_lims(5,:) = [-1 8.5];
-var_mean_lims(6,:) = [33 34.5];
-var_mean_lims(7,:) = [2070 2300];
-var_mean_lims(8,:) = [2260 2440];
-var_mean_lims(9,:) = [-250 250];
-var_mean_lims(14,:) = [4e4 7.5e4];
-var_mean_lims(15,:) = [-190 -100];
+% var_mean_lims(2,:) = [0 1200];
+% var_mean_lims(4,:) = [0 450];
+% var_mean_lims(5,:) = [-1 8.5];
+% var_mean_lims(6,:) = [33 34.5];
+% var_mean_lims(7,:) = [2070 2300];
+% var_mean_lims(8,:) = [2260 2440];
+% var_mean_lims(9,:) = [-250 250];
+% var_mean_lims(14,:) = [4e4 7.5e4];
+% var_mean_lims(15,:) = [-190 -100];
 
 var_anom_lims(1,:) = [-30 25];
 var_anom_lims(2,:) = [-600 900];
@@ -3345,7 +3366,7 @@ else
     anomaly_text=[];
 end
 
-sv =  2;
+sv =  10;
 v = find(strncmp(seas_comp_vars{sv}, variables, 4));
 if length(v)>1 % cludge since dissic and dissic_yr were getting confused
     v = strmatch(seas_comp_vars{sv}, variables, 'exact');
