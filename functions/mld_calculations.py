@@ -19,7 +19,7 @@ def sigma0(salinity,temperature,lon,lat,pressure):
     
     return sigma
 
-def cmip_mld_calc(cmip_dir, out_dir, model_name, dir_add_on):
+def cmip_mld_calc(cmip_dir, out_dir, model_name, dir_add_on, sal_name, theta_name, model_run):
 
     print(model_name + ' ' + dir_add_on + ' started')    
     for file in os.listdir(cmip_dir + 'so/regrid_for_MLD/' + dir_add_on):
@@ -41,8 +41,8 @@ def cmip_mld_calc(cmip_dir, out_dir, model_name, dir_add_on):
     # la = 30
 
     # find the depth levels without knowing the coordinate name:
-    for k in so_n.so.indexes.keys():
-        v = so_n.so[k]
+    for k in so_n[sal_name].indexes.keys():
+        v = so_n[sal_name][k]
         axis = v.attrs.get('axis')
         # print(axis)
         if axis=='Z':
@@ -54,31 +54,37 @@ def cmip_mld_calc(cmip_dir, out_dir, model_name, dir_add_on):
     else:
         so_factor = 1
 
-    if thetao_n.thetao.units=='K':
+    if thetao_n[theta_name].units=='K':
         thetao_n_offset = -273.15
     else:
         thetao_n_offset = 0
 
+    if model_run.__contains__('SOSE'): # error in CESM1-BGC
+        depth_factor = -1
+    else:
+        depth_factor = 1
+        
     for tt in range(0, len(thetao_n['time'])):
         for lo in range(0,360):
             for la in range(10, 60):
-                if sum(~np.isnan(thetao_n['thetao'].isel(time=tt, lon=lo, lat=la).values))==0:
+                if sum(~np.isnan(thetao_n[theta_name].isel(time=tt, lon=lo, lat=la).values))<=1:
                     continue
-                pot_dens = sigma0(so_n['so'].isel(time=tt, lon=lo, lat=la).values*so_factor, 
-                                thetao_n['thetao'].isel(time=tt, lon=lo, lat=la).values+thetao_n_offset, 
-                                thetao_n['lon'][lo].values, thetao_n['lat'][la].values, depth_vals)
-                
-                mld = fl_mld.calc_mld(pot_dens, depth_vals, ref_depth=10, sigma_theta_crit=sig_threshold)
+                pot_dens = sigma0(so_n[sal_name].isel(time=tt, lon=lo, lat=la).values*so_factor, 
+                            thetao_n[theta_name].isel(time=tt, lon=lo, lat=la).values+thetao_n_offset, 
+                            thetao_n['lon'][lo].values, thetao_n['lat'][la].values, depth_vals*depth_factor)
+                if sum(~np.isnan(pot_dens))<=1: 
+                    continue
+                mld = fl_mld.calc_mld(pot_dens, depth_vals*depth_factor, ref_depth=10, sigma_theta_crit=sig_threshold)
                 mld_array[tt, la, lo] = mld
 
     
     ds = xr.Dataset({})
-    ds['thetao'] = thetao_n['thetao']
+    ds['thetao'] = thetao_n[theta_name]
     ds['mld'] = (( 'time', 'lat','lon'), mld_array)
     ds['mld'] = ds['mld'].assign_attrs(units="m",long_name='MLD calculated from monthly output, 0.03 sig theta from 10 m', standard_name ='MLD')
 
     d_mld_only = ds.drop_vars('thetao')
     d_mld_only.to_netcdf(cmip_dir + out_dir + dir_add_on +  'mld' + so_filename[2:])
-    print(model_name + ' completed')
+    print(model_name + ' ' + dir_add_on + ' completed')
 
     return

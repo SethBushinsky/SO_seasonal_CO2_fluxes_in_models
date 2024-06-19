@@ -10,11 +10,11 @@ fig_dir = [home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/figures/'];
 % seasonal_file = 'seasonal_cycles_w_model_type_matched_2023_11_07.mat';
 % seasonal_file = 'seasonal_cycles_w_model_type_matched_2024_02_28.mat';
 % seasonal_file = 'seasonal_cycles_w_model_type_matched_2024_04_07.mat';
-seasonal_file = 'seasonal_cycles_w_model_type_matched_2024_05_17.mat';
+seasonal_file = 'seasonal_cycles_w_model_type_matched_2024_06_18.mat';
 load([fig_dir '../data/' seasonal_file])
 seas_comp_vars = fieldnames(obs);
 
-toy_model_file = 'toy_model_output_2024_05_17.mat';
+toy_model_file = 'toy_model_output_2024_06_18.mat';
 load([fig_dir '../data/' toy_model_file])
 
 c_input_file = 'Carbon_mapped_product_analysis_output_2024_04_15.mat';
@@ -27,7 +27,8 @@ var_plot_names = {'tos'  'SST' '\circC' ;
     'spco2' 'pCO_2' '\muatm' ;
     'fgco2' 'CO_2 flux' 'mol C m^-^2 yr^-^1' ;
     'mlotst' 'MLD' 'm';
-    'intpp' 'Net primary prod.' 'mg C m^-^2 d^-^1'};
+    'intpp' 'Net primary prod.' 'mg C m^-^2 d^-^1';
+    'mld' 'MLD_0_3' 'm'};
 
 month_names = {'January' 'February' 'March' 'April' 'May' 'June' 'July' 'August' 'September' 'October' 'November' 'December'};
 %% Figure 1 option 3 - Annual / Summer / winter / seasonal integral
@@ -1130,7 +1131,8 @@ hold on
 % y axis variable choices
 seas_amplitude = 1;
 dissic_vert_gradient=0;
-sv2 = 1;
+sv2_name = 'tos';
+sv2 = find(strncmp(seas_comp_vars, sv2_name,4));
 v2 = find(strncmp(seas_comp_vars{sv2}, variables, 4));
 if length(v2)>1 % cludge since dissic and dissic_yr were getting confused
     v2 = strmatch(seas_comp_vars{sv2}, variables, 'exact');
@@ -1153,7 +1155,8 @@ dd = 12;
 
 wmo_on = 0; % takes precedence over alt_x
 if wmo_on==0
-    sv = 9;
+    sv_name = 'mld';
+    sv = find(strncmp(seas_comp_vars, sv_name,4));
     v = find(strncmp(seas_comp_vars{sv}, variables, 4));
     if length(v)>1 % cludge since dissic and dissic_yr were getting confused
         v = strmatch(seas_comp_vars{sv}, variables, 'exact');
@@ -1309,7 +1312,8 @@ hold on
 % y axis variable choices
 seas_amplitude = 1;
 dissic_vert_gradient=0;
-sv2 = 1;
+sv2_name = 'tos';
+sv2 = find(strncmp(seas_comp_vars, sv2_name,4));
 v2 = find(strncmp(seas_comp_vars{sv2}, variables, 4));
 if length(v2)>1 % cludge since dissic and dissic_yr were getting confused
     v2 = strmatch(seas_comp_vars{sv2}, variables, 'exact');
@@ -1332,7 +1336,8 @@ dd = 12;
 
 wmo_on = 0; % takes precedence over alt_x
 if wmo_on==0
-    sv = 9;
+    sv_name = 'mld';
+    sv = find(strncmp(seas_comp_vars, sv_name,4));
     v = find(strncmp(seas_comp_vars{sv}, variables, 4));
     if length(v)>1 % cludge since dissic and dissic_yr were getting confused
         v = strmatch(seas_comp_vars{sv}, variables, 'exact');
@@ -1490,7 +1495,8 @@ hold on
 % y axis variable choices
 seas_amplitude = 1;
 dissic_vert_gradient=0;
-sv2 = 1;
+sv2_name = 'tos';
+sv2 = find(strncmp(seas_comp_vars, sv2_name,4));
 v2 = find(strncmp(seas_comp_vars{sv2}, variables, 4));
 if length(v2)>1 % cludge since dissic and dissic_yr were getting confused
     v2 = strmatch(seas_comp_vars{sv2}, variables, 'exact');
@@ -1513,7 +1519,8 @@ dd = 12;
 
 wmo_on = 0; % takes precedence over alt_x
 if wmo_on==0
-    sv = 9;
+    sv_name = 'mld';
+    sv = find(strncmp(seas_comp_vars, sv_name,4));
     v = find(strncmp(seas_comp_vars{sv}, variables, 4));
     if length(v)>1 % cludge since dissic and dissic_yr were getting confused
         v = strmatch(seas_comp_vars{sv}, variables, 'exact');
@@ -1677,11 +1684,14 @@ test_names = {'normalized error'; 'correlation' ; 'amplitude ratio'};
 % legend_on=0;
 group_color = 2;
 set(gcf, 'colormap', turbo)
-v3 = 4; % variable for harmonic fit scatter color
+v3_name = 'mld'; % variable for harmonic fit scatter color
+v3 = find(strncmp(v3_name, variables, 4));
+
 
 harm_comp = 'offset';
 
-for sv = 9% [1 2 3 4 5 6 8 9 10] %1:length(seas_comp_vars)
+for sv_name = {['mld']}% [1 2 3 4 5 6 8 9 10] %1:length(seas_comp_vars)
+    sv = find(strncmp(seas_comp_vars, sv_name,4));
 
     for tt = 3%:length(tests)
         for qq = 1% 1:length(tests)
@@ -1703,7 +1713,8 @@ for sv = 9% [1 2 3 4 5 6 8 9 10] %1:length(seas_comp_vars)
             %                     harm_comp ' filter ' num2str(filter_on)];
             %
             %             end
-            for sv2 = 1%[1 2 3 4 5 6 8 9 10]
+            for sv2_name = {['tos']}%[1 2 3 4 5 6 8 9 10]
+                sv2 = find(strncmp(seas_comp_vars, sv2_name,4));
                 if sv2==sv
                     continue
                     %                 elseif strcmp(variables{v2}, 'wmo') || strcmp(variables{v2}, 'psl') || strcmp(variables{v2}, 'dissic_yr') || strcmp(variables{v2}, 'talk_yr') || strcmp(variables{v2}, 'thetao')
@@ -1785,7 +1796,7 @@ for sv = 9% [1 2 3 4 5 6 8 9 10] %1:length(seas_comp_vars)
                 if group_color==2
                     c_lim = caxis;
                     %                     caxis([-max(abs(c_lim)) max(abs(c_lim))])
-                    caxis([-nanstd(temp_color) nanstd(temp_color)]*1.5)
+                    caxis([-nanstd(temp_color) nanstd(temp_color)]*2.5)
                 end
 
                 var_label_index = strncmp(variables{v}, var_plot_names(:,1), 4);
@@ -1894,7 +1905,8 @@ hold on
 % y axis variable choices
 seas_amplitude = 1;
 dissic_vert_gradient=0;
-sv2 = 4; %
+sv2_name = 'dissic';
+sv2 = find(strncmp(seas_comp_vars, sv2_name,4));
 v2 = find(strncmp(seas_comp_vars{sv2}, variables, 4));
 if length(v2)>1 % cludge since dissic and dissic_yr were getting confused
     v2 = strmatch(seas_comp_vars{sv2}, variables, 'exact');
@@ -1915,7 +1927,8 @@ dd = 12;
 
 wmo_on = 0; % takes precedence over alt_x
 if wmo_on==0
-    sv = 9;
+    sv_name = 'mld';
+    sv = find(strncmp(seas_comp_vars, sv_name,4));
     v = find(strncmp(seas_comp_vars{sv}, variables, 4));
     if length(v)>1 % cludge since dissic and dissic_yr were getting confused
         v = strmatch(seas_comp_vars{sv}, variables, 'exact');
@@ -2070,7 +2083,8 @@ hold on
 % y axis variable choices
 seas_amplitude = 1;
 dissic_vert_gradient=0;
-% sv2 = 1;
+sv2_name = 'dissic';
+sv2 = find(strncmp(seas_comp_vars, sv2_name,4));
 v2 = find(strncmp(seas_comp_vars{sv2}, variables, 4));
 if length(v2)>1 % cludge since dissic and dissic_yr were getting confused
     v2 = strmatch(seas_comp_vars{sv2}, variables, 'exact');
@@ -2093,7 +2107,8 @@ dd = 12;
 
 wmo_on = 0; % takes precedence over alt_x
 if wmo_on==0
-    sv = 9;
+    sv_name = 'mld';
+    sv = find(strncmp(seas_comp_vars, sv_name,4));
     v = find(strncmp(seas_comp_vars{sv}, variables, 4));
     if length(v)>1 % cludge since dissic and dissic_yr were getting confused
         v = strmatch(seas_comp_vars{sv}, variables, 'exact');
@@ -2250,7 +2265,8 @@ hold on
 % y axis variable choices
 seas_amplitude = 1;
 dissic_vert_gradient=0;
-% sv2 = 1;
+sv2_name = 'dissic';
+sv2 = find(strncmp(seas_comp_vars, sv2_name,4));
 v2 = find(strncmp(seas_comp_vars{sv2}, variables, 4));
 if length(v2)>1 % cludge since dissic and dissic_yr were getting confused
     v2 = strmatch(seas_comp_vars{sv2}, variables, 'exact');
@@ -2273,7 +2289,8 @@ dd = 12;
 
 wmo_on = 0; % takes precedence over alt_x
 if wmo_on==0
-    sv = 9;
+    sv_name = 'mld';
+    sv = find(strncmp(seas_comp_vars, sv_name,4));
     v = find(strncmp(seas_comp_vars{sv}, variables, 4));
     if length(v)>1 % cludge since dissic and dissic_yr were getting confused
         v = strmatch(seas_comp_vars{sv}, variables, 'exact');
@@ -2447,11 +2464,13 @@ test_names = {'normalized error'; 'correlation' ; 'amplitude ratio'};
 % legend_on=0;
 group_color = 2;
 set(gcf, 'colormap', turbo)
-v3 = 4; % variable for harmonic fit scatter color
+v3_name = 'mld'; % variable for harmonic fit scatter color
+v3 = find(strncmp(v3_name, variables, 4));
 
 harm_comp = 'offset';
 
-for sv = 9% [1 2 3 4 5 6 8 9 10] %1:length(seas_comp_vars)
+for sv = {['mld']}% [1 2 3 4 5 6 8 9 10] %1:length(seas_comp_vars)
+    sv = find(strncmp(seas_comp_vars, sv_name,4));
 
     for tt = 3%:length(tests)
         for qq = 1% 1:length(tests)
@@ -2473,7 +2492,9 @@ for sv = 9% [1 2 3 4 5 6 8 9 10] %1:length(seas_comp_vars)
             %                     harm_comp ' filter ' num2str(filter_on)];
             %
             %             end
-            for sv2 = 4%[1 2 3 4 5 6 8 9 10]
+            for sv2_name = {['dissic']}%[1 2 3 4 5 6 8 9 10]
+                sv2 = find(strncmp(seas_comp_vars, sv2_name,4));
+
                 if sv2==sv
                     continue
                     %                 elseif strcmp(variables{v2}, 'wmo') || strcmp(variables{v2}, 'psl') || strcmp(variables{v2}, 'dissic_yr') || strcmp(variables{v2}, 'talk_yr') || strcmp(variables{v2}, 'thetao')
@@ -2646,7 +2667,8 @@ hold on
 % y axis variable choices
 seas_amplitude = 1;
 dissic_vert_gradient=0;
-sv2 = 4; %
+sv2_name = 'dissic';
+sv2 = find(strncmp(seas_comp_vars, sv2_name,4));
 v2 = find(strncmp(seas_comp_vars{sv2}, variables, 4));
 if length(v2)>1 % cludge since dissic and dissic_yr were getting confused
     v2 = strmatch(seas_comp_vars{sv2}, variables, 'exact');
@@ -2667,7 +2689,8 @@ dd = 12;
 
 wmo_on = 0; % takes precedence over alt_x
 if wmo_on==0
-    sv = 1;
+    sv_name = 'tos';
+    sv = find(strncmp(seas_comp_vars, sv_name,4));
     v = find(strncmp(seas_comp_vars{sv}, variables, 4));
     if length(v)>1 % cludge since dissic and dissic_yr were getting confused
         v = strmatch(seas_comp_vars{sv}, variables, 'exact');
@@ -2849,7 +2872,8 @@ grid on
 % y axis variable choices
 seas_amplitude = 1;
 dissic_vert_gradient=0;
-sv2 = 4; % 4 - DIC
+sv2_name = 'dissic';
+sv2 = find(strncmp(seas_comp_vars, sv2_name,4));
 v2 = find(strncmp(seas_comp_vars{sv2}, variables, 4));
 if length(v2)>1 % cludge since dissic and dissic_yr were getting confused
     v2 = strmatch(seas_comp_vars{sv2}, variables, 'exact');
@@ -2870,7 +2894,8 @@ dd = 12;
 
 wmo_on = 0; % takes precedence over alt_x
 if wmo_on==0
-    sv = 10;
+    sv_name = 'intpp';
+    sv = find(strncmp(seas_comp_vars, sv_name,4));
     v = find(strncmp(seas_comp_vars{sv}, variables, 4));
     if length(v)>1 % cludge since dissic and dissic_yr were getting confused
         v = strmatch(seas_comp_vars{sv}, variables, 'exact');
@@ -3023,7 +3048,9 @@ fit_names = {'amplitude'; 'phase' ; 'offset'};
 
 harm_mod_vars = fieldnames(harm_mod);
 
-for hv = 7% 1:length(harm_mod_vars) % 7 - intpp
+for hv_name = {['intpp']}% 1:length(harm_mod_vars) % 7 - intpp
+    hv = find(strncmp(harm_mod_vars, hv_name,4));
+
     if strcmp(harm_mod_vars{hv}, 'DIC_Alk')
         continue
     end
@@ -3038,7 +3065,9 @@ for hv = 7% 1:length(harm_mod_vars) % 7 - intpp
             legend_names = {};
             sc_h = [];
 
-            for hv2 = 1%:length(harm_mod_vars)
+            for hv2_name = {['dissic']}%:length(harm_mod_vars)
+                hv2 = find(strncmp(harm_mod_vars, hv2_name,4));
+
                 if hv2==hv || strcmp(harm_mod_vars{hv2}, 'DIC_Alk')
                     continue
                 end
@@ -3112,7 +3141,7 @@ for hv = 7% 1:length(harm_mod_vars) % 7 - intpp
 end
 
 set(gca, 'fontsize', axis_font_size)
-text(x_lim(2)- diff(x_lim)*.2, y_lim(1)+diff(y_lim)*.1, ['R: ' num2str(r^2,2)], 'fontsize', r_text_size)
+text(x_lim(2)- diff(x_lim)*.2, y_lim(1)+diff(y_lim)*.1, ['R^2: ' num2str(r^2,2)], 'fontsize', r_text_size)
 
 annotation('textbox', [0.05, 0.05, 1, 0], 'String', [script_name ': ' plot_filename], 'EdgeColor', 'none', 'interpreter', 'none');
 print(gcf, '-dpng', [fig_dir plot_filename '.png'])
@@ -3137,7 +3166,7 @@ set(gcf,'PaperSize',[paper_w paper_h],'PaperPosition', [0 0 paper_w paper_h]); c
 seas_amplitude_list = [  0 0 0 1 0]; % 0 is off, 1 is on
 dissic_vert_gradient=0;
 
-y_sv2 = [ 6 6 6 6 6];
+y_sv2 = {'spco2' 'spco2' 'spco2' 'spco2' 'spco2' 'spco2'};
 % %% only applies if seas_amplitude is off
 tests = {'norm_error';'correlation' ; 'ratio'};
 test_names = {'normalized error'; 'correlation' ; 'Amplitude Ratio'};
@@ -3155,7 +3184,8 @@ test_list_2 = [2 3 nan nan 1];
 
 wmo_on = 0; % takes precedence over alt_x
 
-x_sv = [4 1 9 10 10];
+% x_sv = [4 1 9 10 10];
+x_sv = {'dissic' 'tos' 'mld' 'intpp' 'intpp'};
 mon_list = [ nan nan nan nan nan];
 
 
@@ -3177,15 +3207,17 @@ for ss = 1:length(seas_amplitude_list)
     hold on
     grid on
     if wmo_on==0
-        v = find(strncmp(seas_comp_vars{x_sv(ss)}, variables, 4));
+        v = find(strncmp(x_sv{ss}, variables, 4));
         if length(v)>1 % cludge since dissic and dissic_yr were getting confused
-            v = strmatch(seas_comp_vars{x_sv(ss)}, variables, 'exact');
+            v = strmatch(x_sv{ss}, variables, 'exact');
         end
     else
         v=10;
     end
 
-    sv2 = y_sv2(ss); % 4 - DIC, 6 - spco2
+    sv2_name = y_sv2{ss}; % 4 - DIC, 6 - spco2
+    sv2 = find(strncmp(seas_comp_vars, sv2_name,4));
+
     v2 = find(strncmp(seas_comp_vars{sv2}, variables, 4));
     if length(v2)>1 % cludge since dissic and dissic_yr were getting confused
         v2 = strmatch(seas_comp_vars{sv2}, variables, 'exact');

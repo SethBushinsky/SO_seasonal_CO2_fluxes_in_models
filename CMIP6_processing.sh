@@ -39,7 +39,7 @@ intpp_flag=false
 psl_flag=false
 ml_flag=false
 wmo_flag=false
-thetao_flag=true
+thetao_flag=false
 so_flag=true
 
 # int_levels="2.5000000,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,182.5,200,220,240,260,280,300,320,340,360,380,400,420,440,462.5,500,550,600,650,700,750,800"
@@ -566,6 +566,7 @@ then
 
 	    cdo selyear,2010/2019 "$i" temp.nc
 
+
 		# removing unneeded variables that were causing processing to crash
 		if [[ "$i" == *"MIROC-ES2L"* ]]; then 
 		cdo delname,eta temp.nc temp2.nc
@@ -578,6 +579,53 @@ then
 		cdo delname,area temp.nc temp2.nc
 		mv temp2.nc temp.nc # removes new temporary file
 		fi
+
+		levels=$(cdo -s showlevel temp.nc)
+
+	    needs_conversion=false
+	    for value in $levels; do
+		#echo $value
+		test_val=$(echo "scale=0; $value/1" | bc -l)
+		#echo $test_val
+		if [ $test_val -gt 100 ]; then
+		    needs_conversion=true
+		    echo "conversion set to true"
+		    break
+		else
+		    
+		    break
+		fi
+	    done
+
+	    if [ "$needs_conversion" = true ]; then
+		echo "Depth seems to be in centimeters, converting"
+		echo "original levels = $levels"
+		
+		h=0
+		for value in $levels; do
+		    v=$(echo "scale=6; $value/100" | bc -l)
+		    # echo "$value cm = $v m"
+		    if [[ $h -gt 0 ]]; then
+			levelsm=$(echo "$levelsm, $v")
+		    else
+			levelsm=$v
+		    fi
+		    h=`expr $h + 1`
+		done
+
+		cat > zaxis_meter.txt << EOF
+zaxistype = depth_below_land
+size      = $h
+name      = lev
+units     = "m" 
+levels    = $levelsm
+EOF
+		cdo -f nc setzaxis,zaxis_meter.txt temp.nc temp2.nc
+
+		new_levels=$(cdo -s showlevel temp2.nc)
+		echo "new levels = $new_levels"
+		mv temp2.nc temp.nc
+	    fi
 
     	cdo intlevel,level="$int_levels" temp.nc temp2.nc
 	    mv temp2.nc temp.nc # removes new temporary file

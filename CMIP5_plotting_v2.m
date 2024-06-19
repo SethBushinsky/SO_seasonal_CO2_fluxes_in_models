@@ -46,7 +46,7 @@ color_model = {'CanESM2' 1 [] 'o'; ...
     'IPSL_CM5A_MR' 40 [] 'v'; ...
     'MRI_ESM2_0_6' 41 [] '>' ; ...
     'SOSE_i133' 42  [] '<' ; ...
-    'SOSE_i122' 43 [] 'o'; ...
+    'SOSE_i154' 43 [] 'o'; ...
     'IPSL_CM6A_LR_6' 44 [] '^'; ...
     'CMCC_ESM2_6' 45 [] 's' ; ...
     'CanESM5_1_6' 46 [] 'v'; ...
@@ -79,21 +79,21 @@ Project_dir = [home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/'];
 % model_types = fieldnames(model_group_names);
 % lat_lims = [-62 -45];
 
-poleward_lat_lim = -65;
-%%
+poleward_lat_lim = -62;
+
 model_group_colors = brewermap(10, 'dark2');
 model_group_colors(1,:) = [0.105882352941176,0.619607843137255,0.8];
 model_group_colors(4,:) = model_group_colors(8,:);
 %
-% plot color test
-clf
-subplot(1,1,1)
-hold on
-plot([0 0], [1 2], 'color', model_group_colors(1,:), 'linewidth', 2)
-plot([-1 0], [1 2], 'color', model_group_colors(2,:), 'linewidth', 2)
-plot([-2 0], [1 2], 'color', model_group_colors(3,:), 'linewidth', 2)
-plot([-3 0], [1 2], 'color', model_group_colors(4,:), 'linewidth', 2)
-plot([-4 0], [1 2], 'color', model_group_colors(5,:), 'linewidth', 2)
+% % plot color test
+% clf
+% subplot(1,1,1)
+% hold on
+% plot([0 0], [1 2], 'color', model_group_colors(1,:), 'linewidth', 2)
+% plot([-1 0], [1 2], 'color', model_group_colors(2,:), 'linewidth', 2)
+% plot([-2 0], [1 2], 'color', model_group_colors(3,:), 'linewidth', 2)
+% plot([-3 0], [1 2], 'color', model_group_colors(4,:), 'linewidth', 2)
+% plot([-4 0], [1 2], 'color', model_group_colors(5,:), 'linewidth', 2)
 
 
 %%
@@ -115,10 +115,10 @@ load([Project_dir 'data/' c_input_file])
 %% Multi var load CMIP
 variables = {'spco2';'intpp'; 'psl';'mlotst';'tos';'sos'; 'dissic'; 'talk'; 'fgco2';'wmo'; 'dissic_yr'; 'talk_yr'; 'thetao';'mld'};
 var_type = {'Omon'; 'Omon'; 'Amon';'Omon';'Omon';'Omon'; 'Omon'; 'Omon'; 'Omon'; 'Omon'; 'Oyr'; 'Oyr'; 'Omon'; 'Omon'};
-var_lims = [350 450 ;  0 7e2; 980 1020 ; 0 500 ; -1 25; 29 35.5; 1950 2300;2200 2500;-5e-2 5e-2;-3e7 3e7;1950 2300; 2200 2500; -1 25; 0 500];
+var_lims = [350 450 ;  0 7e2; 980 1020 ; 0 300 ; -1 25; 29 35.5; 1950 2300;2200 2500;-5e-2 5e-2;-3e7 3e7;1950 2300; 2200 2500; -1 25; 0 300];
 %%
 
-plot_ver = '_v16'; % trying MLD calculations offline - this involves processing so, and using thetao the same as everything else (i.e. initially not as a time mean)
+plot_ver = '_v16'; % trying MLD calculations offline using python, then loading here as "MLD". Also returning S boundary to 62S to avoid coast
 % v15 - changed C_input to 2010-2019 time range, updated to the y2023 combined product 
 % v14 2024_02_28 added a few more models and filled in some missing data. will update co2 flux / 
 % spco2 product based on updated runs, plus switch (I think) to 2010-2019
@@ -132,7 +132,7 @@ plot_ver = '_v16'; % trying MLD calculations offline - this involves processing 
 % int_levels = [12,25,50,75,100,125,150,175,200,250,300,350,400];
 % bgc_levels = [10,25,50,75,100,125,150,175,200,300,400,500,600,700,800,900,1000,1200,1400,1600,1800,2000];
 
-for v= [13, 14]%[1 2 4 5 6 7 8 9 11 12 13 14]% 1:length(variables)[%1, 4, 6, 13 14]
+for v= [1 2 4 5 6 7 8 9 11 12 13 14]%[13, 14]%[1 2 4 5 6 7 8 9 11 12 13 14]% 1:length(variables)[%1, 4, 6, 13 14]
     
     disp([ '     <strong> Starting ' variables{v} ' processing </strong>' ])
 
@@ -590,12 +590,12 @@ clear v m
 % for "mld" that I calculated myself in python I did not change the
 % calendar or date settings, so let's replace the GMT_Matlab for all models
 % with one from thetao
-v = find(strcmp(variables, 'mld'));
+v = strmatch('mld', variables, 'exact');
 if isfield(cmip_names, variables{v})
     for m=1:length(cmip_names.(variables{v}))
         
-        mod_match = strcmp(cmip_names.thetao, cmip_names.(variables{v}){m});
-        CMIP.(variables{v}).(cmip_names.(variables{v}){m}).GMT_Matlab = CMIP.(variables{v}).(cmip_names.thetao{mod_match}).GMT_Matlab;
+        mod_match = strcmp(cmip_names.tos, cmip_names.(variables{v}){m});
+        CMIP.(variables{v}).(cmip_names.(variables{v}){m}).GMT_Matlab = CMIP.tos.(cmip_names.tos{mod_match}).GMT_Matlab;
     end
 end
 clear v m mod_match
@@ -729,8 +729,30 @@ if isfield(cmip_names, 'sos')
 end
 clear m v mm mod_name mod_name_orig
 
+%% check dates in models
+for v = 5%:length(variables)
+    if ~isfield(cmip_names, variables{v})
+        continue
+    end
+    clf
 
+    for m = 1:length(cmip_names.(variables{v})) % use fgco2 as your reference list of models
 
+        date_vec = datevec(CMIP.(variables{v}).(cmip_names.(variables{v}){m}).GMT_Matlab);
+        t = datetime(date_vec);
+        plot(date_vec(:,1) + day(t,'dayofyear')/365, 'linewidth', 2)
+        hold on
+        plot([0, 120], [2010 2010], 'k-')
+        title(variables{v})
+        if date_vec(1,1)~=2010 && date_vec(1,1)~=2015
+            disp(['year issue: ' cmip_names.(variables{v}){m}])
+        end
+        if date_vec(1,2)~=1
+            disp(['month issue: ' cmip_names.(variables{v}){m}])
+        end
+    end
+    % pause
+end
 %% put model ensemble numbers into a table to save out
 clear ensemble_table
 ensemble_table = table();
@@ -766,11 +788,11 @@ clear v m
 
 time_offset = 15;  % for some reason SOSE dates are close to 15 days off
 
-SOSE_its = {'i133' ; 'i122'};
-year_range = {'2013to2018' ; '2013to2017'};
-var_load = {'BLGCFLX'; 'BLGPCO2'; 'TRAC02'; 'TRAC01'; 'THETA'; 'SALT'; 'THETA'; 'BLGNPP' ; 'BLGMLD' }; % theta is in here twice, once for "TOS", once for "THETAO"
+SOSE_its = {'i133' ; 'i122'; 'i154'};
+year_range = {'2013to2018' ; '2013to2017' ; '2013to2023'};
+var_load = {'BLGCFLX'; 'BLGPCO2'; 'TRAC02'; 'TRAC01'; 'THETA'; 'SALT'; 'THETA'; 'BLGNPP' ;  'mld'}; %'BLGMLD' }; % theta is in here twice, once for "TOS", once for "THETAO"
 
-for w = 1% 1:2
+for w = [1 3]% 1:2
 
     mod_name = ['SOSE_' SOSE_its{w}];
 
@@ -779,17 +801,23 @@ for w = 1% 1:2
 
     elseif w==2
         SOSE_dir = [data_dir 'Model_Output/SOSE/2013-2017v2_ITER122_1_6deg/regrid/'];
-
+    elseif w==3
+        SOSE_dir = [data_dir 'Model_Output/SOSE/2013-2023_ITER154/regrid/'];
     end
-    sose_file = {['bsose_' SOSE_its{w} '_' year_range{w} '_monthly_surfCO2flx.nc']; ['bsose_' SOSE_its{w} '_' year_range{w} '_monthly_pCO2.nc']; ...
-        ['bsose_' SOSE_its{w} '_' year_range{w} '_monthly_Alk.nc']; ['bsose_' SOSE_its{w} '_' year_range{w} '_monthly_DIC.nc'];...
-        ['bsose_' SOSE_its{w} '_' year_range{w} '_monthly_Theta.nc'] ;['bsose_' SOSE_its{w} '_' year_range{w} '_monthly_Salt.nc' ];...
-        ['bsose_' SOSE_its{w} '_' year_range{w} '_monthly_Theta.nc'] ;...
+
+    sose_file = {['bsose_' SOSE_its{w} '_' year_range{w} '_monthly_surfCO2flx.nc']; ...
+        ['bsose_' SOSE_its{w} '_' year_range{w} '_monthly_pCO2.nc']; ...
+        ['bsose_' SOSE_its{w} '_' year_range{w} '_monthly_Alk.nc']; ...
+        ['bsose_' SOSE_its{w} '_' year_range{w} '_monthly_DIC.nc'];...
+        ['bsose_' SOSE_its{w} '_' year_range{w} '_monthly_Theta.nc']; ...
+        ['bsose_' SOSE_its{w} '_' year_range{w} '_monthly_Salt.nc' ];...
+        ['bsose_' SOSE_its{w} '_' year_range{w} '_monthly_Theta.nc'];...
         ['bsose_' SOSE_its{w} '_' year_range{w} '_monthly_NPP.nc'] ;...
-        ['bsose_' SOSE_its{w} '_' year_range{w} '_30day_MLD.nc']};
+        ['bsose_' SOSE_its{w} '_' year_range{w} '_monthly_mld.nc']};
+        % ['bsose_' SOSE_its{w} '_' year_range{w} '_30day_MLD.nc']};
 
 
-    sose_vars =  [9 1 8 7 5 6 13 2 4];
+    sose_vars =  [9 1 8 7 5 6 13 2 14];
     % CO2 flux:
     for sv = 1:length(sose_vars)
 
@@ -841,23 +869,27 @@ for w = 1% 1:2
         % for thetao
         if v==13
             % first take the mean in time
-            temp_var = nanmean(CMIP.(variables{v}).(mod_name).(variables{v}),4);
+            CMIP.(variables{v}).(mod_name).(variables{v}) = nanmean(CMIP.(variables{v}).(mod_name).(variables{v}),4);
             % then select the 400m depth
             CMIP.([variables{v}]).(mod_name).depth = ncread([SOSE_dir sose_file{sv}], 'Z').*-1;
             target_depth = 400;
-            depth_index = min(abs(CMIP.([variables{v}]).(mod_name).depth - target_depth)) == abs(CMIP.([variables{v}]).(mod_name).depth - target_depth);
+            if min(abs(CMIP.([variables{v}]).(mod_name).depth - target_depth)) >25
+                disp('No depth close to target!')
+            % else
+            %     depth_index = min(abs(CMIP.([variables{v}]).(mod_name).depth - target_depth)) == abs(CMIP.([variables{v}]).(mod_name).depth - target_depth);
+            end
 
             % create a new temporary variable that is 360 x 180 x 13;
             % fill the new depth # 13 with bSOSE theta at 400 m
 
-            temp_var_matched_depths = NaN(360, 180, 13);
-            temp_var_matched_depths(:,:,13) = temp_var(:,:, depth_index);
+            % temp_var_matched_depths = NaN(360, 180, 13);
+            % temp_var_matched_depths(:,:,13) = temp_var(:,:, depth_index);
 
-            % put the new array back into the thetao spot
-            CMIP.(variables{v}).(mod_name).(variables{v}) = temp_var_matched_depths;
+            % % put the new array back into the thetao spot
+            % CMIP.(variables{v}).(mod_name).(variables{v}) = temp_var_matched_depths;
 
-            % and save the new depth scale as well:
-            CMIP.([variables{v}]).(mod_name).depth = CMIP.([variables{v}]).(cmip_names.(variables{v}){1}).depth;
+            % % and save the new depth scale as well:
+            % CMIP.([variables{v}]).(mod_name).depth = CMIP.([variables{v}]).(cmip_names.(variables{v}){1}).depth;
 
             % overwrite the time with a mean time value
             CMIP.([variables{v}]).(mod_name).GMT_Matlab = nanmean(CMIP.([variables{v}]).(mod_name).GMT_Matlab);
@@ -951,7 +983,9 @@ for w = 1% 1:2
         if sum(strcmp(cmip_names.(variables{v}), mod_name))==0
             cmip_names.(variables{v}){end+1} = mod_name;
         end
-
+        if v==14
+            CMIP.(variables{v}).(mod_name).GMT_Matlab = CMIP.spco2.(mod_name).GMT_Matlab;
+        end
     end
     clear mod_name sv
 end
@@ -1022,11 +1056,11 @@ clear m v q
 
 
 
-%%
-mon =1;
-clf
-
-subplot(3,1,1); pcolor(CMIP.lon_grid, CMIP.lat_grid, CMIP.mlotst.CNRM_CM5.mlotst(:,:,mon)); shading flat; colorbar; caxis([0 200])
+% %%
+% mon =1;
+% clf
+% 
+% subplot(3,1,1); pcolor(CMIP.lon_grid, CMIP.lat_grid, CMIP.mlotst.CNRM_CM5.mlotst(:,:,mon)); shading flat; colorbar; caxis([0 200])
 % subplot(3,1,2); pcolor(CMIP.lon_grid, CMIP.lat_grid, temp_MLD(:,:,mon)); shading flat; colorbar; caxis([0 200])
 % subplot(3,1,3); pcolor(CMIP.lon_grid, CMIP.lat_grid, CMIP.mlotst.CNRM_CM5.mlotst(:,:,mon)-temp_MLD(:,:,6)); shading flat; colorbar; caxis([-100 100])
 %% Calculation of monthly means and std using a mask based on potential temperature
@@ -1034,7 +1068,7 @@ subplot(3,1,1); pcolor(CMIP.lon_grid, CMIP.lat_grid, CMIP.mlotst.CNRM_CM5.mlotst
 % note that this expects a 2D variable will be run first to create a mask
 % south of the SAF if one does not already exist
 
-for v=[14]%[1 2 4:9 11 12 14, 15] %[1:12 14] % skip thetao as it is only used for the mask
+for v=[1 2 4:9 11 12 14, 15] %[1:12 14] % skip thetao as it is only used for the mask
     if ~isfield(cmip_names, variables{v})
         continue
     end
@@ -1069,7 +1103,7 @@ for v=[14]%[1 2 4:9 11 12 14, 15] %[1:12 14] % skip thetao as it is only used fo
             % only create a new mask if there isn't one already made
             if ~isfield(CMIP.thetao.(cmip_names.(variables{v}){m}), 'SAF_S_mask')
                 % need to find depth of thetao at 400m
-                depth_index = CMIP.thetao.(cmip_names.(variables{v}){m}).depth==400;
+                depth_index = round(CMIP.thetao.(cmip_names.(variables{v}){m}).depth)==400;
                 SAF_S_mask = CMIP.thetao.(cmip_names.(variables{v}){m}).thetao(:,:,depth_index)<=5 & lat_grid<-30  & lat_grid>poleward_lat_lim;
                 CMIP.thetao.(cmip_names.(variables{v}){m}).SAF_S_mask = SAF_S_mask;
                 clear SAF_S_mask
@@ -1194,7 +1228,7 @@ for v=[14]%[1 2 4:9 11 12 14, 15] %[1:12 14] % skip thetao as it is only used fo
                             CMIP.(variables{v}).out_seasonal(m,dd,mon,2) = nanstd(reshape(SO_var_mean,[],1));
                         end
                     end
-                    clear time_index SO_var mod_vec SO_var_mean
+                    clear time_index SO_var mod_vec SO_var_mean grid_weights temp_area
                 end % end months loop
             end % end depth loop
             clear SAF_S_mask
@@ -1303,7 +1337,7 @@ for v=[14]%:length(variables) % 4%[2 4 7 8]% 1 2 4 5 6 7 8 9]%9%13:length(variab
     CMIP.lon_grid = lon_grid';
     CMIP.lat_grid = lat_grid';
     clear lon_grid lat_grid
-    for m = 1:length(cmip_names.(variables{v}))
+    for m =[39 40]% 1:length(cmip_names.(variables{v}))
 
         if isfield(CMIP.(variables{v}).(cmip_names.(variables{v}){m}), 'depth')
             num_depths = length(CMIP.(variables{v}).(cmip_names.(variables{v}){m}).depth);
@@ -1322,58 +1356,79 @@ for v=[14]%:length(variables) % 4%[2 4 7 8]% 1 2 4 5 6 7 8 9]%9%13:length(variab
 
             %         SO_var = nanmean(CMIP.(variables{v}).(cmip_names.(variables{v}){m}).(variables{v}),3);
 
-            if num_depths==1
-                SO_var = mean(CMIP.(variables{v}).(cmip_names.(variables{v}){m}).(variables{v})(:, :, :),3, 'omitnan');
-            else
-                SO_var = mean(squeeze(CMIP.(variables{v}).(cmip_names.(variables{v}){m}).(variables{v})(:, :, dd, :)),3, 'omitnan');
-            end
+            % plot annual, winter, summer:
+            plot_count = 0;
+            for ss = 1:3
+                plot_count = plot_count+1;
 
-            subplot(2,1,1)
-            pcolor(CMIP.lon_grid, CMIP.lat_grid, SO_var); shading flat
-            xlabel('Longitude')
-            ylabel('Latitude')
-            c1 = colorbar;
-            ylabel(c1, [variables{v} ' (' CMIP.(variables{v}).(cmip_names.(variables{v}){m}).units ')'], 'interpreter', 'none')
-
-            if num_depths==1
-                title([cmip_names.(variables{v}){m} ' ' variables{v}], 'interpreter', 'none')
-            else
-                title([cmip_names.(variables{v}){m} ' ' variables{v} ' depth: ' num2str(CMIP.(variables{v}).(cmip_names.(variables{v}){m}).depth(dd))], 'interpreter', 'none')
-            end
-            set(gca, 'ylim', [-85 -35])
-            set(gca, 'fontsize', 20)
-            caxis(var_lims(v,:))
-            hold on
-            plot([1 360], [poleward_lat_lim poleward_lat_lim], 'm-', 'linewidth', 2)
-
-            try
-                plot(1:360, CMIP.thetao.(cmip_names.(variables{v}){m}).SAF, 'm-', 'linewidth', 2)
-
-                subplot(2,1,2)
-
-
-                SO_var(~CMIP.thetao.(cmip_names.(variables{v}){m}).SAF_S_mask)=nan;
+                if num_depths==1
+                    SO_var_all_t = CMIP.(variables{v}).(cmip_names.(variables{v}){m}).(variables{v})(:, :, :);
+                else
+                    SO_var_all_t = squeeze(CMIP.(variables{v}).(cmip_names.(variables{v}){m}).(variables{v})(:, :, dd, :));
+                end
+                
+                date_vec = datevec(CMIP.(variables{v}).(cmip_names.(variables{v}){m}).GMT_Matlab);
+                if ss==1
+                    SO_var = mean(SO_var_all_t,3, 'omitnan');
+                    season='Annual';
+                elseif ss==2
+                    month_index = sum(date_vec(:,2)==[8,9,10],2)==1;
+                    SO_var = mean(SO_var_all_t(:,:,month_index),3, 'omitnan');
+                    season='Winter';
+                elseif ss==3
+                    month_index = sum(date_vec(:,2)==[1,2,3],2)==1;
+                    SO_var = mean(SO_var_all_t(:,:,month_index),3, 'omitnan');
+                    season='Summer';
+                end
+                subplot(3,2,plot_count)
                 pcolor(CMIP.lon_grid, CMIP.lat_grid, SO_var); shading flat
-                hold on
-                plot(1:360, CMIP.thetao.(cmip_names.(variables{v}){m}).SAF, 'm-', 'linewidth', 2)
-                plot([1 360], [poleward_lat_lim poleward_lat_lim], 'm-', 'linewidth', 2)
-
-
                 xlabel('Longitude')
                 ylabel('Latitude')
                 c1 = colorbar;
                 ylabel(c1, [variables{v} ' (' CMIP.(variables{v}).(cmip_names.(variables{v}){m}).units ')'], 'interpreter', 'none')
 
                 if num_depths==1
-                    title([cmip_names.(variables{v}){m} ' ' variables{v}], 'interpreter', 'none')
+                    title([cmip_names.(variables{v}){m} ' ' variables{v} ' ' season], 'interpreter', 'none')
                 else
-                    title([cmip_names.(variables{v}){m} ' ' variables{v} ' depth: ' num2str(CMIP.(variables{v}).(cmip_names.(variables{v}){m}).depth(dd))], 'interpreter', 'none')
+                    title([cmip_names.(variables{v}){m} ' ' variables{v} ' ' season ' depth: ' num2str(CMIP.(variables{v}).(cmip_names.(variables{v}){m}).depth(dd))], 'interpreter', 'none')
                 end
                 set(gca, 'ylim', [-85 -35])
                 set(gca, 'fontsize', 20)
                 caxis(var_lims(v,:))
+                hold on
+                plot([1 360], [poleward_lat_lim poleward_lat_lim], 'm-', 'linewidth', 2)
 
-            catch
+                try
+                    plot(1:360, CMIP.thetao.(cmip_names.(variables{v}){m}).SAF, 'm-', 'linewidth', 2)
+
+                    plot_count = plot_count+1;
+
+                    subplot(3,2,plot_count)
+
+
+                    SO_var(~CMIP.thetao.(cmip_names.(variables{v}){m}).SAF_S_mask)=nan;
+                    pcolor(CMIP.lon_grid, CMIP.lat_grid, SO_var); shading flat
+                    hold on
+                    plot(1:360, CMIP.thetao.(cmip_names.(variables{v}){m}).SAF, 'm-', 'linewidth', 2)
+                    plot([1 360], [poleward_lat_lim poleward_lat_lim], 'm-', 'linewidth', 2)
+
+
+                    xlabel('Longitude')
+                    ylabel('Latitude')
+                    c1 = colorbar;
+                    ylabel(c1, [variables{v} ' (' CMIP.(variables{v}).(cmip_names.(variables{v}){m}).units ')'], 'interpreter', 'none')
+
+                    if num_depths==1
+                        title([cmip_names.(variables{v}){m} ' ' variables{v}], 'interpreter', 'none')
+                    else
+                        title([cmip_names.(variables{v}){m} ' ' variables{v} ' depth: ' num2str(CMIP.(variables{v}).(cmip_names.(variables{v}){m}).depth(dd))], 'interpreter', 'none')
+                    end
+                    set(gca, 'ylim', [-85 -35])
+                    set(gca, 'fontsize', 20)
+                    caxis(var_lims(v,:))
+
+                catch
+                end
             end
             if num_depths==1
                 plot_filename = [variables{v} '_Surface_' cmip_names.(variables{v}){m}];
@@ -1388,10 +1443,10 @@ for v=[14]%:length(variables) % 4%[2 4 7 8]% 1 2 4 5 6 7 8 9]%9%13:length(variab
     end
 end
 
-clear v
+clear v paper_h paper_w dd depth_index  num_depths 
 
 %% saving out variable surface fields to plot in python
-for v = [1 2 4 5 6 7 8 9]
+for v = [1 2 4 5 6 7 8 9 14]
     if ~isfield(cmip_names, variables{v})
         continue
     end
@@ -2526,6 +2581,7 @@ units = 'm';
 save([home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/data/surface_fields/' var_name '/00_Obs2' plot_ver '.mat'], ...
             'lon_grid', 'lat_grid', 'SO_var', 'var_name','model_SAF', 'plot_ver', 'model_name','units')
 
+clear mon argo_MLD units model_name var_name lon_grid lat_grid grid_weights TTT temp_area 
 %% Loading NPP
 disp('Starting  NPP load')
 
@@ -2857,7 +2913,7 @@ save([home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/data/CMIP_only_' dat
 %% save out seasonal data / seasonal cycles so you don't have to re-read in observations
 % remove data from CMIP so that you have a reduced dataset to save / load
 
-for v = 1:14%length(variables)
+for v = 1:length(variables)
     if ~isfield(cmip_names, variables{v})
         continue
     end
@@ -2899,7 +2955,7 @@ run_names = C_input.run_names;
 runs = C_input.runs;
 regions = C_input.regions;
 
-for v = 1:14%length(variables)
+for v = 1:length(variables)
 
     % currently skipping psl and wmo
     if sum(strcmp(variables{v}, {'psl'; 'wmo';'dissic_yr';'talk_yr';'thetao'}))>0
@@ -2962,7 +3018,7 @@ legend_on = 1;
 % flux_density = 1;
 seas_comp_vars = fieldnames(obs);
 
-for sv =  [9 10] %1:length(seas_comp_vars)%9%[1 2 4 5 6 7 8 9 14 15]
+for sv =  10%1:length(seas_comp_vars)%9%[1 2 4 5 6 7 8 9 14 15]
     v = find(strncmp(seas_comp_vars{sv}, variables, 4));
     if length(v)>1 % cludge since dissic and dissic_yr were getting confused
         v = strmatch(seas_comp_vars{sv}, variables, 'exact');
@@ -3107,7 +3163,7 @@ save([home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/data/seasonal_cycles
 
 %% Taylor diagram by model group
 
-for sv =  10%:length(seas_comp_var)%9%[1 2 4 5 6 7 8 9 14 15]
+for sv =  1%:length(seas_comp_var)%9%[1 2 4 5 6 7 8 9 14 15]
     v = find(strncmp(seas_comp_vars{sv}, variables, 4));
     if length(v)>1 % cludge since dissic and dissic_yr were getting confused
         v = strmatch(seas_comp_vars{sv}, variables, 'exact');
@@ -3133,7 +3189,7 @@ for sv =  10%:length(seas_comp_var)%9%[1 2 4 5 6 7 8 9 14 15]
     title(variables{v})
     set(gca, 'fontsize', 16)
 
-    print(gcf, '-dpng', [Plot_out_dir seas_comp_vars{sv} '/' plot_filename '_v8_theta.png'])
+    print(gcf, '-dpng', [Plot_out_dir seas_comp_vars{sv} '/' plot_filename plot_ver '_theta.png'])
 end
 %% plotting Taylor RMS vs each other
 % now also do the other comparisons (i.e. correlation vs. correlation)
@@ -3150,7 +3206,7 @@ v3 = 4; % variable for harmonic fit scatter color
 
 harm_comp = 'offset';
 
-for sv = 9% [1 2 3 4 5 6 8 9 10] %1:length(seas_comp_vars)
+for sv = 10% [1 2 3 4 5 6 8 9 10] %1:length(seas_comp_vars)
 
     for tt = 1:length(tests)
         for qq = 1:length(tests)
@@ -3355,11 +3411,11 @@ var_anom_lims(6,:) = [-.14 .14];
 var_anom_lims(7,:) = [-45 45];
 var_anom_lims(8,:) = [-15 15];
 var_anom_lims(9,:) = [-350 350];
-var_anom_lims(14,:) = [-6000 5000];
+var_anom_lims(14,:) = [-200 200];
 var_anom_lims(15,:) = [-40 40];
 
 
-anomaly = 1;
+anomaly =1 ;
 if anomaly==1
     anomaly_text = 'anomaly ';
 else
@@ -3377,7 +3433,7 @@ if strcmp(seas_comp_vars{sv}, 'fgco2_mol_C_m2_yr')
 else
     seasonal_name = 'out_seasonal';
 end
-plot_filename = ['Obs model Seasonal ' anomaly_text variables{v} '_v9'];
+plot_filename = ['Obs model Seasonal ' anomaly_text variables{v} plot_ver];
 clf
 set(gcf, 'units', 'inches')
 paper_w = 14; paper_h =9;
@@ -3435,7 +3491,7 @@ set(gcf, 'units', 'inches')
 paper_w = 14; paper_h =8;
 set(gcf,'PaperSize',[paper_w paper_h],'PaperPosition', [0 0 paper_w paper_h]);
 
-plot_filename = ['Obs model Seasonal ' anomaly_text '_' seas_comp_vars{sv} 'split_by_model_types_v9'];
+plot_filename = ['Obs model Seasonal ' anomaly_text '_' seas_comp_vars{sv} 'split_by_model_types' plot_ver];
 
 for q = 1:length(model_types)
 
@@ -3508,7 +3564,7 @@ nharm=2;cutoff=10;L=365.25;
 %% 2. Fit Harmonics for all models
 % year_days = datenum(2012,1:12,15)-datenum(2012,1,0);
 
-for v = [7 5 1 8 6 4 2]
+for v = [7 5 1 8 6 4 2 14]
     harm_mod.(variables{v}).amp = NaN(length(cmip_names.(variables{v})),nharm);
     harm_mod.(variables{v}).phase = NaN(length(cmip_names.(variables{v})),nharm);
     harm_mod.(variables{v}).frac = NaN(length(cmip_names.(variables{v})),nharm);
@@ -3646,11 +3702,14 @@ dic_from_pco2_alk = DATA(:,2);
 [harm.intpp.amp,harm.intpp.phase,harm.intpp.frac,harm.intpp.offset,harm.intpp.residual]= ...
     fit_harmonics(obs.intpp.out_seasonal(:,1), year_days, nharm, L, cutoff);
 
+[harm.mld.amp,harm.mld.phase,harm.mld.frac,harm.mld.offset,harm.mld.residual]= ...
+    fit_harmonics(obs.mld.out_seasonal(:,1), year_days, nharm, L, cutoff);
+
 clear j yt seasonal_pco2 seasonal_tos seasonal_talk dic_from_pco2_alk
 %% Needed %% 4. 2022_03_14 test plots for pCO2 tests
 
 % recreate harmonic of obs DIC and T:
-for v = [7 5 1 8 6 4]
+for v = [7 5 1 8 6 4 14]
     yt = harm.(variables{v}).offset.*ones(12,1);
     for j=1:nharm
         yt=yt+(harm.(variables{v}).amp(j).*cos(2.*pi.*j.*[year_days]./L + harm.(variables{v}).phase(j)))';
@@ -5094,7 +5153,7 @@ for c = 1:length(columns_out)
     dataTable_correlations_only.(columns_out{c}) = var_copy;
 end
 
-filename = 'dataTable_correlations_only2.csv';
+filename = ['dataTable_correlations_only' plot_ver '.csv'];
 
 writestruct(dataTable_correlations_only, [Plot_out_dir 'Sensitivity_tests/' filename]);
 
@@ -5806,9 +5865,9 @@ toc
 %%  Trying to evaluate intpp magnitude vs. vars (rather than using taylor evaluation for intpp)
 
 % y axis variable choices
-seas_amplitude = 1;
+seas_amplitude = 0;
 dissic_vert_gradient=0;
-sv2 = 1;
+sv2 = 4;
 v2 = find(strncmp(seas_comp_vars{sv2}, variables, 4));
 if length(v2)>1 % cludge since dissic and dissic_yr were getting confused
     v2 = strmatch(seas_comp_vars{sv2}, variables, 'exact');
@@ -5816,7 +5875,7 @@ end
 
 % %% only applies if seas_amplitude is off
 tests = {'norm_error';'correlation' ; 'ratio'};
-tt = 2;
+tt = 3;
 % %%
 
 
@@ -5837,13 +5896,13 @@ for mon = 1:12
 
     wmo_on = 0; % takes precedence over alt_x
     if wmo_on==0
-        sv = 9;
+        sv = 11;
         v = find(strncmp(seas_comp_vars{sv}, variables, 4));
         if length(v)>1 % cludge since dissic and dissic_yr were getting confused
             v = strmatch(seas_comp_vars{sv}, variables, 'exact');
         end
     else
-        v=10;
+        v=2;
     end
 
     temp_array =[];
@@ -5909,7 +5968,12 @@ for mon = 1:12
     elseif seas_amplitude~=1 % if plotting normalized error, "obs" equals 0
         obs_y=0;
     elseif seas_amplitude==1
-        obs_y = max(obs.(variables{v2}).out_seasonal(:,1)) - min(obs.(variables{v2}).out_seasonal(:,1));
+        if strcmp(variables{v2}, 'spco2')
+            obs_out = obs.(variables{v2}).Combined.y2023.SOCCOM_SOCAT.out_seasonal(:,1);
+            obs_y = max(obs_out) - min(obs_out);
+        else
+            obs_y = max(obs.(variables{v2}).out_seasonal(:,1)) - min(obs.(variables{v2}).out_seasonal(:,1));
+        end
     end
 
     if wmo_on==0
@@ -5955,10 +6019,13 @@ for mon = 1:12
     x_plot = min(temp_array(:,1)):(max(temp_array(:,1))-min(temp_array(:,1)))./10 : max(temp_array(:,1));
     y_plot = m.*x_plot+b;
     plot(x_plot, y_plot, 'k-')
+    % set(gca, 'xlim', [0 300])
+    % set(gca, 'ylim', [0 80])
+
     title(['r= ' num2str(r,2)])
 
     set(gca, 'fontsize', 16)
-    plot_filename = ['Var_comparison ' x_label ' vs. ' comp_label ];
+    plot_filename = ['Var_comparison ' 'vs. ' comp_label ' ' x_label ];
 
     print(gcf, '-dpng', [Plot_out_dir variables{v} '/' plot_filename '.png'])
 end
@@ -6013,7 +6080,7 @@ fits = {'amp'; 'phase'; 'offset'};
 
 harm_mod_vars = fieldnames(harm_mod);
 
-for hv = 1:length(harm_mod_vars)
+for hv = [1 2 3 4 5 7 8] %1:length(harm_mod_vars)
     if strcmp(harm_mod_vars{hv}, 'DIC_Alk')
         continue
     end
@@ -6030,8 +6097,8 @@ for hv = 1:length(harm_mod_vars)
             set(gcf,'PaperSize',[paper_w paper_h],'PaperPosition', [0 0 paper_w paper_h]); clear paper_w paper_h
 
             plot_index = 0;
-            plot_filename = ['Harmonic_fits ' harm_mod_vars{hv} ' ' fits{qq} ' vs. ' fits{tt}];
-            for hv2 = 1:length(harm_mod_vars)
+            plot_filename = ['Harmonic_fits ' harm_mod_vars{hv} ' ' fits{qq} ' vs. ' fits{tt} plot_ver];
+            for hv2 = [1 2 3 4 5 7 8] %1:length(harm_mod_vars)
                 if hv2==hv || strcmp(harm_mod_vars{hv2}, 'DIC_Alk')
                     continue
                 end
@@ -6047,7 +6114,7 @@ for hv = 1:length(harm_mod_vars)
                 temp_array = [];
                 for m = 1:length(cmip_names.(variables{v}))
                     mod_match = strcmp(cmip_names.(variables{v2}), cmip_names.(variables{v}){m});
-                    disp(sum(mod_match))
+                    % disp(sum(mod_match))
                     if sum(mod_match)>0
                         if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
                             plot_color = cmap(strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),:);
@@ -6058,7 +6125,7 @@ for hv = 1:length(harm_mod_vars)
                             temp_array(end+1,1) = harm_mod.(variables{v}).(fits{qq})(m);
                             temp_array(end,2) = harm_mod.(variables{v2}).(fits{tt})(mod_match);
                             clear plot_color
-                            disp(cmip_names.(variables{v2}){mod_match})
+                            % disp(cmip_names.(variables{v2}){mod_match})
 
                             %                             pause
                         end
@@ -6077,9 +6144,9 @@ for hv = 1:length(harm_mod_vars)
                 title(['r= ' num2str(r,2)])
 
                 % add obs
-                plot(harm.(variables{v}).(fits{qq}), harm.(variables{v2}).(fits{tt}), 'xk', 'markersize', 30)
+                plot(harm.(variables{v}).(fits{qq})(1), harm.(variables{v2}).(fits{tt})(1), 'xk', 'markersize', 30)
             end
-%             print(gcf, '-dpng', [Plot_out_dir variables{v} '/' plot_filename '.png'])
+            print(gcf, '-dpng', [Plot_out_dir variables{v} '/' plot_filename '.png'])
 
         end
     end

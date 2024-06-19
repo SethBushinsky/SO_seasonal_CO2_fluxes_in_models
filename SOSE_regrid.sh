@@ -5,14 +5,14 @@ SOSE_DIR="/Users/smb-uh/UHM_Ocean_BGC_Group\ Dropbox/Datasets/Model_Output/SOSE/
 
 # SOSE_122_DIR='/Users/smb-uh/Dropbox/Data/Model_Output/SOSE/2013-2017v2_ITER122_1_6deg/'
 
-fgco2_flag=true
-dic_mon_flag=true
-talk_mon_flag=true
-spco2_flag=true
+fgco2_flag=false
+dic_mon_flag=false
+talk_mon_flag=false
+spco2_flag=false
 intpp_flag=true
-ml_flag=true
-thetao_flag=true
-salt_flag=true
+ml_flag=false
+thetao_flag=false
+salt_flag=false
 fgo2_flag=false
 
 eval cd $SOSE_DIR
@@ -48,7 +48,7 @@ if [ "$talk_mon_flag" = true ]
 then
 Echo "starting ALK"
 for i in bsose*Alk.nc; do
-cdo intlevel,-10,-25,-50,-75,-100,-125,-150,-175,-200,-300,-400,-500,-600,-700,-800,-900,-1000,-1200,-1400,-1600,-1800,-2000 "$i" temp.nc
+cdo intlevel,level=-10,-25,-50,-75,-100,-125,-150,-175,-200,-300,-400,-500,-600,-700,-800,-900,-1000,-1200,-1400,-1600,-1800,-2000 "$i" temp.nc
 
 cdo setctomiss,0 temp.nc temp2.nc
 mv temp2.nc temp.nc
@@ -65,11 +65,12 @@ done
 fi
 
 # NPP
-if [ "$intpp_mon_flag" = true ]
+if [ "$intpp_flag" = true ]
 then
 Echo "starting NPP"
 for i in bsose*NPP.nc; do
-cdo intlevel,-10,-25,-50,-75,-100,-125,-150,-175,-200,-300,-400,-500,-600,-700,-800,-900,-1000,-1200,-1400,-1600,-1800,-2000 "$i" temp.nc
+# cdo intlevel,level=-10,-25,-50,-75,-100,-125,-150,-175,-200,-300,-400,-500,-600,-700,-800,-900,-1000,-1200,-1400,-1600,-1800,-2000 "$i" temp.nc
+cdo intlevel,level=-10,-25,-50,-75,-100,-125,-150,-175,-200 "$i" temp.nc
 
 cdo setctomiss,0 temp.nc temp2.nc
 mv temp2.nc temp.nc
