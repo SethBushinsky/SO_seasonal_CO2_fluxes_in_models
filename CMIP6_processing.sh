@@ -27,7 +27,7 @@ SO_DIR="${MODEL_DIR}CMIP6/so/"
 dir_type[0]='historical_download'
 dir_type[1]='ssp585_download'
 
-fgco2_flag=false
+fgco2_flag=true
 dic_mon_flag=false
 dic_flag=false
 talk_mon_flag=false
@@ -40,7 +40,7 @@ psl_flag=false
 ml_flag=false
 wmo_flag=false
 thetao_flag=false
-so_flag=true
+so_flag=false
 
 # int_levels="2.5000000,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,182.5,200,220,240,260,280,300,320,340,360,380,400,420,440,462.5,500,550,600,650,700,750,800"
 int_levels="2.5,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,182.5,200,220,240,260,280,300,320,340,360,380,400,420,440,462.5,500,550,600,650,700,750,800,850,900,950,1000,1050,1100,1150,1200,1250,1300,1350,1412.5,1500,1600,1700,1800,1900,1975"
@@ -65,6 +65,22 @@ then
 	    mv temp2.nc temp.nc # removes new temporary file
 	    
 	    cdo -L remapbil,r360x180 -selname,fgco2 temp.nc regrid/"$i"
+
+	    
+	    rm temp.nc
+            echo "Finished $i"
+
+		# do a second time for 2100 data
+		   echo "Starting $i"
+
+	    cdo selyear,2010/2100 "$i" temp.nc  # select specific years
+	    cdo -setcalendar,'proleptic_gregorian' temp.nc temp2.nc # changes date format to matlab date format
+	    mv temp2.nc temp.nc # removes new temporary file
+
+	    cdo -setreftime,'0000-01-00','00:00:00' temp.nc temp2.nc # changes date format to matlab date format
+	    mv temp2.nc temp.nc # removes new temporary file
+	    
+	    cdo -L remapbil,r360x180 -selname,fgco2 temp.nc ../fgco2_2100/regrid/"$i"
 
 	    
 	    rm temp.nc

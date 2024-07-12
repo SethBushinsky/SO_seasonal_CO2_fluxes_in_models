@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# MODEL_DIR="/Users/smb-uh/UHM_Ocean_BGC_Group\ Dropbox/Datasets/Model_Output/"
-MODEL_DIR="/Users/sethbushinsky/UHM_Ocean_BGC_Group\ Dropbox/Datasets/Model_Output/"
+MODEL_DIR="/Users/smb-uh/UHM_Ocean_BGC_Group\ Dropbox/Datasets/Model_Output/"
+# MODEL_DIR="/Users/sethbushinsky/UHM_Ocean_BGC_Group\ Dropbox/Datasets/Model_Output/"
 
 DIC_DIR="${MODEL_DIR}CMIP5/dissic/"
 DIC_MON_DIR="${MODEL_DIR}CMIP5/dissic/monthly/"
@@ -167,6 +167,27 @@ for i in fgco2_Omon_*.nc; do
     mv temp2.nc temp.nc # removes new temporary file
  
     cdo remapbil,r360x180 temp.nc regrid/"$i"
+    rm temp.nc
+
+    # second run through, this time saving output until 2100
+    cdo selyear,2010/2100 "$i" temp.nc
+    if [[ "$i" == *"MIROC"* ]]; then
+	# MIROC has land set to ~3e-13.  This must be changed prior to regridding
+	cdo setrtomiss,-4e-13,4e-13 temp.nc temp2.nc
+	mv temp2.nc temp.nc
+    elif [[ "$i" == *"CNRM"*  ||  "$i" == *"GISS"*  ||  "$i" == *"MRI"* ]]; then
+	# CNRM, GISS, and MRI all have land set to "0".  This must be changed prior to regridding
+	cdo setctomiss,0 temp.nc temp2.nc
+	mv temp2.nc temp.nc
+    fi
+
+    cdo -setcalendar,'proleptic_gregorian' temp.nc temp2.nc # changes date format to matlab date format
+    mv temp2.nc temp.nc # removes new temporary file
+
+    cdo -setreftime,'0000-01-00','00:00:00' temp.nc temp2.nc # changes date format to matlab date format
+    mv temp2.nc temp.nc # removes new temporary file
+ 
+    cdo remapbil,r360x180 temp.nc ../fgco2_2100/regrid/"$i"
     rm temp.nc
 done
 

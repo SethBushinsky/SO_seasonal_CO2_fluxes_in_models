@@ -10,12 +10,14 @@ fig_dir = [home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/figures/'];
 % seasonal_file = 'seasonal_cycles_w_model_type_matched_2023_11_07.mat';
 % seasonal_file = 'seasonal_cycles_w_model_type_matched_2024_02_28.mat';
 % seasonal_file = 'seasonal_cycles_w_model_type_matched_2024_04_07.mat';
-seasonal_file = 'seasonal_cycles_w_model_type_matched_2024_07_02.mat';
+seasonal_file = 'seasonal_cycles_w_model_type_matched_2024_07_11.mat';
 load([fig_dir '../data/' seasonal_file])
 seas_comp_vars = fieldnames(obs);
 
-toy_model_file = 'toy_model_output_2024_07_02.mat';
+toy_model_file = 'toy_model_output_2024_07_11.mat';
 load([fig_dir '../data/' toy_model_file])
+sensitivity_results = 'sensitivity_test_results2024_07_11.mat';
+load([fig_dir '../data/' sensitivity_results])
 
 c_input_file = 'Carbon_mapped_product_analysis_output_2024_04_15.mat';
 load([fig_dir '../data/' c_input_file])
@@ -219,7 +221,7 @@ end
 plot_filename = ['Figure 2_v4 Obs model Seasonal ' anomaly_text ' fgco2 spco2 dic tos ' plot_ver];
 clf
 set(gcf, 'units', 'inches')
-paper_w = 12; paper_h =10;
+paper_w = 12; paper_h =9;
 set(gcf,'PaperSize',[paper_w paper_h],'PaperPosition', [0 0 paper_w paper_h]);
 
 plot_index = 0;
@@ -312,8 +314,19 @@ for sv = [8 6 4 1]
     set(gca, 'fontsize', 12, 'xlim', [1 12])
     %     set(l1, 'fontsize', 9)
     y_lims = get(gca, 'ylim');
-    text(-2, y_lims(2)+diff(y_lims)*.2, [var_plot_names{var_label_index,2} ':'], 'fontweight', 'bold', 'fontsize', 14)
+    
+    if sv==1
+        text(-2, y_lims(2)+diff(y_lims)*-.1, [var_plot_names{var_label_index,2} ':'], 'fontweight', 'bold', 'fontsize', 14)
+    elseif sv==4
+        text(-2, y_lims(2)+diff(y_lims)*.26, [var_plot_names{var_label_index,2} ':'], 'fontweight', 'bold', 'fontsize', 14)
 
+    elseif sv==6
+        text(-2, y_lims(2)+diff(y_lims)*.22, [var_plot_names{var_label_index,2} ':'], 'fontweight', 'bold', 'fontsize', 14)
+
+    else
+        text(-2, y_lims(2)+diff(y_lims)*.2, [var_plot_names{var_label_index,2} ':'], 'fontweight', 'bold', 'fontsize', 14)
+
+    end
     plot_index = plot_index+1;
 
     % Plotting taylor diagrams
@@ -368,7 +381,7 @@ for sv = [8 6 4 1]
     %     set(gca, 'ycolor', 'white')
     % text(-max_rel_amp*1.3, max_rel_amp+.2, var_plot_names{var_label_index,2}, 'fontweight', 'bold')
     if plot_index==12
-        text(1.1,1.5+.05,'Correlation','fontsize',14)
+        text(1.35,1.5+.05,'Correlation','fontsize',14)
         xlabel('Relative amplitude')
     end
    
@@ -417,6 +430,34 @@ clear e1 sv v legend_names
 
 % hLegend = legend;
 
+%% Plotting a legend without lines or observations
+legend_names = {};
+% use CO_2 flux, plot all at 0,0, and then make a legend that covers it -
+% multiple columns if need be
+clf
+set(gcf, 'units', 'inches')
+paper_w = 12.2; paper_h =1.8;
+set(gcf,'PaperSize',[paper_w paper_h],'PaperPosition', [0 0 paper_w paper_h]);
+
+subplot(1,1,1); hold on
+sv = 8;
+v = find(strncmp(seas_comp_vars{sv}, variables, 4));
+
+for m =  1:length(cmip_names.(variables{v}))
+    plot(1, CMIP.(variables{v}).out_seasonal(m,1,1), 'color', 'k', 'linewidth', 1, 'linestyle', 'none',...
+        'marker', color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),4}, 'markersize', 10, 'markerfacecolor', [cmap(strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),:)]);
+
+    temp_name = cmip_names.(variables{v}){m};
+    temp_name = strrep(temp_name, '_', '-');
+    temp_name = strrep(temp_name, '-6', ' (6)');
+    legend_names{end+1,1} = temp_name;
+
+end
+legend(legend_names, 'fontsize', 10, 'numcolumns', 6,'location', 'north')
+set(gca, 'Xcolor', 'none', 'Ycolor', 'none', 'xlim', [-2 -1])
+print(gcf, '-dpdf', '-r300', [fig_dir '/' 'Figure 2_Model_Legend_no_line_no_obs' plot_ver '.pdf'])
+clear e1 sv v legend_names
+
 %% Plotting a legend without lines
 legend_names = {};
 % use CO_2 flux, plot all at 0,0, and then make a legend that covers it -
@@ -440,7 +481,7 @@ for m =  1:length(cmip_names.(variables{v}))
     legend_names{end+1,1} = temp_name;
 
 end
-e1 = plot(1:2, obs.dissic.out_seasonal(1:2,1), 'linewidth', 2, 'color', 'k', 'linestyle', 'none', 'marker', 'x');
+e1 = plot(1:2, obs.dissic.out_seasonal(1:2,1), 'linewidth', 2, 'color', 'k', 'linestyle', 'none', 'marker', 'x', 'markersize', 15);
 legend_names{end+1,1} = 'Observations';
 legend(legend_names, 'fontsize', 10, 'numcolumns', 6,'location', 'north')
 set(gca, 'Xcolor', 'none', 'Ycolor', 'none', 'xlim', [-2 -1])
@@ -481,7 +522,7 @@ end
 plot_filename = ['Figure SQ_extra Obs model Seasonal ' anomaly_text ' fgco2 spco2 dic tos ' plot_ver];
 clf
 set(gcf, 'units', 'inches')
-paper_w = 12; paper_h =10;
+paper_w = 12; paper_h =9;
 set(gcf,'PaperSize',[paper_w paper_h],'PaperPosition', [0 0 paper_w paper_h]);
 
 plot_index = 0;
@@ -570,8 +611,13 @@ for sv = [2 5 10 11]
     set(gca, 'fontsize', 12, 'xlim', [1 12])
     %     set(l1, 'fontsize', 9)
     y_lims = get(gca, 'ylim');
-    text(-2, y_lims(2)+diff(y_lims)*.2, [var_plot_names{var_label_index,2} ':'], 'fontweight', 'bold', 'fontsize', 14)
 
+    if sv==11
+      text(-2, y_lims(2)+diff(y_lims)*-.05, [var_plot_names{var_label_index,2} ':'], 'fontweight', 'bold', 'fontsize', 14)
+    else
+     text(-2, y_lims(2)+diff(y_lims)*.2, [var_plot_names{var_label_index,2} ':'], 'fontweight', 'bold', 'fontsize', 14)
+
+    end
     plot_index = plot_index+1;
 
     % Plotting taylor diagrams
@@ -626,7 +672,7 @@ for sv = [2 5 10 11]
     %     set(gca, 'ycolor', 'white')
     % text(-max_rel_amp*1.3, max_rel_amp+.2, var_plot_names{var_label_index,2}, 'fontweight', 'bold')
     if plot_index==12
-        text(1.1,1.5+.05,'Correlation','fontsize',14)
+        text(1.35,1.5+.05,'Correlation','fontsize',14)
         xlabel('Relative Amplitude')
     end
     if plot_index==3
@@ -1132,9 +1178,9 @@ end
 % % adjust legend position
 for sp = 3:4
     if sp==3
-        y_offset = .041;
+        y_offset = .00;
     else
-        y_offset = .015;
+        y_offset = .005;
 
     end
     % elseif sp==2
@@ -1319,7 +1365,7 @@ for ta_n = 1:length(talk_day_shift)
 
                                 mod_pco2_corr = obs.spco2.correlation(m);
 
-                                sc_h(end+1) = scatter(var_phase_shift_days, var_amp_per_diff, 90, mod_pco2_corr, 'filled', 'marker', model_marker, 'markeredgecolor', 'k');
+                                sc_h(end+1) = scatter(var_phase_shift_days, var_amp_per_diff, 120, mod_pco2_corr, 'filled', 'marker', model_marker, 'markeredgecolor', 'k');
                                 temp_name = cmip_names.spco2{m};
                                 temp_name = strrep(temp_name, '_', '-');
                                 temp_name = strrep(temp_name, '-6', ' (6)');
@@ -2361,7 +2407,7 @@ for mon = 1:12
     if mon==10
         x1 = xlabel('Month MLD (m)');
         x_pos = get(x1, 'Position');
-        set(x1, 'position', x_pos+[140 0 0], 'fontweight', 'bold')
+        set(x1, 'position', x_pos+[120 -.5 0], 'fontweight', 'bold')
     end
     grid on
 
@@ -3551,7 +3597,7 @@ for mon = 1:12
     if mon==10
         x1 = xlabel('Month MLD (m)');
         x_pos = get(x1, 'Position');
-        set(x1, 'position', x_pos+[140 0 0], 'fontweight', 'bold')
+        set(x1, 'position', x_pos+[120 -10 0], 'fontweight', 'bold')
     end
     grid on
 
@@ -3592,13 +3638,13 @@ r_text_size = 12;
 
 plot_filename = 'Figure 7_DIC vs SST and DIC vs MLD max_min';
 
-p_col = 3;
+p_col = 2;
 p_row = 1;
 leg_x_shift = .4;
 
 clf
 set(gcf, 'units', 'inches')
-paper_w = 15; paper_h =5;
+paper_w = 10; paper_h =5;
 set(gcf,'PaperSize',[paper_w paper_h],'PaperPosition', [0 0 paper_w paper_h]); clear paper_w paper_h
 
 
@@ -3783,10 +3829,10 @@ x_lim = get(gca, 'xlim');
 y_lim = get(gca, 'ylim');
 text(x_lim(2)- diff(x_lim)*.25, y_lim(1)+diff(y_lim)*.1, ['R^2: ' num2str(r^2,2)], 'fontsize', r_text_size)
 
-
-l1 = legend(sc_h, legend_names, 'location', 'eastoutside', 'fontsize', 10, 'numcolumns', 2);
-l1_pos = get(l1, 'Position');
-set(l1, 'Position', l1_pos+[.5 .03 0 0])
+% 
+% l1 = legend(sc_h, legend_names, 'location', 'eastoutside', 'fontsize', 10, 'numcolumns', 2);
+% l1_pos = get(l1, 'Position');
+% set(l1, 'Position', l1_pos+[.5 .03 0 0])
 
 
 
@@ -3982,12 +4028,12 @@ axis_font_size = 13;
 
 plot_filename = ['Figure 8_DIC and Intpp relationships' plot_ver];
 
-p_col = 3;
+p_col = 2;
 p_row = 1;
 
 clf
 set(gcf, 'units', 'inches')
-paper_w = 16; paper_h =5.5;
+paper_w = 10; paper_h =5.5;
 set(gcf,'PaperSize',[paper_w paper_h],'PaperPosition', [0 0 paper_w paper_h]); clear paper_w paper_h
 
 subplot(p_row,p_col,2);
@@ -4157,9 +4203,9 @@ x_plot = min(temp_array(:,1)):(max(temp_array(:,1))-min(temp_array(:,1)))./10 : 
 y_plot = m.*x_plot+b;
 plot(x_plot, y_plot, 'k-')
 % title(['r= ' num2str(r,2)])
-l2 = legend(sc_h, legend_names, 'location', 'east', 'fontsize', 10, 'numcolumns', 2);
-l2_pos = get(l2, 'Position');
-set(l2, 'Position', l2_pos+[.3 0 0 0])
+% l2 = legend(sc_h, legend_names, 'location', 'east', 'fontsize', 10, 'numcolumns', 2);
+% l2_pos = get(l2, 'Position');
+% set(l2, 'Position', l2_pos+[.3 0 0 0])
 
 x_lim = get(gca, 'xlim');
 y_lim = get(gca, 'ylim');
@@ -4277,12 +4323,12 @@ axis_font_size = 13;
 
 plot_filename = ['Figure 9_pCO2 relationships' plot_ver];
 
-p_col = 4;
+p_col = 3;
 p_row = 1;
 
 clf
 set(gcf, 'units', 'inches')
-paper_w = 15; paper_h =3.5;
+paper_w = 12; paper_h =4;
 set(gcf,'PaperSize',[paper_w paper_h],'PaperPosition', [0 0 paper_w paper_h]); clear paper_w paper_h
 
 
@@ -4494,12 +4540,12 @@ for ss = 1:length(seas_amplitude_list)
         text(x_lim(2)- diff(x_lim)*.35, y_lim(2)-diff(y_lim)*.05, ['R^2: ' num2str(r^2,2)], 'fontsize', r_text_size)
     end
     % title(['r= ' num2str(r,2)])
-    if subplot_num==2
-        l2 = legend(sc_h, legend_names, 'location', 'south', 'fontsize', 9, 'numcolumns', 2);
-        l2_pos = get(l2, 'Position');
-        set(l2, 'Position', l2_pos+[.5 .1 0 0])
-
-    end
+    % if subplot_num==2
+    %     l2 = legend(sc_h, legend_names, 'location', 'south', 'fontsize', 9, 'numcolumns', 2);
+    %     l2_pos = get(l2, 'Position');
+    %     set(l2, 'Position', l2_pos+[.5 .1 0 0])
+    % 
+    % end
 
 
     set(gca, 'fontsize', axis_font_size)
@@ -4610,12 +4656,12 @@ axis_font_size = 13;
 
 plot_filename = ['Figure SW_pCO2 CO2 flux' plot_ver];
 
-p_col = 2;
-p_row = 2;
+p_col = 3;
+p_row = 1;
 
 clf
 set(gcf, 'units', 'inches')
-paper_w = 11.5; paper_h =10;
+paper_w = 12; paper_h =4;
 set(gcf,'PaperSize',[paper_w paper_h],'PaperPosition', [0 0 paper_w paper_h]); clear paper_w paper_h
 
 
@@ -4835,16 +4881,266 @@ for ss = 1:length(seas_amplitude_list)
         text(x_lim(2)- diff(x_lim)*.25, y_lim(1)+diff(y_lim)*.1, ['R^2: ' num2str(r^2,2)], 'fontsize', r_text_size)
     end
     % title(['r= ' num2str(r,2)])
-    if subplot_num==2
-        l2 = legend(sc_h, legend_names, 'location', 'south', 'fontsize', 10, 'numcolumns', 2);
-        l2_pos = get(l2, 'Position');
-        set(l2, 'Position', l2_pos+[0 -.5 0 0])
-
-    end
+    % if subplot_num==2
+    %     l2 = legend(sc_h, legend_names, 'location', 'south', 'fontsize', 10, 'numcolumns', 2);
+    %     l2_pos = get(l2, 'Position');
+    %     set(l2, 'Position', l2_pos+[0 -.5 0 0])
+    % 
+    % end
 
 
     set(gca, 'fontsize', axis_font_size)
     % pause
 end
-annotation('textbox', [0.05, 0.05, 1, 0], 'String', [script_name ': ' plot_filename], 'EdgeColor', 'none', 'interpreter', 'none');
+% annotation('textbox', [0.05, 0.05, 1, 0], 'String', [script_name ': ' plot_filename], 'EdgeColor', 'none', 'interpreter', 'none');
+print(gcf, '-dpdf', [fig_dir plot_filename '.pdf'], '-r300')
+
+%% Figure 12 - pCO2 vs cumulative CO2 flux
+
+r_text_size = 12;
+axis_font_size = 13;
+
+plot_filename = ['Figure 12_Cumulative 2100 CO2 flux' plot_ver];
+
+p_col = 3;
+p_row = 1;
+
+clf
+set(gcf, 'units', 'inches')
+paper_w = 12; paper_h =4;
+set(gcf,'PaperSize',[paper_w paper_h],'PaperPosition', [0 0 paper_w paper_h]); clear paper_w paper_h
+
+
+
+% y axis variable choices
+seas_amplitude_list = [  2 2 2 ]; % 0 is off, 1 is on, 2 is other
+dissic_vert_gradient=0;
+
+y_sv2 = {'out_monthly' 'out_monthly' 'out_monthly'};
+% %% only applies if seas_amplitude is off
+tests = {'norm_error';'correlation' ; 'ratio'};
+test_names = {'normalized error'; 'correlation' ; 'amplitude Ratio'};
+
+% tt = 2;
+% test_list = [ 1 2 3 1 1];
+
+% x-axis variable choices
+alt_x_list=[3 3 3 3 3]; % 0: x axis is one individual month for variable sv
+% 1: x axis is ratio of max to min
+% 2: x axis is seasonal amplitude of sv
+% 3: choose a test
+% dd = 12;
+test_list_2 = [1 3 3];
+
+wmo_on = 0; % takes precedence over alt_x
+
+% x_sv = [4 1 9 10 10];
+x_sv = {'tos' 'tos' 'dissic'};
+mon_list = [ nan nan nan nan nan];
+
+
+subplot_num = 0;
+for ss = 1:length(seas_amplitude_list)
+    temp_array =[];
+    temp_names = {};
+    legend_names = {};
+    sc_h = [];
+    mon = mon_list(ss);
+
+    seas_amplitude = seas_amplitude_list(ss);
+    alt_x = alt_x_list(ss);
+    % tt = test_list(ss);
+    tt_x = test_list_2(ss);
+
+    subplot_num = subplot_num+1;
+    subplot(p_row,p_col,subplot_num);
+    hold on
+    grid on
+    if wmo_on==0
+        v = find(strncmp(x_sv{ss}, variables, 4));
+        if length(v)>1 % cludge since dissic and dissic_yr were getting confused
+            v = strmatch(x_sv{ss}, variables, 'exact');
+        end
+    else
+        v=10;
+    end
+
+    sv2_name = y_sv2{ss}; % 4 - DIC, 6 - spco2
+    if strcmp(sv2_name, 'out_monthly')
+        v2_name = 'fgco2';
+    else
+        v2_name = seas_comp_vars{sv2};
+        sv2 = find(strncmp(seas_comp_vars, sv2_name,6));
+
+    end
+     
+    v2 = find(strncmp(v2_name, variables, 4));
+    if length(v2)>1 % cludge since dissic and dissic_yr were getting confused
+        v2 = strmatch(seas_comp_vars{sv2}, variables, 'exact');
+    end
+
+    for m = 1:length(cmip_names.(variables{v}))
+        mod_match = strcmp(cmip_names.(variables{v2}), cmip_names.(variables{v}){m});
+
+        % if sum(mod_match)>0
+        if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
+            plot_color = cmap(strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),:);
+
+            model_marker = color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),4};
+
+            %                                     sc_h(end+1) = scatter(var_phase_shift_days, var_amp_per_diff, 90, mod_pco2_corr, 'filled', 'marker', model_marker, 'markeredgecolor', 'k');
+            temp_name = cmip_names.(variables{v}){m};
+            temp_name = strrep(temp_name, '_', '-');
+            temp_name = strrep(temp_name, '-6', ' (6)');
+            %                                     disp([temp_name ' ' num2str(mod_pco2_corr)])
+
+
+
+            if seas_amplitude ==1
+                var_2 = max(CMIP.(variables{v2}).out_seasonal(mod_match,:,1)) - min(CMIP.(variables{v2}).out_seasonal(mod_match,:,1)) ;
+            elseif seas_amplitude==2
+                cumulative_flux = cumsum(CMIP.fgco2.(sv2_name)(mod_match,:));
+
+                var_2 = cumulative_flux(end);
+                if isnan(var_2)
+                    var_2 = cumulative_flux(end-13);
+                end
+            else
+                var_2 = obs.(variables{v2}).(tests{tt})(mod_match);
+
+            end
+
+            if dissic_vert_gradient==1
+                if CMIP.dissic_yr.out_annual(m,1,1)==0 % there is an error in CESM2_6 depth coordinate so the interpolation is not working properly
+                    continue
+                end
+                var_1 = CMIP.dissic_yr.out_annual(m,1,1) - CMIP.dissic_yr.out_annual(m,dd,1) ;
+
+            else
+                if wmo_on==1
+                    var_1 = CMIP.wmo.out_seasonal(m,dd,mon,1) ;
+                elseif alt_x==0
+                    var_1 = CMIP.(variables{v}).out_seasonal(m,mon,1);
+                elseif alt_x==1
+                    var_1 = max(CMIP.(variables{v}).out_seasonal(m,:,1))./min(CMIP.(variables{v}).out_seasonal(m,:,1)) ;
+                elseif alt_x==2
+                    var_1 = max(CMIP.(variables{v}).out_seasonal(m,:,1)) - min(CMIP.(variables{v}).out_seasonal(m,:,1)) ;
+                elseif alt_x==3
+                    var_1 = obs.(variables{v}).(tests{tt_x})(m);
+                end
+            end
+            if isnan(var_1) || isnan(var_2)
+                continue
+            end
+
+            sc_h(end+1) = plot(var_1,	var_2 , 'marker', model_marker, 'color', ...
+                'k', 'markerfacecolor', plot_color','markersize', 12, 'linestyle', 'none');
+            legend_names{end+1,1} = temp_name;
+
+            if alt_x==1 && var_1>20
+                disp(['withholding ' cmip_names.(variables{v}){m} ' from regression'])
+                plot(var_1,	var_2 , 'marker', 'o', 'color', ...
+                    'k', 'markerfacecolor', 'none','markersize', 24, 'linestyle', 'none');
+                continue
+            elseif alt_x==3 && strcmp(y_sv2{ss}, 'fgco2_mol_C_m2_yr') && var_2>4
+                disp(['withholding ' cmip_names.(variables{v}){m} ' from regression'])
+                plot(var_1,	var_2 , 'marker', 'o', 'color', ...
+                    'k', 'markerfacecolor', 'none','markersize', 24, 'linestyle', 'none');
+                continue
+
+            elseif strcmp(sv2_name, 'out_monthly') && (var_2>0 || var_2<-1e5)
+                disp(['withholding ' cmip_names.(variables{v}){m} ' from regression'])
+                plot(var_1,	var_2 , 'marker', 'o', 'color', ...
+                    'k', 'markerfacecolor', 'none','markersize', 24, 'linestyle', 'none');
+                continue
+            end
+
+            temp_names{end+1,1} = cmip_names.(variables{v}){m};
+            temp_array(end+1,1) = var_1;
+            temp_array(end,2) = var_2;
+        end
+        % end
+
+    end
+
+    if seas_amplitude~=1 && tt~=1 % if plotting correlation or ratio, "obs" equals 1.
+        obs_y = 1;
+    elseif seas_amplitude~=1 % if plotting normalized error, "obs" equals 0
+        obs_y=0;
+    elseif seas_amplitude==1
+        if v2==1
+            obs_y = max(obs.(variables{v2}).Combined.(p_year).SOCCOM_SOCAT.out_seasonal(:,1)) - ...
+                min(obs.(variables{v2}).Combined.(p_year).SOCCOM_SOCAT.out_seasonal(:,1));
+        else
+            obs_y = max(obs.(variables{v2}).out_seasonal(:,1)) - min(obs.(variables{v2}).out_seasonal(:,1));
+        end
+    end
+
+  
+    if seas_amplitude==2
+
+        comp_label = 'Cumulative PFAZ flux in 2100 (Tg C)';
+    else
+    var_label_index = strncmp(seas_comp_vars{sv2}, var_plot_names(:,1), 4);
+
+    if sum(var_label_index>0)
+        if seas_amplitude==1
+            comp_label = [var_plot_names{var_label_index,2} ' (' var_plot_names{var_label_index,3} ') seasonal amplitude'];
+        else
+            comp_label = [var_plot_names{var_label_index,2} ' ' test_names{tt}];
+        end
+
+    else
+        if seas_amplitude==1
+            comp_label = [seas_comp_vars{sv2} ' seasonal amplitude'];
+        else
+            comp_label = [seas_comp_vars{sv2} ' ' tests{tt}];
+        end
+
+    end
+    end
+    var_label_index = strncmp(variables{v}, var_plot_names(:,1), 4);
+    if dissic_vert_gradient==1
+        x_label = ['dissic vert gradient ' num2str(obs.dissic.depth_levs(dd))];
+    elseif wmo_on==1
+        x_label = [variables{v} ' value from Month= ' num2str(mon) ' and depth ' num2str(CMIP.wmo.CMCC_CESM.depth(dd))];
+    else
+        if alt_x==0
+            x_label = [month_names{mon} ' ' var_plot_names{var_label_index,2} ' (' var_plot_names{var_label_index,3} ')'];
+        elseif alt_x==1
+            x_label = [var_plot_names{var_label_index,2} ' max divided by min'];
+        elseif alt_x==2
+            x_label = [var_plot_names{var_label_index,2} ' amp. (' var_plot_names{var_label_index,3} ')'];
+        elseif alt_x==3
+            x_label = [var_plot_names{var_label_index,2} ' ' tests{tt_x}];
+        else
+            x_label = ' ';
+        end
+    end
+    xlabel( x_label)
+    ylabel(comp_label)
+
+    [m,b,r,~,~]=lsqfitgm(temp_array(:,1),temp_array(:,2));
+    x_plot = min(temp_array(:,1)):(max(temp_array(:,1))-min(temp_array(:,1)))./10 : max(temp_array(:,1));
+    y_plot = m.*x_plot+b;
+    x_lim = get(gca, 'xlim');
+    y_lim = get(gca, 'ylim');
+
+    if subplot_num~=5
+        plot(x_plot, y_plot, 'k-')
+        text(x_lim(2)- diff(x_lim)*.25, y_lim(1)+diff(y_lim)*.1, ['R^2: ' num2str(r^2,2)], 'fontsize', r_text_size)
+    end
+    % title(['r= ' num2str(r,2)])
+    % if subplot_num==2
+    %     l2 = legend(sc_h, legend_names, 'location', 'south', 'fontsize', 10, 'numcolumns', 2);
+    %     l2_pos = get(l2, 'Position');
+    %     set(l2, 'Position', l2_pos+[0 -.5 0 0])
+    % 
+    % end
+
+
+    set(gca, 'fontsize', axis_font_size)
+    % pause
+end
+% annotation('textbox', [0.05, 0.05, 1, 0], 'String', [script_name ': ' plot_filename], 'EdgeColor', 'none', 'interpreter', 'none');
 print(gcf, '-dpdf', [fig_dir plot_filename '.pdf'], '-r300')

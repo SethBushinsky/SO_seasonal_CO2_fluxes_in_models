@@ -13,7 +13,7 @@ color_model = {'CanESM2' 1 [] 'o'; ...
     'MIROC_ESM' 7  [] 'o'; ...
     'HadGEM2_CC' 8 [] '^'; ...
     'HadGEM2_ES' 9  [] 's'; ...
-    'GFDL_ESM2M' 10  [] 'v'; ...
+    'GFDL_ESM2M' 10  [] '^'; ...
     'GFDL_ESM2G' 11  [] '>' ; ...
     'CMCC_CESM' 12 [] '<' ; ...
     'CESM1_BGC' 13  [] 'o'; ...
@@ -24,7 +24,7 @@ color_model = {'CanESM2' 1 [] 'o'; ...
     'BLANK' 18  [] '<' ; ...
     'GISS_E2_H_CC' 19  [] 's'; ...
     'GISS_E2_R_CC' 20 [] '^'; ...
-    'CESM2_WACCM_6' 21 [] 's';...
+    'CESM2_WACCM_6' 21 [] '<';...
     'CESM2_6' 22 [] 'v';...
     'CNRM_ESM2_1_6' 23 [] '>' ;...
     'CanESM5_6' 24  [] '<' ;...
@@ -34,15 +34,15 @@ color_model = {'CanESM2' 1 [] 'o'; ...
     'ACCESS_ESM1_5_6' 28 [] 's'; ...
     'BCC_CSM2_MR_6' 29 [] '>' ; ...
     'GFDL_CM4_6' 30  [] '<' ;...
-    'GFDL_ESM4_6' 31 [] 'o'; ...
+    'GFDL_ESM4_6' 2 [] 'o'; ...
     'INM_CM4_8_6' 32 [] '^'; ...
-    'INM_CM5_0_6' 33 [] 's'; ...
+    'INM_CM5_0_6' 33 [] 'v'; ...
     'MPI_ESM1_2_HR_6' 34 [] 'v'; ...
     'MPI_ESM1_2_LR_6' 35 [] '>' ; ...
     'NorESM2_LM_6' 36  [] '<' ; ...
     'NorESM2_MM_6' 37 [] 'o';
     'IPSL_CM5B_LR' 38 [] '^'; ...
-    'IPSL_CM5A_LR' 39 [] 's'; ...
+    'IPSL_CM5A_LR' 39 [] '^'; ...
     'IPSL_CM5A_MR' 40 [] 'v'; ...
     'MRI_ESM2_0_6' 41 [] '>' ; ...
     'SOSE_i133' 42  [] '<' ; ...
@@ -190,7 +190,8 @@ for v= [1 2 4 5 6 7 8 9 11 12 13 14]%[13, 14]%[1 2 4 5 6 7 8 9 11 12 13 14]% 1:l
 
         CMIP.(variables{v}).(mod_name).GMT_Matlab = temp_Matlab_time; clear temp_Matlab_time
 
-        if strcmp(mod_name, 'MRI_ESM1') && strcmp(var_load, 'sos')
+        % if strcmp(mod_name, 'MRI_ESM1') && strcmp(var_load, 'sos')
+        if strncmp(cmip_files(f).name, 'so_', 3) && strcmp(var_load, 'sos') % for models without sos output I can use so_
             temp_var_load = 'so';
         else
             temp_var_load = var_load;
@@ -367,7 +368,11 @@ for v= [1 2 4 5 6 7 8 9 11 12 13 14]%[13, 14]%[1 2 4 5 6 7 8 9 11 12 13 14]% 1:l
             CMIP.(variables{v}).(mod_name).GMT_Matlab = [temp_Matlab_time;  CMIP.(variables{v}).(mod_name).GMT_Matlab];
 
             if ~strcmp(variables{v}, 'thetao')
-                time_dimension = find(size(CMIP.(variables{v}).(mod_name).(variables{v}))==length(time_temp));
+                if strcmp(variables{v}, 'fgco2')
+                    time_dimension = find(size(CMIP.(variables{v}).(mod_name).(variables{v}))~=360 & size(CMIP.(variables{v}).(mod_name).(variables{v}))~=180);
+                else
+                    time_dimension = find(size(CMIP.(variables{v}).(mod_name).(variables{v}))==length(time_temp));
+                end
                 CMIP.(variables{v}).(mod_name).(variables{v}) = cat(time_dimension,squeeze(ncread([CMIP_dir_hist cmip_files_hist(hh).name], var_load)), ...
                     CMIP.(variables{v}).(mod_name).(variables{v}));
 
@@ -1019,50 +1024,7 @@ for m = 1:length(cmip_names.tos)
 end
 
 clear m v q
-%% calculate MLD
-% variables = [variables ; 'MLD_03'];
-% var_type = [var_type ; 'Omon'];
-% var_lims(end+1,:) = [0 500];
-% cmip_names.MLD_03 = {};
-% CMIP.MLD_03.lat = CMIP.spco2.lat;
-% CMIP.MLD_03.lon = CMIP.spco2.lon;
-% 
-% temp_MLD_all = NaN(360, 180, 120, length(cmip_names.thetao));
-% 
-% parfor m = 1:length(cmip_names.thetao)
-%     % loop through all 360 lon and -90 to -20 deg S
-%     % la = 40;
-%     temp_MLD = NaN(360, 180, 120);
-% 
-% 
-%     for mon = 1:120
-%         for lo = 1:length(CMIP.MLD_03.lon)
-%             for la = 1:70
-%                 temp_MLD(lo, la, mon) = mld_dbm_v3(squeeze(CMIP.thetao.(cmip_names.thetao{m}).thetao(lo, la, :, mon)), squeeze(CMIP.so.(cmip_names.thetao{m}).so(lo, la, :, mon)), CMIP.so.(cmip_names.thetao{m}).depth, 1, 1, 0.03);
-%             end
-%         end
-%     end
-%     % temporarily save out temp_MLD so that it can be loaded back in
-%     % save([Project_dir 'data/temp_MLD_files/MLD_calc_' cmip_names.thetao{m}], 'temp_MLD')
-%     temp_MLD_all(:,:,:,m) = temp_MLD;
-% end
-% %% save MLDs back into CMIP structure
-% for m = 1:length(cmip_names.thetao)
-%     CMIP.MLD_03.(cmip_names.thetao{m}).GMT_Matlab = CMIP.thetao.(cmip_names.thetao{m}).GMT_Matlab;
-% 
-%     CMIP.MLD_03.(cmip_names.thetao{m}).MLD_03 = temp_MLD_all(:,:,:,m);
-%     CMIP.MLD_03.(cmip_names.thetao{m}).units = 'm';
-% end
 
-
-
-% %%
-% mon =1;
-% clf
-% 
-% subplot(3,1,1); pcolor(CMIP.lon_grid, CMIP.lat_grid, CMIP.mlotst.CNRM_CM5.mlotst(:,:,mon)); shading flat; colorbar; caxis([0 200])
-% subplot(3,1,2); pcolor(CMIP.lon_grid, CMIP.lat_grid, temp_MLD(:,:,mon)); shading flat; colorbar; caxis([0 200])
-% subplot(3,1,3); pcolor(CMIP.lon_grid, CMIP.lat_grid, CMIP.mlotst.CNRM_CM5.mlotst(:,:,mon)-temp_MLD(:,:,6)); shading flat; colorbar; caxis([-100 100])
 %% Calculation of monthly means and std using a mask based on potential temperature
 
 % note that this expects a 2D variable will be run first to create a mask
@@ -1090,6 +1052,12 @@ for v=[1 2 4:9 11 12 14, 15] %[1:12 14] % skip thetao as it is only used for the
                 var4D = 1;
             else
                 CMIP.(variables{v}).out_seasonal = NaN(length(cmip_names.(variables{v})),12,2); % 3D out_seasonal (num models, 12 months, mean and std)
+                if strcmp(variables{v}, 'fgco2')
+                    CMIP.(variables{v}).out_seasonal_35S = NaN(length(cmip_names.(variables{v})),12,2); % 3D out_seasonal (num models, 12 months, mean and std)
+                    CMIP.(variables{v}).out_monthly = NaN(length(cmip_names.(variables{v})),12*91,1); % 3D out_seasonal (num models, 12 months * 91 years, sum)
+                    CMIP.(variables{v}).out_monthly_35S = NaN(length(cmip_names.(variables{v})),12*91,1); % 3D out_seasonal (num models, 12 months * 91 years, sum)
+
+                end
                 var4D = 0;
                 num_depths = 1;
             end
@@ -1149,7 +1117,7 @@ for v=[1 2 4:9 11 12 14, 15] %[1:12 14] % skip thetao as it is only used for the
 
                 for mon = 1:12
                     mod_vec = datevec(CMIP.(variables{v}).(cmip_names.(variables{v}){m}).GMT_Matlab); % create a date vector to use for filter
-                    time_index = mod_vec(:,2)==mon; % find all months equal to mon
+                    time_index = mod_vec(:,2)==mon & mod_vec(:,1)<=2019; % find all months equal to mon and within the time range for the seasonal cycle
 
                     if var4D==0
                         SO_var = CMIP.(variables{v}).(cmip_names.(variables{v}){m}).(variables{v})(:, :, time_index); % save correct months to SO_var
@@ -1165,6 +1133,7 @@ for v=[1 2 4:9 11 12 14, 15] %[1:12 14] % skip thetao as it is only used for the
                     if strcmp(variables{v}, 'fgco2')
                         % collapse all years into one mean map for each month
                         SO_fgco2_mean = nanmean(SO_var,3);
+                        SO_fgco2_mean_copy = SO_fgco2_mean;
 
                         % mask out nan values north of the SAF in each
                         % model
@@ -1172,6 +1141,15 @@ for v=[1 2 4:9 11 12 14, 15] %[1:12 14] % skip thetao as it is only used for the
 
                         % sum all grid cells to convert to total flux in the area
                         CMIP.(variables{v}).out_seasonal(m,mon,1) = nansum(reshape(SO_fgco2_mean,[],1)); % sum, not mean
+
+                        % do the same for a 35S integral
+                         % mask out nan values north of the SAF in each
+                        % model
+                        SO_fgco2_mean_copy(lat_grid>-35)=nan;
+                        SO_fgco2_mean_copy(lat_grid<poleward_lat_lim)=nan;
+
+                        % sum all grid cells to convert to total flux in the area
+                        CMIP.(variables{v}).out_seasonal_35S(m,mon,1) = nansum(reshape(SO_fgco2_mean_copy,[],1)); % sum, not mean
 
                         clear SO_fgco2_mean
 
@@ -1230,7 +1208,41 @@ for v=[1 2 4:9 11 12 14, 15] %[1:12 14] % skip thetao as it is only used for the
                     end
                     clear time_index SO_var mod_vec SO_var_mean grid_weights temp_area
                 end % end months loop
+
+          
+
             end % end depth loop
+
+            % do a second calculation of cumulative SO flux for fgco2
+            % only
+            if strcmp(variables{v}, 'fgco2')
+               SO_var = CMIP.(variables{v}).(cmip_names.(variables{v}){m}).(variables{v})(:, :, :); % save correct months to SO_var
+               % loop through each month, calculate the integrated flux,
+               % and save 
+               for month = 1:size(SO_var,3)
+                    SO_fgco2_mon = SO_var(:,:,month);
+                    SO_fgco2_mon_copy = SO_fgco2_mon;
+
+                    % mask out nan values north of the SAF in each
+                    % model
+                    SO_fgco2_mon(~SAF_S_mask)=nan;
+
+                    % sum all grid cells to convert to total flux in the area
+                    CMIP.(variables{v}).out_monthly(m,month) = nansum(reshape(SO_fgco2_mon,[],1)); % sum, not mean
+
+                    % do the same for a 35S integral
+                    % mask out nan values north of the SAF in each
+                    % model
+                    SO_fgco2_mon_copy(lat_grid>-35)=nan;
+                    SO_fgco2_mon_copy(lat_grid<poleward_lat_lim)=nan;
+
+                    % sum all grid cells to convert to total flux in the area
+                    CMIP.(variables{v}).out_monthly_35S(m,month) = nansum(reshape(SO_fgco2_mon_copy,[],1)); % sum, not mean
+
+
+               end
+
+            end
             clear SAF_S_mask
         end
         clear m mon num_depths var4D
@@ -2126,7 +2138,7 @@ save([home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/data/surface_fields/
 
 clear var_name lon_grid lat_grid SO_var units model_name
 
-%% calculate a weighted mean for dissic and talk
+% calculate a weighted mean for dissic and talk
 
 % CO2 sol seasonal cycle
 obs.dissic.out_seasonal = NaN(12,2,length(depth_levs));
@@ -2179,7 +2191,7 @@ end
 obs.talk.depth_levs = depth_levs;
 obs.dissic.depth_levs = depth_levs;
 
-%% Neural network pco2 load
+% Neural network pco2 load
 year_range =[2010 2019];
 
 % 2022_07_15 updating to use multiple products (and plan to use combined
@@ -2535,7 +2547,7 @@ units = 'm';
 save([home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/data/surface_fields/' var_name '/00_Obs' plot_ver '.mat'], ...
             'lon_grid', 'lat_grid', 'SO_var', 'var_name','model_SAF', 'plot_ver', 'model_name','units')
 
-%% Load Cerovecki RG MLD for comparison
+% Load Cerovecki RG MLD for comparison
 argo_MLD = load([home_dir 'Work/Projects/2020_02 SO SAMW Variability_Cerovecki/Data_from_Ivana/2021_12_10/MLD_av_2005_OCT_2021_SouthOc.mat']);
 
 argo_MLD.GMT_Matlab = datenum(2005,1:size(argo_MLD.mld,3),15); % first date is Jan 2005 and data is monthly so make a time vector according to the size of the mld array
@@ -2582,7 +2594,7 @@ save([home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/data/surface_fields/
             'lon_grid', 'lat_grid', 'SO_var', 'var_name','model_SAF', 'plot_ver', 'model_name','units')
 
 clear mon argo_MLD units model_name var_name lon_grid lat_grid grid_weights TTT temp_area 
-%% Loading NPP
+% Loading NPP
 disp('Starting  NPP load')
 
 npp_types = {'CbPM', 'VGPM', 'CAFE'};
@@ -2713,7 +2725,7 @@ save([home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/data/surface_fields/
             'lon_grid', 'lat_grid', 'SO_var', 'var_name','model_SAF', 'plot_ver', 'model_name','units')
 
 clear f temp_intpp
-%% calculate seasonal DIC-TALK cycles
+% calculate seasonal DIC-TALK cycles
 % 
 % % try to just add to "variables" and see if it causes havoc:
 % variables = [variables ; 'DIC_Alk'];
@@ -2908,7 +2920,7 @@ for v=1:length(variables)
     clear m c1 SO_lat_index paper_h paper_w dd num_depths
 end
 %% Save out CMIP variable if possible
-save([home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/data/CMIP_only_' datestr(now, 'YYYY_mm_dd') '.mat'], 'plot_ver', 'CMIP', '-v7.3')
+% save([home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/data/CMIP_only_' datestr(now, 'YYYY_mm_dd') '.mat'], 'plot_ver', 'CMIP', '-v7.3')
 
 %% save out seasonal data / seasonal cycles so you don't have to re-read in observations
 % remove data from CMIP so that you have a reduced dataset to save / load
@@ -2934,7 +2946,7 @@ for v = 1:length(variables)
     end
 end
 
-%%
+%
 % save([home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/data/seasonal_cycles_' datestr(now, 'YYYY_mmm_dd') '.mat'], 'CMIP', 'NPP_obs', 'combined_SO', 'Mapped_pCO2', 'NOAA_SST', 'WOA_SSS',...
 %     'cmip_names', 'obs', 'color_model', 'variables', 'var_type', 'cmap', 'model_group_colors', ...
 %     'var_lims', 'depth_levs', 'poleward_lat_lim', 'depth_names')
@@ -3388,6 +3400,312 @@ for sv = 10% [1 2 3 4 5 6 8 9 10] %1:length(seas_comp_vars)
     end
 end
 
+
+%% plotting Taylor RMS vs CO2 flux
+% now also do the other comparisons (i.e. correlation vs. correlation)
+filter_on=1;
+if filter_on==1
+    disp('Warning, some results filtered from regression analysis')
+end
+% example spco2 match vs. intpp
+tests = {'norm_error';'correlation' ; 'ratio'};
+% legend_on=0;
+group_color = 0;
+set(gcf, 'colormap', turbo)
+v3 = 4; % variable for harmonic fit scatter color
+
+harm_comp = 'offset';
+% flux_comparison = {'out_seasonal', 'out_seasonal_35S', 'out_monthly'};
+flux_comparison = {'out_monthly', 'out_monthly_35S'};
+
+for fc = 1:length(flux_comparison)
+    for tt = 1:length(tests)
+        clf
+        set(gcf, 'units', 'inches')
+        paper_w = 15; paper_h =8;
+        set(gcf,'PaperSize',[paper_w paper_h],'PaperPosition', [0 0 paper_w paper_h]); clear paper_w paper_h
+        plot_index = 0;
+        plot_filename = ['Taylor CO2flux ' flux_comparison{fc} ' vs. ' tests{tt} ' other vars_model_groups=' num2str(group_color) ' filter ' num2str(filter_on) plot_ver];
+        if group_color==2
+            plot_filename = ['Taylor CO2flux vs. ' y_end tests{tt} ' other vars_model_groups=' num2str(group_color) '_' variables{v3} '_' ...
+                harm_comp ' filter ' num2str(filter_on)  plot_ver];
+
+        end
+        for sv = [1 2 3 4 5 6 8 9 10] %1:length(seas_comp_vars)
+
+
+            v = find(strncmp(seas_comp_vars{sv}, variables, 4));
+            if length(v)>1 % cludge since dissic and dissic_yr were getting confused
+                v = strmatch(seas_comp_vars{sv}, variables, 'exact');
+            end
+
+
+
+
+            plot_index = plot_index+1;
+
+            subplot(3,3,plot_index)
+
+            hold on
+            grid on
+
+            %         legend_list = [];
+            temp_array = [];
+            temp_color = [];
+            for m = 1:length(cmip_names.(variables{v}))
+
+
+                % find the matching model
+                mod_match = strcmp(cmip_names.fgco2, cmip_names.(variables{v}){m});
+
+                if sum(mod_match)>0
+                    if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
+
+                        if group_color==1
+                            plot_color = model_group_colors(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3},:);
+                        elseif group_color==0
+                            plot_color = cmap(strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),:);
+
+                        end
+
+                        if group_color==0 || group_color==1
+                            if strncmp(flux_comparison{fc}, 'out_seasonal', 10)
+                                plot(obs.(variables{v}).(tests{tt})(m), sum(CMIP.fgco2.(flux_comparison{fc})(mod_match,:,1)), '.', 'color', ...
+                                    plot_color, 'markersize', 20)
+                            else
+                                cumulative_flux = cumsum(CMIP.fgco2.(flux_comparison{fc})(mod_match,:));
+                                plot(obs.(variables{v}).(tests{tt})(m), cumulative_flux(end), '.', 'color', ...
+                                    plot_color, 'markersize', 20)
+                            end
+                        elseif group_color==2 % plotting color based on harmonic fit info
+                            mod_match_2 = strcmp(cmip_names.(variables{v3}), cmip_names.(variables{v}){m});
+
+                            % if sum(mod_match_2)>0
+                            %     harm_diff = harm_mod.(variables{v3}).(harm_comp)(mod_match_2) - harm.(variables{v3}).(harm_comp); % difference in phase between model and obs
+                            %
+                            %     scatter(obs.(variables{v}).(tests{qq})(m), obs.(variables{v2}).(tests{tt})(mod_match), 40, harm_diff, 'filled');
+                            %     c1 = colorbar;
+                            %     temp_color(end+1) = harm_diff;
+                            % else
+                            %     plot(obs.(variables{v}).(tests{qq})(m), obs.(variables{v2}).(tests{tt})(mod_match), 'o', 'color', ...
+                            %         'k', 'markersize', 7)
+                            % end
+                            % if plot_index==8
+                            %     ylabel(c1, ['Harmonic diff ' (variables{v3}) ' ' harm_comp])
+                            % end
+                        end
+                        %         legend_list = [legend_list ; {cmip_names.(variables{v}){m}}];
+                        temp_array(end+1,1) = obs.(variables{v}).(tests{tt})(m);
+                        if strncmp(flux_comparison{fc}, 'out_seasonal', 10)
+                            temp_array(end,2) = sum(CMIP.fgco2.(flux_comparison{fc})(mod_match,:,1));
+                        else
+                            cumulative_flux = cumsum(CMIP.fgco2.(flux_comparison{fc})(mod_match,:));
+                            temp_array(end,2) = cumulative_flux(end-13);
+
+                        end
+
+                    end
+                end
+                clear plot_color
+            end
+            if group_color==2
+                c_lim = caxis;
+                %                     caxis([-max(abs(c_lim)) max(abs(c_lim))])
+                caxis([-nanstd(temp_color) nanstd(temp_color)]*1.5)
+            end
+
+            xlabel( [variables{v} ' ' tests{tt}], 'interpreter', 'none')
+            ylabel('co2 flux', 'interpreter', 'none')
+            if filter_on==1
+                % disp(['withholding ' cmip_names.(variables{v}){m} ' from regression'])
+                if  strcmp(flux_comparison{fc}, 'out_seasonal')
+                    filt_val = [-500 500];
+                    filt_index = temp_array(:,2)<filt_val(1) | temp_array(:,2)>filt_val(2);
+
+                elseif strcmp(flux_comparison{fc}, 'out_seasonal_35S')
+                    filt_val= [-2500 500];
+                    filt_index = temp_array(:,2)<filt_val(1) | temp_array(:,2)>filt_val(2);
+
+                elseif strcmp(flux_comparison{fc}, 'out_monthly')
+                    filt_val= [-1e5 0];
+                    filt_index = temp_array(:,2)<filt_val(1) | temp_array(:,2)>filt_val(2);
+                    if tt==3 && strcmp(seas_comp_vars{sv}, 'tos')
+                        filt_index = filt_index | obs.(variables{v}).(tests{tt})>2.5;
+                    elseif tt==1 && strcmp(seas_comp_vars{sv}, 'tos')
+                        filt_index = filt_index | obs.(variables{v}).(tests{tt})>1.5;
+
+                    end
+                elseif strcmp(flux_comparison{fc}, 'out_monthly_35S')
+                    filt_val= [-4e5 0];
+                    filt_index = temp_array(:,2)<filt_val(1) | temp_array(:,2)>filt_val(2);
+                    % if tt==3 && strcmp(seas_comp_vars{sv}, 'tos')
+                    %     filt_index = filt_index | obs.(variables{v}).(tests{tt})>2.5;
+                    % elseif tt==1 && strcmp(seas_comp_vars{sv}, 'tos')
+                    %     filt_index = filt_index | obs.(variables{v}).(tests{tt})>1.5;
+                    % 
+                    % end
+                end
+                plot(temp_array(filt_index,1),	temp_array(filt_index,2) , 'marker', 'o', 'color', ...
+                    'k', 'markerfacecolor', 'none','markersize', 24, 'linestyle', 'none');
+                temp_array(filt_index,1)=nan;
+                temp_array = temp_array(~isnan(temp_array(:,1)),:);
+
+            end
+    
+            [m,b,r,~,~]=lsqfitgm(temp_array(~isnan(temp_array(:,1))& ~isnan(temp_array(:,2)),1),temp_array(~isnan(temp_array(:,1))& ~isnan(temp_array(:,2)),2));
+            x_plot = min(temp_array(:,1)):(max(temp_array(:,1))-min(temp_array(:,1)))./10 : max(temp_array(:,1));
+            y_plot = m.*x_plot+b;
+            plot(x_plot, y_plot, 'k-')
+            if filter_on==0
+                title(['R^2= ' num2str(r^2,2)])
+            else
+                title(['filt R^2= ' num2str(r^2,2)])
+            end
+            % if tt>1
+            %     plot(get(gca, 'xlim'), [1 1], '-k')
+            % end
+
+            if tt==3
+                orig_x_lim = get(gca, 'xlim');
+
+                if orig_x_lim(1)<0
+                    orig_x_lim(1)=0;
+                end
+
+                set(gca, 'xlim', orig_x_lim)
+            end
+
+            if tt==2
+                orig_x_lim = get(gca, 'xlim');
+
+                if orig_x_lim(1)<-1
+                    orig_x_lim(1)=-1;
+                end
+                if orig_x_lim(2)>1
+                    orig_x_lim(2)=1;
+                end
+
+                set(gca, 'xlim', orig_x_lim)
+            end
+
+            % if qq>1
+            %     plot([1 1], get(gca, 'ylim'), '-k')
+            % end
+        end
+        % if group_color==0 % only add the legend if plotting individual model colors
+        %     subplot(3,3,9)
+        %     hold on
+        %     legend_names = {};
+        %
+        %     for m = 1:length(cmip_names.fgco2)
+        %         if ~isempty(color_model{strcmp(cmip_names.fgco2{m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
+        %
+        %             plot(0,0, '.', 'color', cmap(strcmp(cmip_names.fgco2{m}, color_model(:,1)),:), 'markersize', 25)
+        %
+        %             legend_names{end+1,1} = cmip_names.fgco2{m};
+        %         end
+        %     end
+        %     l1 = legend(legend_names, 'numcolumns', 3, 'interpreter', 'none');
+        %     leg_pos = get(l1, 'position');
+        %
+        %     set(l1, 'position', leg_pos+[.07 0.02 0 0])
+        %
+        %     % 				set(l1, 'interpreter', 'none', 'position', [0.8973    0.0801    0.1005    0.5704]);
+        % end
+        %             subplot(3,3,9)
+        %             hold on
+        %             for m = 1:length(model_types)
+        %                 plot(0,0, '.', 'color', model_group_colors(m,:), 'markersize', 25)
+        %
+        %             end
+        %             if legend_on ==1
+
+        %             end
+        annotation('textbox', [0.05, 0.05, 1, 0], 'String', plot_filename, 'EdgeColor', 'none', 'interpreter', 'none');
+        print(gcf, '-dpng', [Plot_out_dir  'fgco2/' plot_filename '_test.png'])
+        % end
+    end
+end
+%% plot cumulative flux, coloring in different ways
+clear tt
+group_color=3;
+color_map = turbo;
+
+comparisons = {'phase'; 'offset'; 'amp'};
+tests = {'norm_error';'correlation' ; 'ratio'};
+
+
+for v3 = [1 2 5 6 7 8 14]
+
+    for hc = 1:length(comparisons)
+        if group_color==2
+            harm_comp = comparisons{hc};
+            plot_filename = ['Cumulative CO2 flux harmonic comp ' variables{v3} ' ' harm_comp plot_ver];
+
+        else
+            harm_comp = tests{hc};
+            plot_filename = ['Cumulative CO2 flux taylor comp ' variables{v3} ' ' harm_comp plot_ver];
+
+        end
+
+        clf
+        set(gcf, 'units', 'inches')
+        paper_w = 10; paper_h =14;
+        set(gcf,'PaperSize',[paper_w paper_h],'PaperPosition', [0 0 paper_w paper_h]); clear paper_w paper_h
+
+        d1 = subplot(2,1,1); hold on; grid on; title(['PFAZ, colored by: ' variables{v3} ' ' harm_comp])
+        d2 = subplot(2,1,2);hold on; grid on; title(['S of 35S, colored by: ' variables{v3} ' ' harm_comp])
+
+
+        if group_color==2
+            comp_range = [min(harm_mod.(variables{v3}).(harm_comp)(:,1) - harm.(variables{v3}).(harm_comp)(1)) max(harm_mod.(variables{v3}).(harm_comp)(:,1) - harm.(variables{v3}).(harm_comp)(1))];
+            comp_range = [-max(abs(comp_range)) max(abs(comp_range))];
+        else
+            comp_range = [min(obs.(variables{v3}).(tests{hc})) max(obs.(variables{v3}).(tests{hc}))];
+        end
+        for m = 1:length(cmip_names.fgco2)
+            if group_color==1
+                plot_color = model_group_colors(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3},:);
+            else
+                mod_match_2 = strcmp(cmip_names.(variables{v3}), cmip_names.(variables{v}){m});
+                if sum(mod_match_2)>0
+                    if group_color==2
+                        comp_val = harm_mod.(variables{v3}).(harm_comp)(mod_match_2,1) - harm.(variables{v3}).(harm_comp)(1); % difference in harm prop between model and obs
+                    elseif group_color==3
+                        comp_val = obs.(variables{v3}).(tests{hc})(mod_match_2);
+                    end
+                    color_index = round((comp_val - comp_range(1))/diff(comp_range)*length(color_map));
+                    if color_index==0
+                        color_index=1;
+                    elseif color_index>length(color_map)
+                        color_index = length(color_map);
+                    end
+                    plot_color = color_map(color_index,:);
+
+                end
+          
+            end
+
+            plot(d1, CMIP.fgco2.ACCESS_ESM1_5_6.GMT_Matlab, cumsum(CMIP.fgco2.out_monthly(m,:)), 'color', plot_color, 'linewidth', 2)
+
+
+
+
+            plot(d2, CMIP.fgco2.ACCESS_ESM1_5_6.GMT_Matlab,  cumsum(CMIP.fgco2.out_monthly_35S(m,:)),  'color', plot_color, 'linewidth', 2)
+
+        end
+        if group_color==2 || group_color==3
+
+            colorbar(d1);
+            clim(d1, comp_range)
+            colorbar(d2);
+            clim(d2, comp_range)
+        end
+
+        annotation('textbox', [0.05, 0.05, 1, 0], 'String', plot_filename, 'EdgeColor', 'none', 'interpreter', 'none');
+        print(gcf, '-dpng', [Plot_out_dir 'fgco2/' plot_filename '_test.png'])
+    end
+end
 %% Plotting variable seasonal cycles %%%%%%%%%%
 % cmap = distinguishable_colors(20);
 var_mean_lims = var_lims;
@@ -3752,7 +4070,9 @@ for m = 1:length(cmip_names.spco2) % spco2 model number
     disp(cmip_names.spco2{m})
     end_plot = 0;
 
- 
+    temp_name = cmip_names.spco2{m};
+    temp_name = strrep(temp_name, '_', '-');
+    temp_name = strrep(temp_name, '-6', ' (6)');
 
     plot_filename = ['Sensitivity_tests_' cmip_names.spco2{m} plot_ver];
 
@@ -3760,7 +4080,7 @@ for m = 1:length(cmip_names.spco2) % spco2 model number
 
     clf
     set(gcf, 'units', 'inches')
-    paper_w = 12; paper_h =21;
+    paper_w = 16; paper_h =21;
     set(gcf,'PaperSize',[paper_w paper_h],'PaperPosition', [0 0 paper_w paper_h]);
 
     subplot_index = 0;
@@ -3835,7 +4155,7 @@ for m = 1:length(cmip_names.spco2) % spco2 model number
                 seasonal_var = obs.(variables{v}).out_seasonal(:,1,1);
             end
 
-            p_obs = plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 2);
+            p_obs = plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 1);
             hold on
             %         plot(harm.(variables{v}).seasonal_fit-nanmean(harm.(variables{v}).seasonal_fit),
             %         'g-', 'linewidth', 2) % plotting harmonic fit if you decide to go
@@ -3851,8 +4171,10 @@ for m = 1:length(cmip_names.spco2) % spco2 model number
             temp_var_match(v,1:4) = {variables{v} phase_shift_days ...
                 amp_shift obs.(variables{v}).norm_error(mod_match_index)};
 
-            title(variables{v})
-
+             var_label_index = strncmp(variables{v}, var_plot_names(:,1), 4);
+            title(var_plot_names{var_label_index,2})
+            ylabel(var_plot_names{var_label_index,3})
+            set(gca, 'xticklabels', [])
         end
         % plot harmonic fits :
         % DIC timing (phase):
@@ -3878,7 +4200,7 @@ for m = 1:length(cmip_names.spco2) % spco2 model number
         if subplot_index==1
             y_lim = get(gca, 'ylim');
 
-            text( -5, y_lim(2)+10, cmip_names.spco2{m}, 'interpreter', 'none', 'fontweight', 'bold')
+            text( -2, y_lim(2)+10, temp_name, 'interpreter', 'none', 'fontweight', 'bold')
         end
     end
 
@@ -3976,14 +4298,14 @@ for m = 1:length(cmip_names.spco2) % spco2 model number
                 seasonal_var = obs.(variables{v}).out_seasonal(:,1,1);
             end
 
-            p_obs = plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 2);
+            p_obs = plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 1);
 
             hold on
 
             %         plot(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1) - nanmean(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1)), 'color', model_color, 'linewidth', 2)
 
-            title(variables{v})
-
+             var_label_index = strncmp(variables{v}, var_plot_names(:,1), 4);  title(var_plot_names{var_label_index,2});ylabel(var_plot_names{var_label_index,3})
+            set(gca, 'xticklabels', [])
         end
 
         plot(modeled_var.(variables{v}) - nanmean(modeled_var.(variables{v})),  '--', 'color', harm_mod_color, 'linewidth', 2)
@@ -3997,11 +4319,14 @@ for m = 1:length(cmip_names.spco2) % spco2 model number
     end
 
     p_pco2_test = plot(modeled_var.adjust.spco2 - nanmean(modeled_var.adjust.spco2), '-', 'linewidth', 2, 'color', pCO2_calc_color);
+
+   
+
     l1 = legend([p_cmip_model, p_recreated_model, p_obs, p_adjust, p_pco2_test], ...
-        cmip_names.spco2{m}, ['Harm. fit to ' cmip_names.spco2{m}], 'Obs.',  ...
-         'Adjusted', 'pCO_2 from Harmonic');
+        temp_name, ['Harm. fit to ' temp_name], 'Obs.',  ...
+         'Adjusted variable(s)', 'pCO_2 after adjustment', 'numcolumns', 2);
     leg_pos = get(l1, 'position');
-    set(l1, 'position', leg_pos+[0 .11 0 0])
+    set(l1, 'position', leg_pos+[-.05 .055 0 0])
 
     % taylor calc on pco2_test
     [test_out.correlation, test_out.ratio, test_out.norm_error]=taylor_eval(obs.spco2.Combined.(p_year).SOCCOM_SOCAT.out_seasonal(:,1),pco2_test);
@@ -4067,14 +4392,14 @@ for m = 1:length(cmip_names.spco2) % spco2 model number
                 seasonal_var = obs.(variables{v}).out_seasonal(:,1,1);
             end
 
-            plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 2)
+            plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 1)
 
             hold on
 
             %         plot(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1) - nanmean(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1)), 'color', model_color, 'linewidth', 2)
 
-            title(variables{v})
-
+             var_label_index = strncmp(variables{v}, var_plot_names(:,1), 4);  title(var_plot_names{var_label_index,2});ylabel(var_plot_names{var_label_index,3})
+            set(gca, 'xticklabels', [])
         end
         plot(modeled_var.(variables{v}) - nanmean(modeled_var.(variables{v})),  '--', 'color', harm_mod_color, 'linewidth', 2)
 
@@ -4153,14 +4478,14 @@ for m = 1:length(cmip_names.spco2) % spco2 model number
                 seasonal_var = obs.(variables{v}).out_seasonal(:,1,1);
             end
 
-            plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 2)
+            plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 1)
 
             hold on
 
             %         plot(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1) - nanmean(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1)), 'color', model_color, 'linewidth', 2)
 
-            title(variables{v})
-
+             var_label_index = strncmp(variables{v}, var_plot_names(:,1), 4);  title(var_plot_names{var_label_index,2});ylabel(var_plot_names{var_label_index,3})
+            set(gca, 'xticklabels', [])
         end
         plot(modeled_var.(variables{v}) - nanmean(modeled_var.(variables{v})),  '--', 'color', harm_mod_color, 'linewidth', 2)
 
@@ -4238,14 +4563,14 @@ for m = 1:length(cmip_names.spco2) % spco2 model number
                 seasonal_var = obs.(variables{v}).out_seasonal(:,1,1);
             end
 
-            plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 2)
+            plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 1)
 
             hold on
 
             %         plot(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1) - nanmean(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1)), 'color', model_color, 'linewidth', 2)
 
-            title(variables{v})
-
+             var_label_index = strncmp(variables{v}, var_plot_names(:,1), 4);  title(var_plot_names{var_label_index,2});ylabel(var_plot_names{var_label_index,3})
+set(gca, 'xticklabels', [])
         end
         plot(modeled_var.(variables{v}) - nanmean(modeled_var.(variables{v})),  '--', 'color', harm_mod_color, 'linewidth', 2)
 
@@ -4321,14 +4646,14 @@ for m = 1:length(cmip_names.spco2) % spco2 model number
                 seasonal_var = obs.(variables{v}).out_seasonal(:,1,1);
             end
 
-            plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 2)
+            plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 1)
 
             hold on
 
             %         plot(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1) - nanmean(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1)), 'color', model_color, 'linewidth', 2)
 
-            title(variables{v})
-
+             var_label_index = strncmp(variables{v}, var_plot_names(:,1), 4);  title(var_plot_names{var_label_index,2});ylabel(var_plot_names{var_label_index,3})
+set(gca, 'xticklabels', [])
         end
         plot(modeled_var.(variables{v}) - nanmean(modeled_var.(variables{v})),  '--', 'color', harm_mod_color, 'linewidth', 2)
 
@@ -4405,14 +4730,14 @@ for m = 1:length(cmip_names.spco2) % spco2 model number
                 seasonal_var = obs.(variables{v}).out_seasonal(:,1,1);
             end
 
-            plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 2)
+            plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 1)
 
             hold on
 
             %         plot(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1) - nanmean(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1)), 'color', model_color, 'linewidth', 2)
 
-            title(variables{v})
-
+             var_label_index = strncmp(variables{v}, var_plot_names(:,1), 4);  title(var_plot_names{var_label_index,2});ylabel(var_plot_names{var_label_index,3})
+set(gca, 'xticklabels', [])
         end
         plot(modeled_var.(variables{v}) - nanmean(modeled_var.(variables{v})),  '--', 'color', harm_mod_color, 'linewidth', 2)
 
@@ -4520,14 +4845,14 @@ for m = 1:length(cmip_names.spco2) % spco2 model number
                 seasonal_var = obs.(variables{v}).out_seasonal(:,1,1);
             end
 
-            plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 2)
+            plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 1)
 
             hold on
 
             %         plot(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1) - nanmean(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1)), 'color', model_color, 'linewidth', 2)
 
-            title(variables{v})
-
+             var_label_index = strncmp(variables{v}, var_plot_names(:,1), 4);  title(var_plot_names{var_label_index,2});ylabel(var_plot_names{var_label_index,3})
+set(gca, 'xticklabels', [])
         end
         plot(modeled_var.(variables{v}) - nanmean(modeled_var.(variables{v})),  '--', 'color', harm_mod_color, 'linewidth', 2)
 
@@ -4607,14 +4932,14 @@ for m = 1:length(cmip_names.spco2) % spco2 model number
                 seasonal_var = obs.(variables{v}).out_seasonal(:,1,1);
             end
 
-            plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 2)
+            plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 1)
 
             hold on
 
             %         plot(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1) - nanmean(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1)), 'color', model_color, 'linewidth', 2)
 
-            title(variables{v})
-
+             var_label_index = strncmp(variables{v}, var_plot_names(:,1), 4);  title(var_plot_names{var_label_index,2});ylabel(var_plot_names{var_label_index,3})
+set(gca, 'xticklabels', [])
         end
 
         plot(modeled_var.(variables{v}) - nanmean(modeled_var.(variables{v})),  '--', 'color', harm_mod_color, 'linewidth', 2)
@@ -4692,14 +5017,14 @@ for m = 1:length(cmip_names.spco2) % spco2 model number
                 seasonal_var = obs.(variables{v}).out_seasonal(:,1,1);
             end
 
-            plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 2)
+            plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 1)
 
             hold on
 
             %         plot(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1) - nanmean(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1)), 'color', model_color, 'linewidth', 2)
 
-            title(variables{v})
-
+             var_label_index = strncmp(variables{v}, var_plot_names(:,1), 4);  title(var_plot_names{var_label_index,2});ylabel(var_plot_names{var_label_index,3})
+set(gca, 'xticklabels', [])
         end
         plot(modeled_var.(variables{v}) - nanmean(modeled_var.(variables{v})),  '--', 'color', harm_mod_color, 'linewidth', 2)
 
@@ -4777,14 +5102,14 @@ for m = 1:length(cmip_names.spco2) % spco2 model number
                 seasonal_var = obs.(variables{v}).out_seasonal(:,1,1);
             end
 
-            plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 2)
+            plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 1)
 
             hold on
 
             %         plot(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1) - nanmean(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1)), 'color', model_color, 'linewidth', 2)
 
-            title(variables{v})
-
+             var_label_index = strncmp(variables{v}, var_plot_names(:,1), 4);  title(var_plot_names{var_label_index,2});ylabel(var_plot_names{var_label_index,3})
+set(gca, 'xticklabels', [])
         end
         plot(modeled_var.(variables{v}) - nanmean(modeled_var.(variables{v})),  '--', 'color', harm_mod_color, 'linewidth', 2)
 
@@ -4891,14 +5216,14 @@ for m = 1:length(cmip_names.spco2) % spco2 model number
                 seasonal_var = obs.(variables{v}).out_seasonal(:,1,1);
             end
 
-            plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 2)
+            plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 1)
 
             hold on
 
             %         plot(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1) - nanmean(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1)), 'color', model_color, 'linewidth', 2)
 
-            title(variables{v})
-
+            var_label_index = strncmp(variables{v}, var_plot_names(:,1), 4);  title(var_plot_names{var_label_index,2});ylabel(var_plot_names{var_label_index,3})
+            set(gca, 'xticklabels', [])
         end
         plot(modeled_var.(variables{v}) - nanmean(modeled_var.(variables{v})),  '--', 'color', harm_mod_color, 'linewidth', 2)
 
@@ -5038,14 +5363,18 @@ for m = 1:length(cmip_names.spco2) % spco2 model number
                 seasonal_var = obs.(variables{v}).out_seasonal(:,1,1);
             end
 
-            plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 2)
+            plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 1)
 
             hold on
 
             %         plot(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1) - nanmean(CMIP.(variables{v}).out_seasonal(mod_match_index,:,1)), 'color', model_color, 'linewidth', 2)
 
-            title(variables{v})
-
+             var_label_index = strncmp(variables{v}, var_plot_names(:,1), 4);  title(var_plot_names{var_label_index,2});ylabel(var_plot_names{var_label_index,3})
+             if v ==8
+                 xl = xlabel('Month');
+                 xl_pos = get(xl, 'Position');
+                 set(xl, 'Position', xl_pos + [-7 0 0], 'fontweight', 'bold')
+             end
         end
         plot(modeled_var.(variables{v}) - nanmean(modeled_var.(variables{v})),  '--', 'color', harm_mod_color, 'linewidth', 2)
 
@@ -5193,7 +5522,7 @@ for m = 3%1:length(cmip_names.spco2) % spco2 model number
                 seasonal_var = obs.(variables{v}).out_seasonal(:,1,1);
             end
 
-            p_obs = plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 2);
+            p_obs = plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 1);
             hold on
             %         plot(harm.(variables{v}).seasonal_fit-nanmean(harm.(variables{v}).seasonal_fit),
             %         'g-', 'linewidth', 2) % plotting harmonic fit if you decide to go
@@ -5210,7 +5539,6 @@ for m = 3%1:length(cmip_names.spco2) % spco2 model number
                 amp_shift obs.(variables{v}).norm_error(mod_match_index)};
 
             var_label_index = strncmp(variables{v}, var_plot_names(:,1), 4);
-%             title(variables{v})
             title(var_plot_names{var_label_index,2})
             ylabel(var_plot_names{var_label_index,3})
         end
@@ -5238,7 +5566,7 @@ for m = 3%1:length(cmip_names.spco2) % spco2 model number
         if subplot_index==1
             y_lim = get(gca, 'ylim');
 
-            text( -5, y_lim(2)+10, cmip_names.spco2{m}, 'interpreter', 'none', 'fontweight', 'bold')
+            text( -3, y_lim(2)+10, cmip_names.spco2{m}, 'interpreter', 'none', 'fontweight', 'bold')
         end
     end
 
@@ -5338,7 +5666,7 @@ for m = 3%1:length(cmip_names.spco2) % spco2 model number
                 seasonal_var = obs.(variables{v}).out_seasonal(:,1,1);
             end
 
-            p_obs = plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 2);
+            p_obs = plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 1);
 
             hold on
 
@@ -5362,9 +5690,9 @@ for m = 3%1:length(cmip_names.spco2) % spco2 model number
     p_pco2_test = plot(modeled_var.adjust.spco2 - nanmean(modeled_var.adjust.spco2), '-', 'linewidth', 2, 'color', pCO2_calc_color);
     l1 = legend([p_cmip_model, p_recreated_model, p_obs, p_adjust, p_pco2_test], ...
         cmip_names.spco2{m}, ['Harm. fit to ' cmip_names.spco2{m}], 'Obs.',  ...
-         'Adjusted model harm.', 'pCO_2 from adjusted harm.', 'numcolumns',2  );
+         'Adjusted variable(s)', 'pCO_2 after adjustment', 'numcolumns',2  );
     leg_pos = get(l1, 'position');
-    set(l1, 'position', leg_pos+[0 -.84 0 0])
+    set(l1, 'position', leg_pos+[-.1 -.86 0 0])
     
     % taylor calc on pco2_test
     [test_out.correlation, test_out.ratio, test_out.norm_error]=taylor_eval(obs.spco2.Combined.(p_year).SOCCOM_SOCAT.out_seasonal(:,1),pco2_test);
@@ -5430,7 +5758,7 @@ for m = 3%1:length(cmip_names.spco2) % spco2 model number
                 seasonal_var = obs.(variables{v}).out_seasonal(:,1,1);
             end
 
-            plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 2)
+            plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 1)
 
             hold on
 
@@ -5517,7 +5845,7 @@ for m = 3%1:length(cmip_names.spco2) % spco2 model number
                 seasonal_var = obs.(variables{v}).out_seasonal(:,1,1);
             end
 
-            plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 2)
+            plot(seasonal_var-nanmean(seasonal_var), 'k-', 'linewidth', 1)
 
             hold on
 
@@ -5655,7 +5983,7 @@ for c = 1:length(columns_out)
     dataTable_correlations_only.(columns_out{c}) = var_copy;
 end
 
-filename = ['dataTable_correlations_only' plot_ver '2024_07_08.csv'];
+filename = ['dataTable_correlations_only' plot_ver '2024_07_09.csv'];
 % writestruct(dataTable_correlations_only, [Plot_out_dir 'Sensitivity_tests/' filename]);
 writestruct(dataTable_correlations_only, [home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/spreadsheets/Sensitivity_tests/' filename]);
 
