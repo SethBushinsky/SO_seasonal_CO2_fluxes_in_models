@@ -10,7 +10,7 @@ fig_dir = [home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/figures/'];
 % seasonal_file = 'seasonal_cycles_w_model_type_matched_2023_11_07.mat';
 % seasonal_file = 'seasonal_cycles_w_model_type_matched_2024_02_28.mat';
 % seasonal_file = 'seasonal_cycles_w_model_type_matched_2024_04_07.mat';
-seasonal_file = 'seasonal_cycles_w_model_type_matched_2024_07_11.mat';
+seasonal_file = 'seasonal_cycles_w_model_type_matched_2024_07_12.mat';
 load([fig_dir '../data/' seasonal_file])
 seas_comp_vars = fieldnames(obs);
 
@@ -1512,7 +1512,7 @@ for m = 1:length(cmip_names.(variables{v}))
     mod_match = strcmp(cmip_names.(variables{v2}), cmip_names.(variables{v}){m});
 
     if sum(mod_match)>0
-        if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
+        % if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
             plot_color = cmap(strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),:);
 
             model_marker = color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),4};
@@ -1566,7 +1566,7 @@ for m = 1:length(cmip_names.(variables{v}))
             temp_names{end+1,1} = cmip_names.(variables{v}){m};
             temp_array(end+1,1) = var_1;
             temp_array(end,2) = var_2;
-        end
+        % end
     end
 
 end
@@ -1693,7 +1693,7 @@ for m = 1:length(cmip_names.(variables{v}))
     mod_match = strcmp(cmip_names.(variables{v2}), cmip_names.(variables{v}){m});
 
     if sum(mod_match)>0
-        if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
+        % if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
             plot_color = cmap(strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),:);
 
             model_marker = color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),4};
@@ -1748,7 +1748,7 @@ for m = 1:length(cmip_names.(variables{v}))
             temp_names{end+1,1} = cmip_names.(variables{v}){m};
             temp_array(end+1,1) = var_1;
             temp_array(end,2) = var_2;
-        end
+        % end
     end
 
 
@@ -1877,7 +1877,7 @@ for m = 1:length(cmip_names.(variables{v}))
     mod_match = strcmp(cmip_names.(variables{v2}), cmip_names.(variables{v}){m});
 
     if sum(mod_match)>0
-        if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
+        % if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
             plot_color = cmap(strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),:);
 
             model_marker = color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),4};
@@ -1931,7 +1931,7 @@ for m = 1:length(cmip_names.(variables{v}))
             temp_names{end+1,1} = cmip_names.(variables{v}){m};
             temp_array(end+1,1) = var_1;
             temp_array(end,2) = var_2;
-        end
+        % end
     end
 
 end
@@ -2083,7 +2083,7 @@ for sv_name = {['mld']}% [1 2 3 4 5 6 8 9 10] %1:length(seas_comp_vars)
                     mod_match = strcmp(cmip_names.(variables{v2}), cmip_names.(variables{v}){m});
 
                     if sum(mod_match)>0
-                        if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
+                        % if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
 
                             if group_color==1
                                 plot_color = model_group_colors(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3},:);
@@ -2128,7 +2128,7 @@ for sv_name = {['mld']}% [1 2 3 4 5 6 8 9 10] %1:length(seas_comp_vars)
                             temp_array(end,2) = obs.(variables{v2}).(tests{tt})(mod_match);
 
                         end
-                    end
+                    % end
                     clear plot_color
                 end
                 if group_color==2
@@ -2284,7 +2284,7 @@ for mon = 1:12
         mod_match = strcmp(cmip_names.(variables{v2}), cmip_names.(variables{v}){m});
 
         if sum(mod_match)>0
-            if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
+            % if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
                 plot_color = cmap(strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),:);
 
                 model_marker = color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),4};
@@ -2338,7 +2338,7 @@ for mon = 1:12
                 temp_names{end+1,1} = cmip_names.(variables{v}){m};
                 temp_array(end+1,1) = var_1;
                 temp_array(end,2) = var_2;
-            end
+            % end
         end
 
     end
@@ -2504,7 +2504,7 @@ for m = 1:length(cmip_names.(variables{v}))
     mod_match = strcmp(cmip_names.(variables{v2}), cmip_names.(variables{v}){m});
 
     if sum(mod_match)>0
-        if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
+        % if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
             plot_color = cmap(strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),:);
 
             model_marker = color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),4};
@@ -2558,7 +2558,7 @@ for m = 1:length(cmip_names.(variables{v}))
             temp_names{end+1,1} = cmip_names.(variables{v}){m};
             temp_array(end+1,1) = var_1;
             temp_array(end,2) = var_2;
-        end
+        % end
     end
 
 end
@@ -2684,7 +2684,7 @@ for m = 1:length(cmip_names.(variables{v}))
     mod_match = strcmp(cmip_names.(variables{v2}), cmip_names.(variables{v}){m});
 
     if sum(mod_match)>0
-        if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
+        % if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
             plot_color = cmap(strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),:);
 
             model_marker = color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),4};
@@ -2738,7 +2738,7 @@ for m = 1:length(cmip_names.(variables{v}))
             temp_names{end+1,1} = cmip_names.(variables{v}){m};
             temp_array(end+1,1) = var_1;
             temp_array(end,2) = var_2;
-        end
+        % end
     end
 
 
@@ -2867,7 +2867,7 @@ for m = 1:length(cmip_names.(variables{v}))
     mod_match = strcmp(cmip_names.(variables{v2}), cmip_names.(variables{v}){m});
 
     if sum(mod_match)>0
-        if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
+        % if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
             plot_color = cmap(strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),:);
 
             model_marker = color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),4};
@@ -2921,7 +2921,7 @@ for m = 1:length(cmip_names.(variables{v}))
             temp_names{end+1,1} = cmip_names.(variables{v}){m};
             temp_array(end+1,1) = var_1;
             temp_array(end,2) = var_2;
-        end
+        % end
     end
 
 
@@ -3083,7 +3083,7 @@ for sv = {['mld']}% [1 2 3 4 5 6 8 9 10] %1:length(seas_comp_vars)
                     mod_match = strcmp(cmip_names.(variables{v2}), cmip_names.(variables{v}){m});
 
                     if sum(mod_match)>0
-                        if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
+                        % if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
 
                             if group_color==1
                                 plot_color = model_group_colors(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3},:);
@@ -3127,7 +3127,7 @@ for sv = {['mld']}% [1 2 3 4 5 6 8 9 10] %1:length(seas_comp_vars)
                             temp_array(end+1,1) = obs.(variables{v}).(tests{qq})(m);
                             temp_array(end,2) = obs.(variables{v2}).(tests{tt})(mod_match);
 
-                        end
+                        % end
                     end
                     clear plot_color
                 end
@@ -3266,7 +3266,7 @@ for m = 1:length(cmip_names.(variables{v}))
     mod_match = strcmp(cmip_names.(variables{v2}), cmip_names.(variables{v}){m});
 
     if sum(mod_match)>0
-        if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
+        % if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
             plot_color = cmap(strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),:);
 
             model_marker = color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),4};
@@ -3320,7 +3320,7 @@ for m = 1:length(cmip_names.(variables{v}))
             temp_names{end+1,1} = cmip_names.(variables{v}){m};
             temp_array(end+1,1) = var_1;
             temp_array(end,2) = var_2;
-        end
+        % end
     end
 
 end
@@ -3474,7 +3474,7 @@ for mon = 1:12
         mod_match = strcmp(cmip_names.(variables{v2}), cmip_names.(variables{v}){m});
 
         if sum(mod_match)>0
-            if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
+            % if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
                 plot_color = cmap(strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),:);
 
                 model_marker = color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),4};
@@ -3528,7 +3528,7 @@ for mon = 1:12
                 temp_names{end+1,1} = cmip_names.(variables{v}){m};
                 temp_array(end+1,1) = var_1;
                 temp_array(end,2) = var_2;
-            end
+            % end
         end
 
     end
@@ -3697,7 +3697,7 @@ for m = 1:length(cmip_names.(variables{v}))
     mod_match = strcmp(cmip_names.(variables{v2}), cmip_names.(variables{v}){m});
 
     if sum(mod_match)>0
-        if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
+        % if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
             plot_color = cmap(strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),:);
 
             model_marker = color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),4};
@@ -3751,7 +3751,7 @@ for m = 1:length(cmip_names.(variables{v}))
             temp_names{end+1,1} = cmip_names.(variables{v}){m};
             temp_array(end+1,1) = var_1;
             temp_array(end,2) = var_2;
-        end
+        % end
     end
 
 end
@@ -3890,7 +3890,7 @@ for m = 1:length(cmip_names.(variables{v}))
     mod_match = strcmp(cmip_names.(variables{v2}), cmip_names.(variables{v}){m});
 
     if sum(mod_match)>0
-        if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
+        % if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
             plot_color = cmap(strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),:);
 
             model_marker = color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),4};
@@ -3944,7 +3944,7 @@ for m = 1:length(cmip_names.(variables{v}))
             temp_names{end+1,1} = cmip_names.(variables{v}){m};
             temp_array(end+1,1) = var_1;
             temp_array(end,2) = var_2;
-        end
+        % end
     end
 
 
@@ -4084,7 +4084,7 @@ for m = 1:length(cmip_names.(variables{v}))
     mod_match = strcmp(cmip_names.(variables{v2}), cmip_names.(variables{v}){m});
 
     if sum(mod_match)>0
-        if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
+        % if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
             plot_color = cmap(strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),:);
 
             model_marker = color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),4};
@@ -4138,7 +4138,7 @@ for m = 1:length(cmip_names.(variables{v}))
             temp_names{end+1,1} = cmip_names.(variables{v}){m};
             temp_array(end+1,1) = var_1;
             temp_array(end,2) = var_2;
-        end
+        % end
     end
 
 end
@@ -4256,7 +4256,7 @@ for hv_name = {['intpp']}% 1:length(harm_mod_vars) % 7 - intpp
                     mod_match = strcmp(cmip_names.(variables{v2}), cmip_names.(variables{v}){m});
                     %                     disp(sum(mod_match))
                     if sum(mod_match)>0
-                        if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
+                        % if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
                             plot_color = cmap(strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),:);
 
                             model_marker = color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),4};
@@ -4277,7 +4277,7 @@ for hv_name = {['intpp']}% 1:length(harm_mod_vars) % 7 - intpp
                             %                             disp(cmip_names.(variables{v2}){mod_match})
 
                             %                             pause
-                        end
+                        % end
 
                     end
                     %                     pause
@@ -4398,7 +4398,7 @@ for ss = 1:length(seas_amplitude_list)
         mod_match = strcmp(cmip_names.(variables{v2}), cmip_names.(variables{v}){m});
 
         if sum(mod_match)>0
-            if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
+            % if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
                 plot_color = cmap(strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),:);
 
                 model_marker = color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),4};
@@ -4454,7 +4454,7 @@ for ss = 1:length(seas_amplitude_list)
                 temp_names{end+1,1} = cmip_names.(variables{v}){m};
                 temp_array(end+1,1) = var_1;
                 temp_array(end,2) = var_2;
-            end
+            % end
         end
 
     end
@@ -4731,7 +4731,7 @@ for ss = 1:length(seas_amplitude_list)
         mod_match = strcmp(cmip_names.(variables{v2}), cmip_names.(variables{v}){m});
 
         if sum(mod_match)>0
-            if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
+            % if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
                 plot_color = cmap(strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),:);
 
                 model_marker = color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),4};
@@ -4793,7 +4793,7 @@ for ss = 1:length(seas_amplitude_list)
                 temp_names{end+1,1} = cmip_names.(variables{v}){m};
                 temp_array(end+1,1) = var_1;
                 temp_array(end,2) = var_2;
-            end
+            % end
         end
 
     end
@@ -4983,7 +4983,7 @@ for ss = 1:length(seas_amplitude_list)
         mod_match = strcmp(cmip_names.(variables{v2}), cmip_names.(variables{v}){m});
 
         % if sum(mod_match)>0
-        if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
+        % if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
             plot_color = cmap(strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),:);
 
             model_marker = color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),4};
@@ -5058,46 +5058,46 @@ for ss = 1:length(seas_amplitude_list)
             temp_names{end+1,1} = cmip_names.(variables{v}){m};
             temp_array(end+1,1) = var_1;
             temp_array(end,2) = var_2;
-        end
+        % end
         % end
 
     end
 
-    if seas_amplitude~=1 && tt~=1 % if plotting correlation or ratio, "obs" equals 1.
-        obs_y = 1;
-    elseif seas_amplitude~=1 % if plotting normalized error, "obs" equals 0
-        obs_y=0;
-    elseif seas_amplitude==1
-        if v2==1
-            obs_y = max(obs.(variables{v2}).Combined.(p_year).SOCCOM_SOCAT.out_seasonal(:,1)) - ...
-                min(obs.(variables{v2}).Combined.(p_year).SOCCOM_SOCAT.out_seasonal(:,1));
-        else
-            obs_y = max(obs.(variables{v2}).out_seasonal(:,1)) - min(obs.(variables{v2}).out_seasonal(:,1));
-        end
-    end
+    % if seas_amplitude~=1 && tt~=1 % if plotting correlation or ratio, "obs" equals 1.
+    %     obs_y = 1;
+    % elseif seas_amplitude~=1 % if plotting normalized error, "obs" equals 0
+    %     obs_y=0;
+    % elseif seas_amplitude==1
+    %     if v2==1
+    %         obs_y = max(obs.(variables{v2}).Combined.(p_year).SOCCOM_SOCAT.out_seasonal(:,1)) - ...
+    %             min(obs.(variables{v2}).Combined.(p_year).SOCCOM_SOCAT.out_seasonal(:,1));
+    %     else
+    %         obs_y = max(obs.(variables{v2}).out_seasonal(:,1)) - min(obs.(variables{v2}).out_seasonal(:,1));
+    %     end
+    % end
 
-  
+
     if seas_amplitude==2
 
         comp_label = 'Cumulative PFAZ flux in 2100 (Tg C)';
     else
-    var_label_index = strncmp(seas_comp_vars{sv2}, var_plot_names(:,1), 4);
+        var_label_index = strncmp(seas_comp_vars{sv2}, var_plot_names(:,1), 4);
 
-    if sum(var_label_index>0)
-        if seas_amplitude==1
-            comp_label = [var_plot_names{var_label_index,2} ' (' var_plot_names{var_label_index,3} ') seasonal amplitude'];
+        if sum(var_label_index>0)
+            if seas_amplitude==1
+                comp_label = [var_plot_names{var_label_index,2} ' (' var_plot_names{var_label_index,3} ') seasonal amplitude'];
+            else
+                comp_label = [var_plot_names{var_label_index,2} ' ' test_names{tt}];
+            end
+
         else
-            comp_label = [var_plot_names{var_label_index,2} ' ' test_names{tt}];
-        end
+            if seas_amplitude==1
+                comp_label = [seas_comp_vars{sv2} ' seasonal amplitude'];
+            else
+                comp_label = [seas_comp_vars{sv2} ' ' tests{tt}];
+            end
 
-    else
-        if seas_amplitude==1
-            comp_label = [seas_comp_vars{sv2} ' seasonal amplitude'];
-        else
-            comp_label = [seas_comp_vars{sv2} ' ' tests{tt}];
         end
-
-    end
     end
     var_label_index = strncmp(variables{v}, var_plot_names(:,1), 4);
     if dissic_vert_gradient==1
@@ -5112,7 +5112,7 @@ for ss = 1:length(seas_amplitude_list)
         elseif alt_x==2
             x_label = [var_plot_names{var_label_index,2} ' amp. (' var_plot_names{var_label_index,3} ')'];
         elseif alt_x==3
-            x_label = [var_plot_names{var_label_index,2} ' ' tests{tt_x}];
+            x_label = [var_plot_names{var_label_index,2} ' ' test_names{tt_x}];
         else
             x_label = ' ';
         end
@@ -5143,4 +5143,54 @@ for ss = 1:length(seas_amplitude_list)
     % pause
 end
 % annotation('textbox', [0.05, 0.05, 1, 0], 'String', [script_name ': ' plot_filename], 'EdgeColor', 'none', 'interpreter', 'none');
+print(gcf, '-dpdf', [fig_dir plot_filename '.pdf'], '-r300')
+
+%% Figure 13
+plot_filename = ['Figure 13_Cumulative 2100 CO2 flux by adjustment color' plot_ver];
+model_types = fieldnames(model_group_names);
+
+p_col = 3;
+p_row = 1;
+
+clf
+set(gcf, 'units', 'inches')
+paper_w = 8; paper_h =4;
+set(gcf,'PaperSize',[paper_w paper_h],'PaperPosition', [0 0 paper_w paper_h]); clear paper_w paper_h
+
+d1 = subplot(2,1,1); hold on; grid on; title('PFAZ')
+d2 = subplot(2,1,2);hold on; grid on; title('South of 35\circS')
+
+l_l = NaN(6,1);
+
+% want to loop by model group,
+for mg = [3 4 5 6 2 1]
+    fgco2_list = CMIP.fgco2.model_groups.(model_types{mg});
+
+    for mod = 1:length(fgco2_list)
+        m = fgco2_list(mod);
+
+        plot_color = model_group_colors(color_model{strcmp(cmip_names.fgco2{m}, color_model(:,1)),3},:);
+
+        p1 = plot(d1, CMIP.fgco2.ACCESS_ESM1_5_6.GMT_Matlab, cumsum(CMIP.fgco2.out_monthly(m,:))./1e3, 'color', plot_color, 'linewidth', 2);
+
+        p2 = plot(d2, CMIP.fgco2.ACCESS_ESM1_5_6.GMT_Matlab,  cumsum(CMIP.fgco2.out_monthly_35S(m,:)./1e3),  'color', plot_color, 'linewidth', 2);
+    end
+end
+datetick(d1)
+datetick(d2)
+xlabel(d2, 'Year')
+ylabel(d1, 'Pg C')
+ylabel(d2, 'Pg C')
+x_lims = get(d1, 'xlim');
+model_types_for_legend = {};
+
+for m = 1:length(model_types)
+    l_l(m) = plot([0 1],[0 0], '-', 'color', model_group_colors(m,:), 'linewidth', 2);
+    model_types_for_legend{end+1} = strrep(model_types{m}, '_', ' ');
+end
+
+set(d1, 'xlim', x_lims, 'TitleHorizontalAlignment', 'left')
+set(d2, 'xlim', x_lims, 'TitleHorizontalAlignment', 'left')
+legend(d2, l_l, model_types_for_legend, 'interpreter', 'none', 'location', 'southwest', 'fontsize', 8);
+
 print(gcf, '-dpdf', [fig_dir plot_filename '.pdf'], '-r300')

@@ -1146,7 +1146,7 @@ for v=[1 2 4:9 11 12 14, 15] %[1:12 14] % skip thetao as it is only used for the
                          % mask out nan values north of the SAF in each
                         % model
                         SO_fgco2_mean_copy(lat_grid>-35)=nan;
-                        SO_fgco2_mean_copy(lat_grid<poleward_lat_lim)=nan;
+                        % SO_fgco2_mean_copy(lat_grid<poleward_lat_lim)=nan;
 
                         % sum all grid cells to convert to total flux in the area
                         CMIP.(variables{v}).out_seasonal_35S(m,mon,1) = nansum(reshape(SO_fgco2_mean_copy,[],1)); % sum, not mean
@@ -1234,7 +1234,7 @@ for v=[1 2 4:9 11 12 14, 15] %[1:12 14] % skip thetao as it is only used for the
                     % mask out nan values north of the SAF in each
                     % model
                     SO_fgco2_mon_copy(lat_grid>-35)=nan;
-                    SO_fgco2_mon_copy(lat_grid<poleward_lat_lim)=nan;
+                    % SO_fgco2_mon_copy(lat_grid<poleward_lat_lim)=nan;
 
                     % sum all grid cells to convert to total flux in the area
                     CMIP.(variables{v}).out_monthly_35S(m,month) = nansum(reshape(SO_fgco2_mon_copy,[],1)); % sum, not mean
@@ -2950,7 +2950,7 @@ end
 % save([home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/data/seasonal_cycles_' datestr(now, 'YYYY_mmm_dd') '.mat'], 'CMIP', 'NPP_obs', 'combined_SO', 'Mapped_pCO2', 'NOAA_SST', 'WOA_SSS',...
 %     'cmip_names', 'obs', 'color_model', 'variables', 'var_type', 'cmap', 'model_group_colors', ...
 %     'var_lims', 'depth_levs', 'poleward_lat_lim', 'depth_names')
-save([home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/data/seasonal_cycles_' datestr(now, 'YYYY_mm_dd') '.mat'], 'CMIP', 'combined_SO', 'NOAA_SST', 'WOA_SSS',...
+save([home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/data/seasonal_cycles_' datestr(now, 'YYYY_mm_dd') '.mat'], 'CMIP', 'combined_SO', ...
     'cmip_names', 'obs', 'color_model', 'variables', 'var_type', 'cmap', 'model_group_colors', ...
     'var_lims', 'depth_levs', 'poleward_lat_lim', 'depth_names', 'plot_ver', 'p_year', '-v7.3')
 
@@ -3136,6 +3136,71 @@ for m = 1:length(cmip_names.fgco2)
     end
 end
 
+%% choosing model groups based on assessment of adjustment criteria
+% read in .csv from table 2 spreadsheet
+opts = delimitedTextImportOptions("NumVariables", 2, "Encoding", "UTF-8");
+
+% Specify range and delimiter
+opts.DataLines = [2, Inf];
+opts.Delimiter = ",";
+
+% Specify column names and types
+opts.VariableNames = ["model_name", "group_number"];
+opts.VariableTypes = ["string", "double"];
+
+% Specify file level properties
+opts.ExtraColumnsRule = "ignore";
+opts.EmptyLineRule = "read";
+
+% Specify variable properties
+opts = setvaropts(opts, "model_name", "WhitespaceRule", "preserve");
+opts = setvaropts(opts, "model_name", "EmptyFieldRule", "auto");
+
+% Import the data
+tbl = readtable("/Users/smb-uh/UHM_Ocean_BGC_Group Dropbox/Seth Bushinsky/Work/Manuscripts/2019_06 SO CMIP Comparison/data/Model_adjustment_group_numbers.csv", opts);
+
+% Convert to output type
+excel_model_name = tbl.model_name;
+excel_group_number = tbl.group_number;
+%
+% Clear temporary variables
+clear opts tbl
+
+clear model_group_names
+model_group_names.Good_Correlation = {};
+model_group_names.Appears_good_due_to_biases = {};
+model_group_names.DIC_adjustments = {};
+model_group_names.SST_adjustments = {};
+model_group_names.DIC_and_SST_adjustments = {};
+model_group_names.Other = {};
+
+for m = 1:length(cmip_names.fgco2)
+    group_number = excel_group_number(strcmp(excel_model_name, cmip_names.fgco2{m}));
+    if group_number==1
+        model_group_names.Good_Correlation{end+1} = cmip_names.fgco2{m};
+    elseif group_number==2
+        model_group_names.Appears_good_due_to_biases{end+1} = cmip_names.fgco2{m};
+    elseif group_number==3      
+        model_group_names.DIC_adjustments{end+1} = cmip_names.fgco2{m};
+    elseif group_number==4     
+        model_group_names.SST_adjustments{end+1} = cmip_names.fgco2{m};
+    elseif group_number==5       
+        model_group_names.DIC_and_SST_adjustments{end+1} = cmip_names.fgco2{m};
+    elseif group_number==6
+        model_group_names.Other{end+1} = cmip_names.fgco2{m};
+    end
+    % if obs.fgco2_mol_C_m2_yr.norm_error(m)<rms_cutoff_for_good
+    %         model_group_names.good_mag_good_phase{end+1} = cmip_names.fgco2{m};
+    %     elseif obs.fgco2_mol_C_m2_yr.correlation(m)<out_of_phase_corr_cutoff
+    %         model_group_names.bad_phase{end+1} = cmip_names.fgco2{m};
+    %         %         elseif obs.fgco2.correlation(m)>0.5 && obs.fgco2.ratio(m)>2
+    %         %             model_group_names.large_mag_good_phase{end+1} = cmip_names.fgco2{m};
+    %     else
+    %         model_group_names.other{end+1} = cmip_names.fgco2{m};
+    %     end
+    
+end
+
 %% assigning model types
 model_types = fieldnames(model_group_names);
 
@@ -3154,7 +3219,7 @@ clear v q
 % model type:
 mod_index=0;
 for m=1:length(color_model)
-
+    color_model{m,3} = []; % sets to empty in case something has been run before 
     for q = 1:length(model_types)
         mod_index = strcmp(color_model{m,1}, model_group_names.(model_types{q}));
         if sum(mod_index)>0
@@ -3175,7 +3240,7 @@ save([home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/data/seasonal_cycles
 
 %% Taylor diagram by model group
 
-for sv =  1%:length(seas_comp_var)%9%[1 2 4 5 6 7 8 9 14 15]
+for sv =  1:length(seas_comp_vars)%9%[1 2 4 5 6 7 8 9 14 15]
     v = find(strncmp(seas_comp_vars{sv}, variables, 4));
     if length(v)>1 % cludge since dissic and dissic_yr were getting confused
         v = strmatch(seas_comp_vars{sv}, variables, 'exact');
@@ -3211,14 +3276,14 @@ if filter_on==1
 end
 % example spco2 match vs. intpp
 tests = {'norm_error';'correlation' ; 'ratio'};
-% legend_on=0;
+legend_on=1;
 group_color = 1;
 set(gcf, 'colormap', turbo)
 v3 = 4; % variable for harmonic fit scatter color
 
 harm_comp = 'offset';
 
-for sv = 10% [1 2 3 4 5 6 8 9 10] %1:length(seas_comp_vars)
+for sv = [1 2 4 5 6 8 10 11] %1:length(seas_comp_vars)
 
     for tt = 1:length(tests)
         for qq = 1:length(tests)
@@ -3245,7 +3310,7 @@ for sv = 10% [1 2 3 4 5 6 8 9 10] %1:length(seas_comp_vars)
                     harm_comp ' filter ' num2str(filter_on)  plot_ver];
 
             end
-            for sv2 = [1 2 3 4 5 6 8 9 10]
+            for sv2 = [1 2 3 4 5 6 8 10 11]
                 if sv2==sv
                     continue
                     %                 elseif strcmp(variables{v2}, 'wmo') || strcmp(variables{v2}, 'psl') || strcmp(variables{v2}, 'dissic_yr') || strcmp(variables{v2}, 'talk_yr') || strcmp(variables{v2}, 'thetao')
@@ -3274,7 +3339,7 @@ for sv = 10% [1 2 3 4 5 6 8 9 10] %1:length(seas_comp_vars)
                     mod_match = strcmp(cmip_names.(variables{v2}), cmip_names.(variables{v}){m});
 
                     if sum(mod_match)>0
-                        if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
+                        if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) && group_color==1 % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
 
                             if group_color==1
                                 plot_color = model_group_colors(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3},:);
@@ -3330,9 +3395,9 @@ for sv = 10% [1 2 3 4 5 6 8 9 10] %1:length(seas_comp_vars)
                 y_plot = m.*x_plot+b;
                 plot(x_plot, y_plot, 'k-')
                 if filter_on==0
-                    title(['r= ' num2str(r,2)])
+                    title(['R^2= ' num2str(r^2,2)])
                 else
-                    title(['filt r= ' num2str(r,2)])
+                    title(['filt R^2= ' num2str(r^2,2)])
                 end
                 if tt>1
                     plot(get(gca, 'xlim'), [1 1], '-k')
@@ -3381,19 +3446,19 @@ for sv = 10% [1 2 3 4 5 6 8 9 10] %1:length(seas_comp_vars)
                 l1 = legend(legend_names, 'numcolumns', 3, 'interpreter', 'none');
                 leg_pos = get(l1, 'position');
 
-                set(l1, 'position', leg_pos+[.07 0.02 0 0])
+                % set(l1, 'position', leg_pos+[.07 0.02 0 0])
 
                 % 				set(l1, 'interpreter', 'none', 'position', [0.8973    0.0801    0.1005    0.5704]);
             end
-            %             subplot(3,3,9)
-            %             hold on
-            %             for m = 1:length(model_types)
-            %                 plot(0,0, '.', 'color', model_group_colors(m,:), 'markersize', 25)
-            %
-            %             end
-            %             if legend_on ==1
+            if legend_on ==1
 
-            %             end
+                subplot(3,3,9)
+                hold on
+                for m = 1:length(model_types)
+                    plot(0,0, '.', 'color', model_group_colors(m,:), 'markersize', 25)
+                end
+                legend(model_types, 'interpreter', 'none');
+            end
             annotation('textbox', [0.05, 0.05, 1, 0], 'String', plot_filename, 'EdgeColor', 'none', 'interpreter', 'none');
             print(gcf, '-dpng', [Plot_out_dir variables{v} '/' plot_filename '_test.png'])
         end
@@ -3628,23 +3693,23 @@ for fc = 1:length(flux_comparison)
 end
 %% plot cumulative flux, coloring in different ways
 clear tt
-group_color=3;
+group_color=1;
 color_map = turbo;
 
 comparisons = {'phase'; 'offset'; 'amp'};
 tests = {'norm_error';'correlation' ; 'ratio'};
+ 
 
+for v3 = 1%[1 2 5 6 7 8 14]
 
-for v3 = [1 2 5 6 7 8 14]
-
-    for hc = 1:length(comparisons)
+    for hc = 1%:length(comparisons)
         if group_color==2
             harm_comp = comparisons{hc};
-            plot_filename = ['Cumulative CO2 flux harmonic comp ' variables{v3} ' ' harm_comp plot_ver];
+            plot_filename = ['Cumulative CO2 flux harmonic comp ' variables{v3} ' ' harm_comp ' color ' num2str(group_color) plot_ver];
 
         else
             harm_comp = tests{hc};
-            plot_filename = ['Cumulative CO2 flux taylor comp ' variables{v3} ' ' harm_comp plot_ver];
+            plot_filename = ['Cumulative CO2 flux taylor comp ' variables{v3} ' ' harm_comp ' color ' num2str(group_color) plot_ver];
 
         end
 
@@ -3660,14 +3725,19 @@ for v3 = [1 2 5 6 7 8 14]
         if group_color==2
             comp_range = [min(harm_mod.(variables{v3}).(harm_comp)(:,1) - harm.(variables{v3}).(harm_comp)(1)) max(harm_mod.(variables{v3}).(harm_comp)(:,1) - harm.(variables{v3}).(harm_comp)(1))];
             comp_range = [-max(abs(comp_range)) max(abs(comp_range))];
-        else
+        elseif group_color==3
             comp_range = [min(obs.(variables{v3}).(tests{hc})) max(obs.(variables{v3}).(tests{hc}))];
+        else
+            comp_range = [];
         end
         for m = 1:length(cmip_names.fgco2)
             if group_color==1
-                plot_color = model_group_colors(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3},:);
+                plot_color = model_group_colors(color_model{strcmp(cmip_names.fgco2{m}, color_model(:,1)),3},:);
+                if isempty(plot_color)
+                    continue
+                end
             else
-                mod_match_2 = strcmp(cmip_names.(variables{v3}), cmip_names.(variables{v}){m});
+                mod_match_2 = strcmp(cmip_names.(variables{v3}), cmip_names.fgco2{m});
                 if sum(mod_match_2)>0
                     if group_color==2
                         comp_val = harm_mod.(variables{v3}).(harm_comp)(mod_match_2,1) - harm.(variables{v3}).(harm_comp)(1); % difference in harm prop between model and obs
@@ -3686,12 +3756,12 @@ for v3 = [1 2 5 6 7 8 14]
           
             end
 
-            plot(d1, CMIP.fgco2.ACCESS_ESM1_5_6.GMT_Matlab, cumsum(CMIP.fgco2.out_monthly(m,:)), 'color', plot_color, 'linewidth', 2)
+            plot(d1, CMIP.fgco2.ACCESS_ESM1_5_6.GMT_Matlab, cumsum(CMIP.fgco2.out_monthly(m,:))./1000, 'color', plot_color, 'linewidth', 2)
 
 
 
 
-            plot(d2, CMIP.fgco2.ACCESS_ESM1_5_6.GMT_Matlab,  cumsum(CMIP.fgco2.out_monthly_35S(m,:)),  'color', plot_color, 'linewidth', 2)
+            plot(d2, CMIP.fgco2.ACCESS_ESM1_5_6.GMT_Matlab,  cumsum(CMIP.fgco2.out_monthly_35S(m,:))./1000,  'color', plot_color, 'linewidth', 2)
 
         end
         if group_color==2 || group_color==3
