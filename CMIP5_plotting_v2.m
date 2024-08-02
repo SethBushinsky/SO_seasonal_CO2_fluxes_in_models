@@ -710,6 +710,7 @@ if isfield(cmip_names, variables{v})
 
     scale_factor_molC_m2_yr = -1.*s_per_year.*10^3.*1./12.0107; % kg m2 s-1 into the ocean to mol C m-2 yr-1 out of the ocean
     for m=1:length(cmip_names.(variables{v}))
+        
         if isfield(CMIP.(variables{v}).(cmip_names.(variables{v}){m}), 'units_old')
             continue
         end
@@ -724,6 +725,7 @@ if isfield(cmip_names, variables{v})
     end
     clear scale_factor Pg_per_kg s_per_year scale_factor_molC_m2_yr
 end
+
 % a few manual adjustments:
 % CMIP.mlotst.MRI_ESM1.mlotst(CMIP.mlotst.MRI_ESM1.mlotst==0) = nan; %
 % fixed in cdo
@@ -732,6 +734,11 @@ end
 if isfield(cmip_names, 'sos')
     CMIP.sos.CESM1_BGC.sos = CMIP.sos.CESM1_BGC.sos.*1000; % appears to be an error in CESM1_BGC salinity
 end
+
+% AWI CO2 flux sign is flipped:
+CMIP.fgco2.AWI_ESM_1_REcoM_6.fgco2 = CMIP.fgco2.AWI_ESM_1_REcoM_6.fgco2.*-1;
+CMIP.fgco2.AWI_ESM_1_REcoM_6.fgco2_mol_C_m2_yr = CMIP.fgco2.AWI_ESM_1_REcoM_6.fgco2_mol_C_m2_yr.*-1;
+
 clear m v mm mod_name mod_name_orig
 
 %% check dates in models
@@ -3167,7 +3174,7 @@ excel_group_number = tbl.group_number;
 clear opts tbl
 
 clear model_group_names
-model_group_names.Good_Correlation = {};
+model_group_names.Good_correlation = {};
 model_group_names.Appears_good_due_to_biases = {};
 model_group_names.DIC_adjustments = {};
 model_group_names.SST_adjustments = {};
@@ -3177,7 +3184,7 @@ model_group_names.Other = {};
 for m = 1:length(cmip_names.fgco2)
     group_number = excel_group_number(strcmp(excel_model_name, cmip_names.fgco2{m}));
     if group_number==1
-        model_group_names.Good_Correlation{end+1} = cmip_names.fgco2{m};
+        model_group_names.Good_correlation{end+1} = cmip_names.fgco2{m};
     elseif group_number==2
         model_group_names.Appears_good_due_to_biases{end+1} = cmip_names.fgco2{m};
     elseif group_number==3      

@@ -1,0 +1,13 @@
+name: cmip_processing
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - xarray=2023.4.2 
+  - netCDF4 
+  - scipy 
+  - matplotlib 
+  - cartopy 
+  - jupyter 
+
