@@ -22,6 +22,24 @@ load([fig_dir '../data/' sensitivity_results])
 c_input_file = 'Carbon_mapped_product_analysis_output_2024_04_15.mat';
 load([fig_dir '../data/' c_input_file])
 
+%% Temporary code for Matt Mazloff to try optimization:
+
+clear obs_out CMIP_out cmip_names_out
+obs_out.spco2 = obs.spco2.Combined.y2023.SOCCOM_SOCAT.out_seasonal(:,:);
+obs_out.dissic = obs.dissic.out_seasonal(:,:,1);
+obs_out.talk = obs.talk.out_seasonal(:,:,1);
+obs_out.tos = obs.tos.out_seasonal;
+obs_out.sos = obs.sos.out_seasonal;
+
+var_out = {'spco2'; 'dissic'; 'talk';'tos';'sos'};
+for v = 1:length(var_out)
+
+    CMIP_out.(var_out{v}) = CMIP.(var_out{v}).out_seasonal;
+    cmip_names_out.(var_out{v}) = cmip_names.(var_out{v});
+end
+
+save([fig_dir '../data/out_for_MM.mat'], 'obs_out', 'CMIP_out', 'cmip_names_out')
+
 %% matching variable names to names for printing:
 
 var_plot_names = {'tos'  'SST' '\circC' ;
@@ -393,6 +411,10 @@ for sv = [8 6 4 1]
     set(gca, 'fontsize', 12)
     %     set(gca, 'ycolor', 'white')
     % text(-max_rel_amp*1.3, max_rel_amp+.2, var_plot_names{var_label_index,2}, 'fontweight', 'bold')
+    if plot_index==9 || plot_index==12
+        set(gca, 'xlim', [0 2])
+        set(gca, 'ylim', [0 1])
+    end
     if plot_index==12
         text(1.35,1.5+.05,'Correlation','fontsize',14)
         xlabel('Relative amplitude')

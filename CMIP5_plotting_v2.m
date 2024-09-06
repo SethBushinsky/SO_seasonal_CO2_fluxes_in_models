@@ -21,7 +21,7 @@ color_model = {'CanESM2' 1 [] 'o'; ...
     'inmcm4' 15  [] 's'; ...
     'MRI_ESM1' 16  [] 'v'; ...
     'CNRM_CM5' 17  [] '>' ; ...
-    'BLANK' 18  [] '<' ; ...
+    'ECCO_v4r5' 18  [] '<' ; ...
     'GISS_E2_H_CC' 19  [] 's'; ...
     'GISS_E2_R_CC' 20 [] '^'; ...
     'CESM2_WACCM_6' 21 [] '<';...
@@ -118,7 +118,9 @@ var_type = {'Omon'; 'Omon'; 'Amon';'Omon';'Omon';'Omon'; 'Omon'; 'Omon'; 'Omon';
 var_lims = [350 450 ;  0 7e2; 980 1020 ; 0 300 ; -1 25; 29 35.5; 1950 2300;2200 2500;-5e-2 5e-2;-3e7 3e7;1950 2300; 2200 2500; -1 25; 0 300];
 %%
 
-plot_ver = '_v16'; % trying MLD calculations offline using python, then loading here as "MLD". Also returning S boundary to 62S to avoid coast
+plot_ver = '_v17'; 
+% v17 adding ECCO, GLODAP to v2 2023, WOA to WOA23, 2005-2014
+% v16 trying MLD calculations offline using python, then loading here as "MLD". Also returning S boundary to 62S to avoid coast
 % v15 - changed C_input to 2010-2019 time range, updated to the y2023 combined product 
 % v14 2024_02_28 added a few more models and filled in some missing data. will update co2 flux / 
 % spco2 product based on updated runs, plus switch (I think) to 2010-2019
@@ -705,13 +707,13 @@ clear v m
 v = find(strcmp(variables, 'fgco2'));
 if isfield(cmip_names, variables{v})
     s_per_year = 3600*24*365;
-    Pg_per_kg = 1e-12;
-    scale_factor = -1.*s_per_year.*Pg_per_kg./12.*1000;  % kg m2 s-1 into the ocean to Tg C m-2 mon-1 out of the ocean
+    Tg_per_g = 1e-12;
+    scale_factor = -1.*s_per_year.*Tg_per_g./12.*1000;  % kg m2 s-1 into the ocean to Tg C m-2 mon-1 out of the ocean
 
     scale_factor_molC_m2_yr = -1.*s_per_year.*10^3.*1./12.0107; % kg m2 s-1 into the ocean to mol C m-2 yr-1 out of the ocean
     for m=1:length(cmip_names.(variables{v}))
         
-        if isfield(CMIP.(variables{v}).(cmip_names.(variables{v}){m}), 'units_old')
+        if isfield(CMIP.(variables{v}).(cmip_names.(variables{v}){m}), 'units_old') % don't want to run this twice
             continue
         end
         %        CMIP.(variables{v}).(cmip_names.(variables{v}){m}).([variables{v} '_old']) = CMIP.(variables{v}).(cmip_names.(variables{v}){m}).(variables{v});
@@ -723,7 +725,7 @@ if isfield(cmip_names, variables{v})
         CMIP.(variables{v}).(cmip_names.(variables{v}){m}).(variables{v}) = CMIP.(variables{v}).(cmip_names.(variables{v}){m}).(variables{v}).*scale_factor.*C_input.Combined.(p_year).area';  %Tg C mon-1 out of the ocean from kg m-2 s-1into the ocean
         CMIP.(variables{v}).(cmip_names.(variables{v}){m}).units = 'Tg C mon-1';
     end
-    clear scale_factor Pg_per_kg s_per_year scale_factor_molC_m2_yr
+    clear scale_factor Tg_per_g s_per_year scale_factor_molC_m2_yr
 end
 
 % a few manual adjustments:
@@ -794,6 +796,7 @@ for v = 1:length(variables)
 end
 
 clear v m
+
 
 
 %% Read in SOSE
@@ -932,7 +935,7 @@ for w = [1 3]% 1:2
                     else
                         d_z = CMIP.([variables{v}]).(mod_name).depth(dd) - CMIP.([variables{v}]).(mod_name).depth(dd-1);
                     end
-                    npp_mol_m2_s = single_depth.*d_z;
+                    npp_mol_m2_s = single_depth.*double(d_z);
                     month_temp = nansum(cat(3, month_temp, npp_mol_m2_s),3); % in mol C m-2 s-1
                     clear single_depth npp_mol_m2_s d_z
                 end
@@ -1003,6 +1006,137 @@ for w = [1 3]% 1:2
 end
 clear w v
 clear SOSE_dir sose_file SOSE_its sose_vars year_range var_load time_offset
+%% Load ECCO-Darwin
+
+ECCO_its = {'v4r5'};
+var_load = {'CO2flux'; 'pCO2'; 'ALK_surf'; 'DIC_surf'; 'Theta'; 'Salt'; 'Theta'; 'primProd' ;  'mld'}; %'BLGMLD' }; % theta is in here twice, once for "TOS", once for "THETAO"
+var_units = {'mmol CO2 /m2/s'; 'uatm'; 'umol L-1'; 'umol l-1'; 'degC'; 'psu'; 'degC'; 'mgC m-2 d-1' ;  'm'}; %'BLGMLD' }; % theta is in here twice, once for "TOS", once for "THETAO"
+var_long_name = {'CO2 flux to the atmosphere'; 'pCO2'; 'ALK_surf'; 'DIC_surf'; 'Sea Water Potential Temperature'; 'Salt'; 'Sea Water Potential Temperature'; 'primProd' ;  'mld'}; %'BLGMLD' }; % theta is in here twice, once for "TOS", once for "THETAO"
+% from Ivana:
+% original CO2 flux units:  (mmol C m²/s), positive to the ocean
+% PP, mmol C /m3/s, Primary Production
+
+for w = 1
+    mod_name = ['ECCO_' ECCO_its{w}];
+
+    ecco_vars =  [9 1 8 7 5 6 13 2 14];
+
+    if w==1
+        ECCO_dir = [data_dir 'Model_Output/ECCO_models/ECCOv4r5/'];
+    end
+
+    time_temp = datenum(1992,1:374,15); % assuming that time 1 is Jan 1992
+
+    file_index = find(time_temp>datenum(2010,1,1) & time_temp<datenum(2020,01,01));
+
+    for ev = [1:7 9]%:length(ecco_vars)-1
+
+        v = ecco_vars(ev);
+        CMIP.(variables{v}).(mod_name).GMT_Matlab = time_temp(file_index);
+
+        if v~=13 % treat variables w/ depth dimensions differently
+            % create a temporary array to fill:
+            temp_var = NaN(360, 180, 120);
+        else
+            temp_var = NaN(360, 180, 38, 120);
+        end
+
+        if strcmp(var_load{ev}, 'CO2flux')
+            % for CO2 flux we want in both units of mol C m2 /yr and Tg C
+            % mon-1 
+            var_name = 'CO2flx';
+            scale_factor = 1;
+            ver = '';
+
+        elseif strcmp(var_load{ev}, 'ALK_surf')
+            var_name = 'ALK';
+            scale_factor = 1;
+            ver = '';
+
+        elseif strcmp(var_load{ev}, 'DIC_surf')
+            var_name = 'DIC';
+            scale_factor = 1;
+            ver = '';
+
+        elseif strcmp(var_load{ev}, 'Theta')
+            var_name = 'T';
+            scale_factor = 1;
+            ver = '_v2';
+        elseif strcmp(var_load{ev}, 'Salt')
+            var_name = 'S';
+            scale_factor = 1;
+            ver = '_v2';
+        elseif strcmp(var_load{ev}, 'mld')
+            var_name = 'MLD';
+            scale_factor = 1;
+            ver = '';
+        else
+            var_name = var_load{ev};
+            scale_factor = 1;
+            ver = '';
+        end
+
+      
+        % loop through all relevant dates and fill the temp var
+        for t = 1:length(file_index)
+            % load file
+            file_n = load([ECCO_dir var_load{ev} '_Intrp_ECCO' ECCO_its{w} ver '/' var_load{ev} '_Intrp_' num2str(file_index(t)) ver '.mat']);
+
+             % find matching latitudes
+             lat_index = (double(file_n.yyc(1,1))+.5) <= CMIP.lat_grid(1,:) & (double(file_n.yyc(1,end))+.5) >= CMIP.lat_grid(1,:);
+
+            % put data into temp_var
+            if v==13
+                temp_var(:, lat_index, :, t) = file_n.([var_name '_interp'])(:,:,:).*scale_factor;
+            elseif v==14
+                temp_var(:, lat_index, t) = file_n.(var_name)(:,:,1).*scale_factor;
+            else
+                temp_var(:, lat_index, t) = file_n.([var_name '_interp'])(:,:,1).*scale_factor;
+            end
+        end
+        temp_var(temp_var==0)= nan;
+        % store temp var in CMIP variable
+        CMIP.(variables{v}).(mod_name).(variables{v}) = temp_var;
+
+        CMIP.(variables{v}).(mod_name).units =  var_units{ev};
+        CMIP.(variables{v}).(mod_name).long_name =  var_long_name{ev};
+        if v==13
+            CMIP.(variables{v}).(mod_name).depth = file_n.depth.*-1;
+        end
+        if strcmp(var_load{ev}, 'CO2flux')
+            % from mmol CO2 /m2 /s to mol C /m2 /yr
+            switch_sign = -1;
+            s_per_year = 3600*24*365;
+            mol_per_mmol = 1/1000;
+            % C_per_CO2 = 12.0107/44.0095;
+            scale_factor_molC_m2_yr = s_per_year*mol_per_mmol.*switch_sign;%*C_per_CO2;
+            
+            % go from mol C m2 yr to Tg C mon
+            yr_per_mon = 1/12;
+            g_per_mol = 12.0107;
+            Tg_per_g = 1e-12;
+            scale_factor_Tg_C_mon = yr_per_mon*g_per_mol*Tg_per_g;
+            
+            CMIP.(variables{v}).(mod_name).units_old = CMIP.(variables{v}).(mod_name).units;
+            CMIP.(variables{v}).(mod_name).([variables{v} '_mol_C_m2_yr']) = CMIP.(variables{v}).(mod_name).(variables{v}).*scale_factor_molC_m2_yr;  %mol C m-2 yr-1 out of the ocean from kg m-2 s-1into the ocean
+
+            % then save in Tg C mon-1
+            CMIP.(variables{v}).(mod_name).(variables{v}) = ...
+                CMIP.(variables{v}).(mod_name).([variables{v} '_mol_C_m2_yr']).*scale_factor_Tg_C_mon.*C_input.Combined.(p_year).area';  %Tg C mon-1 out of the ocean from kg m-2 s-1into the ocean
+            CMIP.(variables{v}).(mod_name).units = 'Tg C mon-1';
+        end
+        clear var_name ver lat_index yr_per_mon mol_per_mmol g_per_mol scale_factor_Tg_C_mon scale_factor_molC_m2_yr switch_sign
+        clear Tg_per_g s_per_year
+        if sum(strcmp(cmip_names.(variables{v}), mod_name))==0
+            cmip_names.(variables{v}){end+1} = mod_name;
+        end
+        
+        clear scale_factor t file_n v var_name temp_var 
+    end
+
+    clear time_temp file_index
+end
+clear w ev ECCO_its ECCO_dir ecco_vars mod_name var_load var_units var_long_name
 %% Model Solubility
 
 variables = [variables ; 'CO2_sol'];
@@ -1077,8 +1211,10 @@ for v=[1 2 4:9 11 12 14, 15] %[1:12 14] % skip thetao as it is only used for the
 
             % only create a new mask if there isn't one already made
             if ~isfield(CMIP.thetao.(cmip_names.(variables{v}){m}), 'SAF_S_mask')
-                % need to find depth of thetao at 400m
-                depth_index = round(CMIP.thetao.(cmip_names.(variables{v}){m}).depth)==400;
+                % need to find depth of thetao at 400m - v17 - changing to
+                % finding the closest level to 400
+                % depth_index = round(CMIP.thetao.(cmip_names.(variables{v}){m}).depth)==400;
+                depth_index = min(abs(CMIP.thetao.(cmip_names.(variables{v}){m}).depth - 400))==abs(CMIP.thetao.(cmip_names.(variables{v}){m}).depth - 400);
                 SAF_S_mask = CMIP.thetao.(cmip_names.(variables{v}){m}).thetao(:,:,depth_index)<=5 & lat_grid<-30  & lat_grid>poleward_lat_lim;
                 CMIP.thetao.(cmip_names.(variables{v}){m}).SAF_S_mask = SAF_S_mask;
                 clear SAF_S_mask
@@ -1356,7 +1492,7 @@ for v=[14]%:length(variables) % 4%[2 4 7 8]% 1 2 4 5 6 7 8 9]%9%13:length(variab
     CMIP.lon_grid = lon_grid';
     CMIP.lat_grid = lat_grid';
     clear lon_grid lat_grid
-    for m =[39 40]% 1:length(cmip_names.(variables{v}))
+    for m =40:length(cmip_names.(variables{v}))
 
         if isfield(CMIP.(variables{v}).(cmip_names.(variables{v}){m}), 'depth')
             num_depths = length(CMIP.(variables{v}).(cmip_names.(variables{v}){m}).depth);
@@ -1704,15 +1840,15 @@ clear mod_vec lat_index mon
 % Read in climatological SSS from WOA
 clear WOA_SSS
 
-SSS_dir = [data_dir 'Data_Products/SSS/WOA_2018/'];
-WOA_SSS.lat = ncread([SSS_dir 'woa18_A5B7_s01_01.nc'], 'lat');
-WOA_SSS.lon_orig = ncread([SSS_dir 'woa18_A5B7_s01_01.nc'], 'lon');
+SSS_dir = [data_dir 'Data_Products/SSS/WOA_2023/2005_2014/'];
+WOA_SSS.lat = ncread([SSS_dir 'woa23_A5B4_s01_01.nc'], 'lat');
+WOA_SSS.lon_orig = ncread([SSS_dir 'woa23_A5B4_s01_01.nc'], 'lon');
 WOA_SSS.lon = NaN(360,1);
 WOA_SSS.lon(1:180,1) = WOA_SSS.lon_orig(181:end);
 WOA_SSS.lon(181:end,1) = WOA_SSS.lon_orig(1:180);
 WOA_SSS.Month = NaN(12,1);
 WOA_SSS.SSS = NaN(length(WOA_SSS.lon), length(WOA_SSS.lat), 12);
-WOA_SSS.SSS_long_name = ncreadatt([SSS_dir 'woa18_A5B7_s01_01.nc'], 's_an', 'long_name');
+WOA_SSS.SSS_long_name = ncreadatt([SSS_dir 'woa23_A5B4_s01_01.nc'], 's_an', 'long_name');
 
 for mon = 1:12
     WOA_SSS.Month(mon) = mon;
@@ -1721,7 +1857,7 @@ for mon = 1:12
     if length(month_text)<2
         month_text = ['0' month_text];
     end
-    sal_temp = ncread([SSS_dir 'woa18_A5B7_s' month_text '_01.nc'], 's_an');
+    sal_temp = ncread([SSS_dir 'woa23_A5B4_s' month_text '_01.nc'], 's_an');
 
     WOA_SSS.SSS(1:180,:,mon) = sal_temp(181:end,:,1);
     WOA_SSS.SSS(181:end,:,mon) = sal_temp(1:180,:,1);
@@ -1734,7 +1870,7 @@ var_name = 'sos';
 lon_grid = CMIP.lon_grid;
 lat_grid = CMIP.lat_grid;
 SO_var = nanmean(WOA_SSS.SSS,3);
-model_name = 'WOA 2018 SSS';
+model_name = 'WOA 2023 SSS';
 units = 'psu';
 save([home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/data/surface_fields/' var_name '/00_Obs' plot_ver '.mat'], ...
             'lon_grid', 'lat_grid', 'SO_var', 'var_name','model_SAF', 'plot_ver', 'model_name','units')
@@ -1945,7 +2081,7 @@ clear dd f a Argo SO_SNs temp_lat_vec
 % Load GLODAP
 
 gdap_dir = [data_dir 'Data_Products/GLODAP/'];
-gdap_filename = 'GLODAPv2.2021_Merged_Master_File.mat';
+gdap_filename = 'GLODAPv2.2023_Merged_Master_File.mat';
 
 gdap = load([gdap_dir gdap_filename]);
 
