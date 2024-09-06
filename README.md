@@ -2,10 +2,12 @@
 
 ## Needed data files:
 Carbon_mapped_product_analysis_output_2024_04_15.mat - average of mapped Landschützer and Rödenbeck CO2 fluxes/pCO2.
+
 gdap_and_argo_gridded_2024_Sep_06.mat - 1x1 gridded float and GLODAP data
 
 ## Data preprocessing scripts:
 cmip_processing.yml - set up python environment for notebooks
+
 model_file_concatenation.ipynb - Concatenation of different model years
 
 Regridding, interpolating, unifying calendars, removing bad data, etc:
@@ -22,13 +24,19 @@ CMIP5_plotting_v2.m (should rename)
 
 ## Subfunctions called by preprocessing or analysis scripts:
 functions\CO2SYSSOCCOM_smb.m		
+
 functions\MLD_4grp_cmip.py		
+
 functions\fit_cosine.m			
+
 functions\mld_calculations.py
+
 functions\fit_harmonics.m			
 
 ## Plotting scripts:
 Bushinsky_et_al_CMIP_SO_C_flux_figure_plotting.m
+
 Figure_1.ipynb
+
 supplemental_map_plotting.ipynb
 
