@@ -21,7 +21,7 @@ color_model = {'CanESM2' 1 [] 'o'; ...
     'inmcm4' 15  [] 's'; ...
     'MRI_ESM1' 16  [] 'v'; ...
     'CNRM_CM5' 17  [] '>' ; ...
-    'ECCO_v4r5' 18  [] '<' ; ...
+    'ECCO_v4r5' 18  [] 's' ; ...
     'GISS_E2_H_CC' 19  [] 's'; ...
     'GISS_E2_R_CC' 20 [] '^'; ...
     'CESM2_WACCM_6' 21 [] '<';...
@@ -1070,6 +1070,10 @@ for w = 1
             var_name = 'MLD';
             scale_factor = 1;
             ver = '';
+        elseif strcmp(var_load{ev}, 'pCO2')
+            var_name = var_load{ev};
+            scale_factor = 10^6;
+            ver = '';
         else
             var_name = var_load{ev};
             scale_factor = 1;
@@ -1294,7 +1298,7 @@ for v=[1 2 4:9 11 12 14, 15] %[1:12 14] % skip thetao as it is only used for the
                         % sum all grid cells to convert to total flux in the area
                         CMIP.(variables{v}).out_seasonal_35S(m,mon,1) = nansum(reshape(SO_fgco2_mean_copy,[],1)); % sum, not mean
 
-                        clear SO_fgco2_mean
+                        clear SO_fgco2_mean SO_fgco2_mean_copy
 
                         % calculate seasonal cycle from C flux density as
                         % well
@@ -1386,7 +1390,7 @@ for v=[1 2 4:9 11 12 14, 15] %[1:12 14] % skip thetao as it is only used for the
                end
 
             end
-            clear SAF_S_mask
+            clear SAF_S_mask SO_fgco2_mon
         end
         clear m mon num_depths var4D
     else
@@ -1420,7 +1424,7 @@ for v=[1 2 4:9 11 12 14, 15] %[1:12 14] % skip thetao as it is only used for the
                         CMIP.thetao.(cmip_names.(variables{v}){m}).SAF(lon) = max(temp_lat_vec);
                     end
                 end
-                clear lon
+                clear lon temp_lat_vec
                 % remove nans from SAF
                 old_SAF = CMIP.thetao.(cmip_names.(variables{v}){m}).SAF;
                 old_SAF_w_lon = [CMIP.thetao.lon old_SAF];
@@ -1472,11 +1476,11 @@ for v=[1 2 4:9 11 12 14, 15] %[1:12 14] % skip thetao as it is only used for the
                 clear temp_area grid_weights single_depth single_year
             end
         end
-        clear m num_depths
+        clear m num_depths depth_index
     end
     clear lat_index
 end
-clear v dd m
+clear v dd m month
 
 
 %% plot vars w the SAF mask
@@ -1598,7 +1602,7 @@ for v=[14]%:length(variables) % 4%[2 4 7 8]% 1 2 4 5 6 7 8 9]%9%13:length(variab
     end
 end
 
-clear v paper_h paper_w dd depth_index  num_depths 
+clear v paper_h paper_w dd depth_index num_depths m ss
 
 %% saving out variable surface fields to plot in python
 for v = [1 2 4 5 6 7 8 9 14]
@@ -1640,6 +1644,7 @@ for v = [1 2 4 5 6 7 8 9 14]
              
                     % save into temp_array
                     temp_array(:, mon) = EE'; % Tg Mon-1 lat-1
+                    clear date_index
                 end
 
                 lat_x = CMIP.(variables{v}).lat(lat_index);
@@ -1647,7 +1652,7 @@ for v = [1 2 4 5 6 7 8 9 14]
                 mon_lab = repmat(1:12, length(lat_lab),1);
                                 
                 SO_flux_Tg_mon = temp_array;
-                clear CC DD EE temp_array lat_x
+                clear CC DD EE temp_array lat_x mon lat_index mod_vec
             else
                 if num_depths==1
                     SO_var = mean(CMIP.(variables{v}).(cmip_names.(variables{v}){m}).(variables{v})(:, :, :),3, 'omitnan');
@@ -1679,12 +1684,12 @@ for v = [1 2 4 5 6 7 8 9 14]
             clear SO_flux_Tg_mon mon_lab lat_lab
         end
         
-        clear model_SAF SO_var model_name 
+        clear model_SAF SO_var model_name num_depths
     end
 
 end
 
-clear lat_grid lon_grid
+clear lat_grid lon_grid v units m mod_num
 %% Read in monthly SST
 clear NOAA_SST
 load([data_dir 'ARGO_O2_Floats/Front_definitions/Gray_5_regions/regional_boundaries_5zone_SMB.mat']);
@@ -1835,7 +1840,7 @@ save([home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/data/surface_fields/
             'lon_grid', 'lat_grid', 'SO_var', 'var_name','model_SAF', 'plot_ver', 'model_name','units')
 clear var_name lon_grid lat_grid SO_var units model_name sorted_SAF new_trimmed_SAF new_SAF pos_values neg_values
 
-clear mod_vec lat_index mon
+clear mod_vec lat_index mon idx 
 %
 % Read in climatological SSS from WOA
 clear WOA_SSS
@@ -1936,11 +1941,11 @@ end
 
 
 clear mon
-clear topolatlim topolegend topolonlim topomap1 topomap2 v m lon lon_grid lat_grid
+clear topolatlim topolegend topolonlim topomap1 topomap2 v m lon lon_grid lat_grid CO2_sol_obs
 %% Can reload gridded datasets, reload here instead of re-running the next several cells
 % currently saved in manuscript folder
 % load([home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/data/gdap_and_argo_gridded_2022_Apr_04.mat'])
-load([home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/data/gdap_and_argo_gridded_2022_Apr_22.mat'])
+load([home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/data/gdap_and_argo_gridded_2024_Sep_06.mat'])
 depth_levs = CMIP.dissic_yr.(cmip_names.dissic_yr{1}).depth;
 
 %% Load SOCCOM
@@ -2330,7 +2335,7 @@ for dd = 1:length(depth_levs)
 
     clear mon
 end
-
+clear dd
 obs.talk.depth_levs = depth_levs;
 obs.dissic.depth_levs = depth_levs;
 
@@ -2586,7 +2591,7 @@ SO_flux_Tg_mon = obs_flux_array;
 model_name = [product_names{p} ' ' runs{q} ' ' p_year];
 save([home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/data/surface_fields/' var_name '/00_Obs' plot_ver '.mat'], ...
             'lon_grid', 'lat_grid', 'SO_var', 'var_name','model_SAF', 'plot_ver', 'model_name','units', 'SO_flux_Tg_mon', 'mon_lab', 'lat_lab')
-clear var_name p time_index SO_spco2 SO_var units model_name q SO_flux_Tg_mon lat_lab lat_x date_index CC DD EE obs_flux_array lat_index
+clear var_name p time_index SO_spco2 SO_var units model_name q SO_flux_Tg_mon lat_lab lat_x date_index CC DD EE obs_flux_array lat_index mon_lab SO_fgco2_mol_m2_yr
 
 %
 % lat_index = Neur_input.lat<=lat_lims(2) & Neur_input.lat>=lat_lims(1);
@@ -2614,7 +2619,7 @@ clear var_name p time_index SO_spco2 SO_var units model_name q SO_flux_Tg_mon la
 %     clear SO_fgco2 zonal_sum box_sum
 % end
 %
-% clear lat_index mod_vec time_index mon
+clear lat_index mod_vec time_index mon
 clear y q p
 
 %% looking at pCO2 seasonal cycles
@@ -6196,11 +6201,11 @@ for c = 1:length(columns_out)
     dataTable_correlations_only.(columns_out{c}) = var_copy;
 end
 
-filename = ['dataTable_correlations_only' plot_ver '2024_07_09.csv'];
+filename = ['dataTable_correlations_only' plot_ver '2024_09_06.csv'];
 % writestruct(dataTable_correlations_only, [Plot_out_dir 'Sensitivity_tests/' filename]);
-writestruct(dataTable_correlations_only, [home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/spreadsheets/Sensitivity_tests/' filename]);
+% writestruct(dataTable_correlations_only, [home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/spreadsheets/' filename]);
 
-
+writetable(struct2table(dataTable_correlations_only), [home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/spreadsheets/' filename]);
 %% Needed %% 5. Parallel attempt: Starting from correct model, recalculating pCO2 for different test cases
 % clf
 % idealized_test_out = table;

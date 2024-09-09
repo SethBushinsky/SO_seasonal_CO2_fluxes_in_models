@@ -10,35 +10,18 @@ fig_dir = [home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/figures/'];
 % seasonal_file = 'seasonal_cycles_w_model_type_matched_2023_11_07.mat';
 % seasonal_file = 'seasonal_cycles_w_model_type_matched_2024_02_28.mat';
 % seasonal_file = 'seasonal_cycles_w_model_type_matched_2024_04_07.mat';
-seasonal_file = 'seasonal_cycles_w_model_type_matched_2024_08_02.mat';
+seasonal_file = 'seasonal_cycles_w_model_type_matched_2024_09_06.mat';
 load([fig_dir '../data/' seasonal_file])
 seas_comp_vars = fieldnames(obs);
 
-toy_model_file = 'toy_model_output_2024_07_11.mat';
+toy_model_file = 'toy_model_output_2024_09_06.mat';
 load([fig_dir '../data/' toy_model_file])
-sensitivity_results = 'sensitivity_test_results2024_07_11.mat';
+sensitivity_results = 'sensitivity_test_results2024_09_06.mat';
 load([fig_dir '../data/' sensitivity_results])
 
 c_input_file = 'Carbon_mapped_product_analysis_output_2024_04_15.mat';
 load([fig_dir '../data/' c_input_file])
 
-%% Temporary code for Matt Mazloff to try optimization:
-
-clear obs_out CMIP_out cmip_names_out
-obs_out.spco2 = obs.spco2.Combined.y2023.SOCCOM_SOCAT.out_seasonal(:,:);
-obs_out.dissic = obs.dissic.out_seasonal(:,:,1);
-obs_out.talk = obs.talk.out_seasonal(:,:,1);
-obs_out.tos = obs.tos.out_seasonal;
-obs_out.sos = obs.sos.out_seasonal;
-
-var_out = {'spco2'; 'dissic'; 'talk';'tos';'sos'};
-for v = 1:length(var_out)
-
-    CMIP_out.(var_out{v}) = CMIP.(var_out{v}).out_seasonal;
-    cmip_names_out.(var_out{v}) = cmip_names.(var_out{v});
-end
-
-save([fig_dir '../data/out_for_MM.mat'], 'obs_out', 'CMIP_out', 'cmip_names_out')
 
 %% matching variable names to names for printing:
 
@@ -47,7 +30,7 @@ var_plot_names = {'tos'  'SST' '\circC' ;
     'spco2' 'pCO_2' '\muatm' ;
     'fgco2' 'CO_2 flux' 'mol C m^-^2 yr^-^1' ;
     'mlotst' 'MLD' 'm';
-    'intpp' 'NPP' 'mg C m^-^2 d^-^1';
+    'intpp' 'NPP_{int}' 'mg C m^-^2 d^-^1';
     'mld' 'MLD' 'm';
     'talk' '[TA]' '\mueq l^-^1';
     'sos' 'SSS' ''};
@@ -387,6 +370,7 @@ for sv = [8 6 4 1]
     end
     set(gca, 'titlehorizontalalignment', 'left')
     if plot_index==11
+        text(1.85,1.5+.3,'Correlation','fontsize',14)
         xlabel('Relative amplitude')
     end
     
@@ -416,7 +400,6 @@ for sv = [8 6 4 1]
         set(gca, 'ylim', [0 1])
     end
     if plot_index==12
-        text(1.35,1.5+.05,'Correlation','fontsize',14)
         xlabel('Relative amplitude')
     end
    
@@ -706,6 +689,8 @@ for sv = [2 5 10 11]
     set(gca, 'titlehorizontalalignment', 'left')
 
     if plot_index==11
+        text(1.85,1.5+.3,'Correlation','fontsize',14)
+
         xlabel('Relative amplitude')
     end
      plot_index = plot_index+1;
@@ -720,6 +705,8 @@ for sv = [2 5 10 11]
     if ~isempty(strfind(seas_comp_vars{sv}, 'fgco2'))
         DDD = taylor_dist_smb_for_manuscript(obs.(seas_comp_vars{sv}).correlation, obs.(seas_comp_vars{sv}).ratio, [], cmip_names.(variables{v}), color_model, cmap, legend_on, ...
             rms_cutoff_for_good, out_of_phase_corr_cutoff, 2);
+    elseif ~isempty(strfind(seas_comp_vars{sv}, 'talk'))
+        DDD = taylor_dist_smb_for_manuscript(obs.(seas_comp_vars{sv}).correlation, obs.(seas_comp_vars{sv}).ratio, [], cmip_names.(variables{v}), color_model, cmap, legend_on, [], [], 1.5);
     else
         DDD = taylor_dist_smb_for_manuscript(obs.(seas_comp_vars{sv}).correlation, obs.(seas_comp_vars{sv}).ratio, [], cmip_names.(variables{v}), color_model, cmap, legend_on, [], [], 2);
     end
@@ -729,8 +716,11 @@ for sv = [2 5 10 11]
     set(gca, 'fontsize', 12)
     %     set(gca, 'ycolor', 'white')
     % text(-max_rel_amp*1.3, max_rel_amp+.2, var_plot_names{var_label_index,2}, 'fontweight', 'bold')
+    if plot_index==3 || plot_index==9 || plot_index==12
+        set(gca, 'xlim', [0 2])
+        set(gca, 'ylim', [0 1])
+    end
     if plot_index==12
-        text(1.35,1.5+.05,'Correlation','fontsize',14)
         xlabel('Relative Amplitude')
     end
     if plot_index==3
@@ -799,6 +789,7 @@ for m = 1:length(cmip_names.fgco2)
 
 end
 
+save([fig_dir '../spreadsheets/Table_S1' plot_ver '.mat'], 'resultsTable');
 writetable(resultsTable, [fig_dir '../spreadsheets/Table_S1' plot_ver '.csv']);
 %% Figure 3 - side by side pCO2/SST/DIC seasonal cycle and contour plot
 
@@ -5451,3 +5442,21 @@ set(d2, 'xlim', x_lims, 'TitleHorizontalAlignment', 'left')
 legend(d2, l_l, model_types_for_legend, 'interpreter', 'none', 'location', 'southwest', 'fontsize', 8);
 
 print(gcf, '-dpdf', [fig_dir plot_filename '.pdf'], '-r300')
+
+%% Temporary code for Matt Mazloff to try optimization:
+% 
+% clear obs_out CMIP_out cmip_names_out
+% obs_out.spco2 = obs.spco2.Combined.y2023.SOCCOM_SOCAT.out_seasonal(:,:);
+% obs_out.dissic = obs.dissic.out_seasonal(:,:,1);
+% obs_out.talk = obs.talk.out_seasonal(:,:,1);
+% obs_out.tos = obs.tos.out_seasonal;
+% obs_out.sos = obs.sos.out_seasonal;
+% 
+% var_out = {'spco2'; 'dissic'; 'talk';'tos';'sos'};
+% for v = 1:length(var_out)
+% 
+%     CMIP_out.(var_out{v}) = CMIP.(var_out{v}).out_seasonal;
+%     cmip_names_out.(var_out{v}) = cmip_names.(var_out{v});
+% end
+% 
+% save([fig_dir '../data/out_for_MM.mat'], 'obs_out', 'CMIP_out', 'cmip_names_out')
