@@ -31,4 +31,5 @@ MLD_calc_offline.ipynb - MLD calculation for models
 - Bushinsky_et_al_CMIP_SO_C_flux_figure_plotting.m
 - Figure_1.ipynb
 - supplemental_map_plotting.ipynb
+- var_fit_table.ipynb
 
