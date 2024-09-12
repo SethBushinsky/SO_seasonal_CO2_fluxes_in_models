@@ -1,5 +1,4 @@
-% 2022_04_14 - Cleaning up code and only copying actively used sections
-% from CMIP5_plotting.m
+% Analysis code for Bushinsky et al. XXXX submission 
 
 %% Note - might correct for area when averaging, but not essential and probably doesn't make a difference really..
 % setting colors for consistency b/t plots
@@ -119,7 +118,8 @@ var_lims = [350 450 ;  0 7e2; 980 1020 ; 0 300 ; -1 25; 29 35.5; 1950 2300;2200 
 %%
 
 plot_ver = '_v17'; 
-% v17 adding ECCO, GLODAP to v2 2023, WOA to WOA23, 2005-2014
+% v17 adding ECCO, GLODAP to v2 2023, WOA to WOA23, 2005-2014. Changed code
+% name to "CMIP_model_eval_analysis.m"
 % v16 trying MLD calculations offline using python, then loading here as "MLD". Also returning S boundary to 62S to avoid coast
 % v15 - changed C_input to 2010-2019 time range, updated to the y2023 combined product 
 % v14 2024_02_28 added a few more models and filled in some missing data. will update co2 flux / 
@@ -1010,7 +1010,7 @@ clear SOSE_dir sose_file SOSE_its sose_vars year_range var_load time_offset
 
 ECCO_its = {'v4r5'};
 var_load = {'CO2flux'; 'pCO2'; 'ALK_surf'; 'DIC_surf'; 'Theta'; 'Salt'; 'Theta'; 'primProd' ;  'mld'}; %'BLGMLD' }; % theta is in here twice, once for "TOS", once for "THETAO"
-var_units = {'mmol CO2 /m2/s'; 'uatm'; 'umol L-1'; 'umol l-1'; 'degC'; 'psu'; 'degC'; 'mgC m-2 d-1' ;  'm'}; %'BLGMLD' }; % theta is in here twice, once for "TOS", once for "THETAO"
+var_units = {'mmol CO2 /m2/s'; 'uatm'; 'umol L-1'; 'umol l-1'; 'degC'; 'psu'; 'degC'; 'mmol C m-3 s-1' ;  'm'}; %'BLGMLD' }; % theta is in here twice, once for "TOS", once for "THETAO"
 var_long_name = {'CO2 flux to the atmosphere'; 'pCO2'; 'ALK_surf'; 'DIC_surf'; 'Sea Water Potential Temperature'; 'Salt'; 'Sea Water Potential Temperature'; 'primProd' ;  'mld'}; %'BLGMLD' }; % theta is in here twice, once for "TOS", once for "THETAO"
 % from Ivana:
 % original CO2 flux units:  (mmol C m²/s), positive to the ocean
@@ -1029,16 +1029,16 @@ for w = 1
 
     file_index = find(time_temp>datenum(2010,1,1) & time_temp<datenum(2020,01,01));
 
-    for ev = [1:7 9]%:length(ecco_vars)-1
+    for ev = 1:length(ecco_vars)
 
         v = ecco_vars(ev);
         CMIP.(variables{v}).(mod_name).GMT_Matlab = time_temp(file_index);
 
-        if v~=13 % treat variables w/ depth dimensions differently
+        if v==13 || v==2 % treat variables w/ depth dimensions differently
             % create a temporary array to fill:
-            temp_var = NaN(360, 180, 120);
-        else
             temp_var = NaN(360, 180, 38, 120);
+        else
+            temp_var = NaN(360, 180, 120);
         end
 
         if strcmp(var_load{ev}, 'CO2flux')
@@ -1046,17 +1046,17 @@ for w = 1
             % mon-1 
             var_name = 'CO2flx';
             scale_factor = 1;
-            ver = '';
+            ver = '_v2';
 
         elseif strcmp(var_load{ev}, 'ALK_surf')
             var_name = 'ALK';
             scale_factor = 1;
-            ver = '';
+            ver = '_v2';
 
         elseif strcmp(var_load{ev}, 'DIC_surf')
             var_name = 'DIC';
             scale_factor = 1;
-            ver = '';
+            ver = '_v2';
 
         elseif strcmp(var_load{ev}, 'Theta')
             var_name = 'T';
@@ -1073,31 +1073,42 @@ for w = 1
         elseif strcmp(var_load{ev}, 'pCO2')
             var_name = var_load{ev};
             scale_factor = 10^6;
+            ver = '_v2';
+        elseif strcmp(var_load{ev}, 'primProd')
+            var_name = 'primProd_interp_3D';
+            scale_factor = 1;
             ver = '';
         else
             var_name = var_load{ev};
             scale_factor = 1;
-            ver = '';
+            ver = '_v2';
         end
 
       
         % loop through all relevant dates and fill the temp var
         for t = 1:length(file_index)
             % load file
-            file_n = load([ECCO_dir var_load{ev} '_Intrp_ECCO' ECCO_its{w} ver '/' var_load{ev} '_Intrp_' num2str(file_index(t)) ver '.mat']);
-
+            if v==2
+                file_n = load([ECCO_dir var_load{ev} '_Intrp' ver '/' var_load{ev} '_Intrp_3D_' num2str(file_index(t)) ver '.mat']);
+            else
+                file_n = load([ECCO_dir var_load{ev} '_Intrp' ver '/' var_load{ev} '_Intrp_' num2str(file_index(t)) ver '.mat']);
+            end
              % find matching latitudes
              lat_index = (double(file_n.yyc(1,1))+.5) <= CMIP.lat_grid(1,:) & (double(file_n.yyc(1,end))+.5) >= CMIP.lat_grid(1,:);
 
             % put data into temp_var
             if v==13
                 temp_var(:, lat_index, :, t) = file_n.([var_name '_interp'])(:,:,:).*scale_factor;
+            elseif v==2
+                temp_var(:, lat_index, :, t) = file_n.(var_name)(:,:,:).*scale_factor;
+
             elseif v==14
                 temp_var(:, lat_index, t) = file_n.(var_name)(:,:,1).*scale_factor;
             else
                 temp_var(:, lat_index, t) = file_n.([var_name '_interp'])(:,:,1).*scale_factor;
             end
         end
+
         temp_var(temp_var==0)= nan;
         % store temp var in CMIP variable
         CMIP.(variables{v}).(mod_name).(variables{v}) = temp_var;
@@ -1106,7 +1117,12 @@ for w = 1
         CMIP.(variables{v}).(mod_name).long_name =  var_long_name{ev};
         if v==13
             CMIP.(variables{v}).(mod_name).depth = file_n.depth.*-1;
+        elseif v==2 % 3D NPP is missing "depth" - need to load it from another 3D variable
+            tos_n = load([ECCO_dir 'Theta_Intrp_v2/Theta_Intrp_1_v2.mat']); 
+            CMIP.(variables{v}).(mod_name).depth = tos_n.depth.*-1;
+            clear tos_n
         end
+
         if strcmp(var_load{ev}, 'CO2flux')
             % from mmol CO2 /m2 /s to mol C /m2 /yr
             switch_sign = -1;
@@ -1128,9 +1144,52 @@ for w = 1
             CMIP.(variables{v}).(mod_name).(variables{v}) = ...
                 CMIP.(variables{v}).(mod_name).([variables{v} '_mol_C_m2_yr']).*scale_factor_Tg_C_mon.*C_input.Combined.(p_year).area';  %Tg C mon-1 out of the ocean from kg m-2 s-1into the ocean
             CMIP.(variables{v}).(mod_name).units = 'Tg C mon-1';
+
+        elseif strcmp(var_load{ev}, 'primProd') % need to perform column integration
+            % create a new array to store your individual column averaged
+            % months:
+            col_intg_mol_C_m2_s = NaN(360,180, size(temp_var,4));
+
+
+            % for each time step
+            for tt = 1:size(temp_var,4)
+
+                % for each depth,
+                % create a NaN array for that day:
+                month_temp = zeros(360, 180);
+                for dd = 1:length(CMIP.([variables{v}]).(mod_name).depth)
+                    single_depth = temp_var(:,:,dd,tt);
+                    
+                    % calculate the distance between depths for integration
+                    if dd==1
+                        d_z = CMIP.([variables{v}]).(mod_name).depth(dd) - 0;
+                    else
+                        d_z = CMIP.([variables{v}]).(mod_name).depth(dd) - CMIP.([variables{v}]).(mod_name).depth(dd-1);
+                    end
+                    npp_mol_m2_s = single_depth.*double(d_z)./1000; % mmol C m-3 s-1 to mol C m-2 s-1 (for a single layer)
+                    month_temp = nansum(cat(3, month_temp, npp_mol_m2_s),3); % in mol C m-2 s-1 (for all layers)
+                    clear single_depth npp_mol_m2_s d_z
+                end
+                month_temp(month_temp==0) = nan;
+                % save month into new array
+                col_intg_mol_C_m2_s(:,:,tt) = month_temp;
+
+                clear month_temp dd
+            end
+            s_per_day = 60*60*24;
+            gC_per_mol = 12.0107;
+            mg_per_g = 1e3;
+
+
+            CMIP.(variables{v}).(mod_name).units_old = CMIP.(variables{v}).(mod_name).units;
+
+            % save column integral back into CMIP structure
+            CMIP.(variables{v}).(mod_name).(variables{v}) = col_intg_mol_C_m2_s.*s_per_day.*gC_per_mol.*mg_per_g;
+            CMIP.(variables{v}).(mod_name).units = 'mg C m-2 d-1';
+
         end
         clear var_name ver lat_index yr_per_mon mol_per_mmol g_per_mol scale_factor_Tg_C_mon scale_factor_molC_m2_yr switch_sign
-        clear Tg_per_g s_per_year
+        clear Tg_per_g s_per_year tt s_per_day gC_per_mol mg_per_g col_intg_mol_C_m2_s
         if sum(strcmp(cmip_names.(variables{v}), mod_name))==0
             cmip_names.(variables{v}){end+1} = mod_name;
         end
@@ -1233,7 +1292,7 @@ for v=[1 2 4:9 11 12 14, 15] %[1:12 14] % skip thetao as it is only used for the
                         CMIP.thetao.(cmip_names.(variables{v}){m}).SAF(lon) = max(temp_lat_vec);
                     end
                 end
-                clear lon
+                clear lon temp_lat_vec
                 % remove nans from SAF
                 old_SAF = CMIP.thetao.(cmip_names.(variables{v}){m}).SAF;
                 old_SAF_w_lon = [CMIP.thetao.lon old_SAF];
@@ -1480,14 +1539,14 @@ for v=[1 2 4:9 11 12 14, 15] %[1:12 14] % skip thetao as it is only used for the
     end
     clear lat_index
 end
-clear v dd m month
+clear v dd m month 
 
 
 %% plot vars w the SAF mask
 
 Plot_out_dir = [home_dir 'Work/Projects/2019_05 SO_C_flux_model_comparison/Plots/'];
 % v = 5;
-for v=[14]%:length(variables) % 4%[2 4 7 8]% 1 2 4 5 6 7 8 9]%9%13:length(variables)
+for v=[2]%:length(variables) % 4%[2 4 7 8]% 1 2 4 5 6 7 8 9]%9%13:length(variables)
     if ~isfield(cmip_names, variables{v})
         continue
     end
@@ -1496,9 +1555,9 @@ for v=[14]%:length(variables) % 4%[2 4 7 8]% 1 2 4 5 6 7 8 9]%9%13:length(variab
     CMIP.lon_grid = lon_grid';
     CMIP.lat_grid = lat_grid';
     clear lon_grid lat_grid
-    for m =40:length(cmip_names.(variables{v}))
+    for m =38:length(cmip_names.(variables{v}))
 
-        if isfield(CMIP.(variables{v}).(cmip_names.(variables{v}){m}), 'depth')
+        if isfield(CMIP.(variables{v}).(cmip_names.(variables{v}){m}), 'depth') && ~strcmp(variables{v}, 'intpp')
             num_depths = length(CMIP.(variables{v}).(cmip_names.(variables{v}){m}).depth);
         else
             num_depths =1;
@@ -1602,7 +1661,7 @@ for v=[14]%:length(variables) % 4%[2 4 7 8]% 1 2 4 5 6 7 8 9]%9%13:length(variab
     end
 end
 
-clear v paper_h paper_w dd depth_index num_depths m ss
+clear v paper_h paper_w dd depth_index num_depths m ss c1 SO_var_all_t plot_count date_vec month_index season
 
 %% saving out variable surface fields to plot in python
 for v = [1 2 4 5 6 7 8 9 14]
@@ -7128,7 +7187,7 @@ fits = {'amp'; 'phase'; 'offset'};
 
 harm_mod_vars = fieldnames(harm_mod);
 
-for hv = [1 2 3 4 5 7 8] %1:length(harm_mod_vars)
+for hv = 4%[1 2 3 4 5 7 8] %1:length(harm_mod_vars)
     if strcmp(harm_mod_vars{hv}, 'DIC_Alk')
         continue
     end
