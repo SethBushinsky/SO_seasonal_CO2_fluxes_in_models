@@ -51,7 +51,8 @@ color_model = {'CanESM2' 1 [] 'o'; ...
     'CanESM5_1_6' 46 [] 'v'; ...
     'CanESM5_CanOE_6' 47 [] '>' ; ...
     'EC_Earth3_CC_6' 48 [] '<' ;
-    'AWI_ESM_1_REcoM_6' 49 [] 'o'} ;
+    'AWI_ESM_1_REcoM_6' 49 [] 'o';...
+    'GISS_E2_1_G_6' 50 [] 's'} ;
 
 cmap = distinguishable_colors(length(color_model));
 
@@ -117,7 +118,8 @@ var_type = {'Omon'; 'Omon'; 'Amon';'Omon';'Omon';'Omon'; 'Omon'; 'Omon'; 'Omon';
 var_lims = [350 450 ;  0 7e2; 980 1020 ; 0 300 ; -1 25; 29 35.5; 1950 2300;2200 2500;-5e-2 5e-2;-3e7 3e7;1950 2300; 2200 2500; -1 25; 0 300];
 %%
 
-plot_ver = '_v17'; 
+plot_ver = '_v18'; 
+% v18 Working to add interannual variability to analysis, adding NASA GISS CMIP6 model
 % v17 adding ECCO, GLODAP to v2 2023, WOA to WOA23, 2005-2014. Changed code
 % name to "CMIP_model_eval_analysis.m"
 % v16 trying MLD calculations offline using python, then loading here as "MLD". Also returning S boundary to 62S to avoid coast
@@ -741,6 +743,10 @@ end
 CMIP.fgco2.AWI_ESM_1_REcoM_6.fgco2 = CMIP.fgco2.AWI_ESM_1_REcoM_6.fgco2.*-1;
 CMIP.fgco2.AWI_ESM_1_REcoM_6.fgco2_mol_C_m2_yr = CMIP.fgco2.AWI_ESM_1_REcoM_6.fgco2_mol_C_m2_yr.*-1;
 
+% GISS E2-1-g (6) intpp sign is flipped
+if isfield(cmip_names, 'intpp')
+    CMIP.intpp.GISS_E2_1_G_6.intpp = CMIP.intpp.GISS_E2_1_G_6.intpp.*-1;
+end
 clear m v mm mod_name mod_name_orig
 
 %% check dates in models
@@ -1006,7 +1012,7 @@ for w = [1 3]% 1:2
 end
 clear w v
 clear SOSE_dir sose_file SOSE_its sose_vars year_range var_load time_offset
-%% Load ECCO-Darwin
+% Load ECCO-Darwin
 
 ECCO_its = {'v4r5'};
 var_load = {'CO2flux'; 'pCO2'; 'ALK_surf'; 'DIC_surf'; 'Theta'; 'Salt'; 'Theta'; 'primProd' ;  'mld'}; %'BLGMLD' }; % theta is in here twice, once for "TOS", once for "THETAO"
@@ -1229,7 +1235,7 @@ end
 
 clear m v q
 
-%% Calculation of monthly means and std using a mask based on potential temperature
+% Calculation of monthly means and std using a mask based on potential temperature
 
 % note that this expects a 2D variable will be run first to create a mask
 % south of the SAF if one does not already exist
@@ -1256,7 +1262,11 @@ for v=[1 2 4:9 11 12 14, 15] %[1:12 14] % skip thetao as it is only used for the
                 var4D = 1;
             else
                 CMIP.(variables{v}).out_seasonal = NaN(length(cmip_names.(variables{v})),12,2); % 3D out_seasonal (num models, 12 months, mean and std)
+                CMIP.(variables{v}).out_seasonal_annual = NaN(length(cmip_names.(variables{v})),10, 12); % 3D out_seasonal_annual (num models, year, 12 months mean)
+                CMIP.(variables{v}).out_seasonal_annual_mol_C_m2_yr = NaN(length(cmip_names.(variables{v})),10, 12); % 3D out_seasonal_annual (num models, year, 12 months mean)
+
                 if strcmp(variables{v}, 'fgco2')
+                    CMIP.(variables{v}).out_seasonal_mol_C_m2_yr = NaN(length(cmip_names.(variables{v})),12,2); % 3D out_seasonal (num models, 12 months, mean and std)
                     CMIP.(variables{v}).out_seasonal_35S = NaN(length(cmip_names.(variables{v})),12,2); % 3D out_seasonal (num models, 12 months, mean and std)
                     CMIP.(variables{v}).out_monthly = NaN(length(cmip_names.(variables{v})),12*91,1); % 3D out_seasonal (num models, 12 months * 91 years, sum)
                     CMIP.(variables{v}).out_monthly_35S = NaN(length(cmip_names.(variables{v})),12*91,1); % 3D out_seasonal (num models, 12 months * 91 years, sum)
@@ -1347,6 +1357,18 @@ for v=[1 2 4:9 11 12 14, 15] %[1:12 14] % skip thetao as it is only used for the
 
                         % sum all grid cells to convert to total flux in the area
                         CMIP.(variables{v}).out_seasonal(m,mon,1) = nansum(reshape(SO_fgco2_mean,[],1)); % sum, not mean
+    
+                        % also calculate a version where I save
+                        % annual cycles, not just a mean annual cycle
+                        % mask. Loop through time dimension to do this:
+                        for year = 1:size(SO_var,3)
+                            SO_var_year = SO_var(:,:,year); % select a single year
+                            SO_var_year(~SAF_S_mask)=nan; % mask outside of region
+
+                            CMIP.(variables{v}).out_seasonal_annual(m,year,mon) = nansum(reshape(SO_var_year,[],1)); % sum, not weighted average
+                            clear SO_var_year
+                        end
+
 
                         % do the same for a 35S integral
                          % mask out nan values north of the SAF in each
@@ -1376,6 +1398,19 @@ for v=[1 2 4:9 11 12 14, 15] %[1:12 14] % skip thetao as it is only used for the
                         CMIP.(variables{v}).out_seasonal_mol_C_m2_yr(m,mon,1) = nansum(reshape(SO_var_mean.*grid_weights,[],1));
                         CMIP.(variables{v}).out_seasonal_mol_C_m2_yr(m,mon,2) = nanstd(reshape(SO_var_mean,[],1));
 
+
+                        % also calculate a version where I save
+                        % annual cycles, not just a mean annual cycle
+                        % mask. Loop through time dimension to do this:
+                        for year = 1:size(SO_var,3)
+                            SO_var_year = SO_var_mol_C_m2_yr(:,:,year); % select a single year
+                            SO_var_year(~SAF_S_mask)=nan; % mask outside of region
+
+                            CMIP.(variables{v}).out_seasonal_annual_mol_C_m2_yr(m,year,mon) = nansum(reshape(SO_var_year.*grid_weights,[],1)); % calculate a weighted average 
+                            clear SO_var_year
+                        end
+
+
                         clear SO_var_mol_C_m2_yr
                     else
                         if var4D ==0
@@ -1393,6 +1428,18 @@ for v=[1 2 4:9 11 12 14, 15] %[1:12 14] % skip thetao as it is only used for the
 
                             CMIP.(variables{v}).out_seasonal(m,mon,1) = nansum(reshape(SO_var_mean.*grid_weights,[],1));  % nanmean(reshape(SO_var_mean,[],1));
                             CMIP.(variables{v}).out_seasonal(m,mon,2) = nanstd(reshape(SO_var_mean,[],1));
+
+                            % also calculate a version where I save
+                            % annual cycles, not just a mean annual cycle
+                            % mask. Loop through time dimension to do this:
+                            for year = 1:size(SO_var,3)
+                                SO_var_year = SO_var(:,:,year); % select a single year
+                                SO_var_year(~SAF_S_mask)=nan; % mask outside of region
+   
+                                CMIP.(variables{v}).out_seasonal_annual(m,year,mon) = nansum(reshape(SO_var_year.*grid_weights,[],1)); % calculate a weighted average 
+                                clear SO_var_year
+                            end
+
                         elseif var4D==1
                             SO_var_mean = nanmean(SO_var,3);
                             % mask out nan values north of the SAF in each
@@ -1412,7 +1459,7 @@ for v=[1 2 4:9 11 12 14, 15] %[1:12 14] % skip thetao as it is only used for the
                             CMIP.(variables{v}).out_seasonal(m,dd,mon,2) = nanstd(reshape(SO_var_mean,[],1));
                         end
                     end
-                    clear time_index SO_var mod_vec SO_var_mean grid_weights temp_area
+                    clear time_index SO_var mod_vec SO_var_mean grid_weights temp_area year
                 end % end months loop
 
           
@@ -1449,7 +1496,7 @@ for v=[1 2 4:9 11 12 14, 15] %[1:12 14] % skip thetao as it is only used for the
                end
 
             end
-            clear SAF_S_mask SO_fgco2_mon
+            clear SAF_S_mask SO_fgco2_mon SO_fgco2_mon_copy
         end
         clear m mon num_depths var4D
     else
@@ -1546,7 +1593,7 @@ clear v dd m month
 
 Plot_out_dir = [home_dir 'Work/Projects/2019_05 SO_C_flux_model_comparison/Plots/'];
 % v = 5;
-for v=[2]%:length(variables) % 4%[2 4 7 8]% 1 2 4 5 6 7 8 9]%9%13:length(variables)
+for v=8%[1 2 7 8 9 13 14]%2:length(variables) % 4%[2 4 7 8]% 1 2 4 5 6 7 8 9]%9%13:length(variables)
     if ~isfield(cmip_names, variables{v})
         continue
     end
@@ -1555,10 +1602,11 @@ for v=[2]%:length(variables) % 4%[2 4 7 8]% 1 2 4 5 6 7 8 9]%9%13:length(variabl
     CMIP.lon_grid = lon_grid';
     CMIP.lat_grid = lat_grid';
     clear lon_grid lat_grid
-    for m =38:length(cmip_names.(variables{v}))
+    for m =27:28%:length(cmip_names.(variables{v}))
 
         if isfield(CMIP.(variables{v}).(cmip_names.(variables{v}){m}), 'depth') && ~strcmp(variables{v}, 'intpp')
-            num_depths = length(CMIP.(variables{v}).(cmip_names.(variables{v}){m}).depth);
+            % num_depths = length(CMIP.(variables{v}).(cmip_names.(variables{v}){m}).depth);
+            num_depths=20;
         else
             num_depths =1;
         end
@@ -1819,6 +1867,7 @@ NOAA_SST.SAF_mask_temp = [];
 
 %
 obs.tos.out_seasonal = NaN(12,2);
+% obs.tos.out_seasonal_annual = NaN(10,12);
 
 % mod_vec = datevec(NOAA_SST.Matlab_time);
 %
@@ -3185,11 +3234,19 @@ for v = 1:length(variables)
     obs.(variables{v}).ratio = NaN(size(CMIP.(variables{v}).out_seasonal,1),1);
     obs.(variables{v}).norm_error = NaN(size(CMIP.(variables{v}).out_seasonal,1),1);
 
+    % individual annual calculations:
+    obs.(variables{v}).annual.correlation = NaN(size(CMIP.(variables{v}).out_seasonal,1),10);
+    obs.(variables{v}).annual.ratio = NaN(size(CMIP.(variables{v}).out_seasonal,1),10);
+    obs.(variables{v}).annual.norm_error = NaN(size(CMIP.(variables{v}).out_seasonal,1),10);
+
     if v==9
         obs.fgco2_mol_C_m2_yr.correlation = NaN(size(CMIP.(variables{v}).out_seasonal,1),1);
         obs.fgco2_mol_C_m2_yr.ratio = NaN(size(CMIP.(variables{v}).out_seasonal,1),1);
         obs.fgco2_mol_C_m2_yr.norm_error = NaN(size(CMIP.(variables{v}).out_seasonal,1),1);
 
+        obs.fgco2_mol_C_m2_yr.annual.correlation = NaN(size(CMIP.(variables{v}).out_seasonal,1),10);
+        obs.fgco2_mol_C_m2_yr.annual.ratio = NaN(size(CMIP.(variables{v}).out_seasonal,1),10);
+        obs.fgco2_mol_C_m2_yr.annual.norm_error = NaN(size(CMIP.(variables{v}).out_seasonal,1),10);
     end
 
     for m = 1:length(cmip_names.(variables{v}))
@@ -3199,6 +3256,13 @@ for v = 1:length(variables)
             [obs.(variables{v}).correlation(m),obs.(variables{v}).ratio(m),obs.(variables{v}).norm_error(m)]=...
                 taylor_eval(obs.(variables{v}).(product_names{p}).(p_year).(runs{q}).out_seasonal(:,1), ...
                 CMIP.(variables{v}).out_seasonal(m,:,1));
+
+            
+            % calculate taylor comparison for each year:
+            for year = 1:size(CMIP.(variables{v}).out_seasonal_annual,2)
+                [obs.(variables{v}).annual.correlation(m,year),obs.(variables{v}).annual.ratio(m,year),obs.(variables{v}).annual.norm_error(m,year)]=...
+                    taylor_eval(obs.(variables{v}).(product_names{p}).(p_year).(runs{q}).out_seasonal(:,1), CMIP.(variables{v}).out_seasonal_annual(m,year,:));
+            end
 
             % record which products are used:
             obs.(variables{v}).run_used = [(product_names{p}) '_' (p_year) '_' (runs{q})];
@@ -3210,6 +3274,12 @@ for v = 1:length(variables)
                     taylor_eval(obs.fgco2_mol_C_m2_yr.(product_names{p}).(p_year).(runs{q}).out_seasonal(:,1), ...
                     CMIP.(variables{v}).out_seasonal_mol_C_m2_yr(m,:,1));
 
+                % calculate taylor comparison for each year:
+                for year = 1:size(CMIP.(variables{v}).out_seasonal_annual,2)
+                    [obs.fgco2_mol_C_m2_yr.annual.correlation(m,year),obs.fgco2_mol_C_m2_yr.annual.ratio(m,year),obs.fgco2_mol_C_m2_yr.annual.norm_error(m,year)] = ...
+                       taylor_eval(obs.fgco2_mol_C_m2_yr.(product_names{p}).(p_year).(runs{q}).out_seasonal(:,1), CMIP.(variables{v}).out_seasonal_annual_mol_C_m2_yr(m,year,:));
+                end
+
                 % record which products are used:
                 obs.fgco2_mol_C_m2_yr.run_used = [(product_names{p}) '_' (p_year) '_' (runs{q})];
             end
@@ -3220,14 +3290,18 @@ for v = 1:length(variables)
 
         else
             [obs.(variables{v}).correlation(m),obs.(variables{v}).ratio(m),obs.(variables{v}).norm_error(m)]=taylor_eval(obs.(variables{v}).out_seasonal(:,1,1), CMIP.(variables{v}).out_seasonal(m,:,1));
-
+    
+            % calculate taylor comparison for each year:
+            for year = 1:size(CMIP.(variables{v}).out_seasonal_annual,2)
+                [obs.(variables{v}).annual.correlation(m,year),obs.(variables{v}).annual.ratio(m,year),obs.(variables{v}).annual.norm_error(m,year)]=...
+                    taylor_eval(obs.(variables{v}).out_seasonal(:,1,1), CMIP.(variables{v}).out_seasonal_annual(m,year,:));
+            end
         end
     end
 end
 clear v m
 
-
-
+    
 %% Plotting taylor diagrams
 rms_cutoff_for_good = .75;
 out_of_phase_corr_cutoff = 0;

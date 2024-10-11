@@ -27,15 +27,15 @@ SO_DIR="${MODEL_DIR}CMIP6/so/"
 dir_type[0]='historical_download'
 dir_type[1]='ssp585_download'
 
-fgco2_flag=true
-dic_mon_flag=false
+fgco2_flag=false
+dic_mon_flag=true
 dic_flag=false
-talk_mon_flag=false
+talk_mon_flag=true
 talk_flag=false
 sos_flag=false
 tos_flag=false
 spco2_flag=false
-intpp_flag=false
+intpp_flag=true
 psl_flag=false
 ml_flag=false
 wmo_flag=false
@@ -57,8 +57,17 @@ then
 	for i in "$f"'/'fgco2_Omon_*.nc; do
             echo "Starting $i"
 
-	    cdo selyear,2010/2019 "$i" temp.nc  # select specific years
-	    cdo -setcalendar,'proleptic_gregorian' temp.nc temp2.nc # changes date format to matlab date format
+	    cdo selyear,2010/2100 "$i" temp.nc  # select specific years
+
+	    # cdo selyear,2010/2019 "$i" temp.nc  # select specific years
+	    
+		if [[ "$i" == *"GISS"* ]]; then
+		# GISS has land set to "0".  This must be changed prior to regridding
+		cdo setctomiss,0 temp.nc temp2.nc
+		mv temp2.nc temp.nc
+		fi
+		
+		cdo -setcalendar,'proleptic_gregorian' temp.nc temp2.nc # changes date format to matlab date format
 	    mv temp2.nc temp.nc # removes new temporary file
 
 	    cdo -setreftime,'0000-01-00','00:00:00' temp.nc temp2.nc # changes date format to matlab date format
@@ -70,21 +79,27 @@ then
 	    rm temp.nc
             echo "Finished $i"
 
-		# do a second time for 2100 data
-		   echo "Starting $i"
+		# # do a second time for 2100 data
+		#    echo "Starting $i"
 
-	    cdo selyear,2010/2100 "$i" temp.nc  # select specific years
-	    cdo -setcalendar,'proleptic_gregorian' temp.nc temp2.nc # changes date format to matlab date format
-	    mv temp2.nc temp.nc # removes new temporary file
+	    # cdo selyear,2010/2100 "$i" temp.nc  # select specific years
+		
+		# if [[ "$i" == *"GISS"*  ||   "$i" == *"MRI"* ]]; then
+		# # CNRM, GISS, and MRI all have land set to "0".  This must be changed prior to regridding
+		# cdo setctomiss,0 temp.nc temp2.nc
+		# mv temp2.nc temp.nc
+		# fi
+		# cdo -setcalendar,'proleptic_gregorian' temp.nc temp2.nc # changes date format to matlab date format
+	    # mv temp2.nc temp.nc # removes new temporary file
 
-	    cdo -setreftime,'0000-01-00','00:00:00' temp.nc temp2.nc # changes date format to matlab date format
-	    mv temp2.nc temp.nc # removes new temporary file
+	    # cdo -setreftime,'0000-01-00','00:00:00' temp.nc temp2.nc # changes date format to matlab date format
+	    # mv temp2.nc temp.nc # removes new temporary file
 	    
-	    cdo -L remapbil,r360x180 -selname,fgco2 temp.nc ../fgco2_2100/regrid/"$i"
+	    # cdo -L remapbil,r360x180 -selname,fgco2 temp.nc ../fgco2_2100/regrid/"$i"
 
 	    
-	    rm temp.nc
-            echo "Finished $i"
+	    # rm temp.nc
+        #     echo "Finished $i"
 
 	done
     done
@@ -146,6 +161,12 @@ EOF
 		echo "new levels = $new_levels"
 		mv temp2.nc temp.nc
 	    fi
+
+		if [[ "$i" == *"GISS"* ]]; then
+		# GISS has land set to "0".  This must be changed prior to regridding
+		cdo setctomiss,0 temp.nc temp2.nc
+		mv temp2.nc temp.nc
+		fi
 
 	    cdo intlevel,10 temp.nc temp2.nc
 	    # cdo sellevidx,1 temp.nc temp2.nc
@@ -310,6 +331,12 @@ then
 
 	    cdo selyear,2010/2019 "$i" temp.nc
 
+		if [[ "$i" == *"GISS"* ]]; then
+		# GISS has land set to "0".  This must be changed prior to regridding
+		cdo setctomiss,0 temp.nc temp2.nc
+		mv temp2.nc temp.nc
+		fi
+
 	    cdo -setcalendar,'proleptic_gregorian' temp.nc temp2.nc # changes date format to matlab date format
 	    mv temp2.nc temp.nc # removes new temporary file
 
@@ -335,6 +362,12 @@ then
             echo "Starting $i"
 
 	    cdo selyear,2010/2019 "$i" temp.nc
+
+		if [[ "$i" == *"GISS"* ]]; then
+		# GISS has land set to "0".  This must be changed prior to regridding
+		cdo setctomiss,0 temp.nc temp2.nc
+		mv temp2.nc temp.nc
+		fi
 
 	    cdo -setcalendar,'proleptic_gregorian' temp.nc temp2.nc # changes date format to matlab date format
 	    mv temp2.nc temp.nc # removes new temporary file
@@ -405,6 +438,12 @@ EOF
 		mv temp2.nc temp.nc
 	    fi
 	    
+		if [[ "$i" == *"GISS"* ]]; then
+		# GISS has land set to "0".  This must be changed prior to regridding
+		cdo setctomiss,0 temp.nc temp2.nc
+		mv temp2.nc temp.nc
+		fi
+
 	    cdo intlevel,10 temp.nc temp2.nc
 	    #cdo sellevidx,1 temp.nc temp2.nc
 	    mv temp2.nc temp.nc # removes new temporary file

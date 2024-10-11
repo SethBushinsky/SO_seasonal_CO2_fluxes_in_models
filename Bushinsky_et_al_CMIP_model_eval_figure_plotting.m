@@ -10,13 +10,13 @@ fig_dir = [home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/figures/'];
 % seasonal_file = 'seasonal_cycles_w_model_type_matched_2023_11_07.mat';
 % seasonal_file = 'seasonal_cycles_w_model_type_matched_2024_02_28.mat';
 % seasonal_file = 'seasonal_cycles_w_model_type_matched_2024_04_07.mat';
-seasonal_file = 'seasonal_cycles_w_model_type_matched_2024_09_11.mat';
+seasonal_file = 'seasonal_cycles_w_model_type_matched_2024_10_10.mat';
 load([fig_dir '../data/' seasonal_file])
 seas_comp_vars = fieldnames(obs);
 
-toy_model_file = 'toy_model_output_2024_09_11.mat';
+toy_model_file = 'toy_model_output_2024_10_10.mat';
 load([fig_dir '../data/' toy_model_file])
-sensitivity_results = 'sensitivity_test_results2024_09_11.mat';
+sensitivity_results = 'sensitivity_test_results2024_10_10.mat';
 load([fig_dir '../data/' sensitivity_results])
 
 c_input_file = 'Carbon_mapped_product_analysis_output_2024_04_15.mat';
@@ -36,6 +36,8 @@ var_plot_names = {'tos'  'SST' '\circC' ;
     'sos' 'SSS' ''};
 
 month_names = {'January' 'February' 'March' 'April' 'May' 'June' 'July' 'August' 'September' 'October' 'November' 'December'};
+% set GISS (6) to a different color for clarity:
+cmap(50,:) = cmap(14,:);
 %% Figure 1 option 3 - Annual / Summer / winter / seasonal integral
 years = C_input.years;
 product_names = C_input.product_names;
@@ -342,11 +344,23 @@ for sv = [8 6 4 1]
     rms_cutoff_for_good = .75;
     out_of_phase_corr_cutoff = 0;
 
+
+    correlation_std = std(obs.(seas_comp_vars{sv}).annual.correlation,1,2, 'omitnan');
+    ratio_std = std(obs.(seas_comp_vars{sv}).annual.ratio,1,2, 'omitnan');
+
     if ~isempty(strfind(seas_comp_vars{sv}, 'fgco2'))
-        DDD = taylor_dist_smb_for_manuscript(obs.(seas_comp_vars{sv}).correlation, obs.(seas_comp_vars{sv}).ratio, [], cmip_names.(variables{v}), color_model, cmap, legend_on, ...
+        % taylor_dist_smb_for_manuscript(obs.(seas_comp_vars{sv}).correlation, obs.(seas_comp_vars{sv}).ratio, [], cmip_names.(variables{v}), color_model, cmap, legend_on, ...
+        %     rms_cutoff_for_good, out_of_phase_corr_cutoff, max_rel_amp);
+
+
+        taylor_dist_smb_for_manuscript_uncertainty(obs.(seas_comp_vars{sv}).correlation, correlation_std, obs.(seas_comp_vars{sv}).ratio, ratio_std, [], cmip_names.(variables{v}), color_model, cmap, legend_on, ...
             rms_cutoff_for_good, out_of_phase_corr_cutoff, max_rel_amp);
     else
-        DDD = taylor_dist_smb_for_manuscript(obs.(seas_comp_vars{sv}).correlation, obs.(seas_comp_vars{sv}).ratio, [], cmip_names.(variables{v}), color_model, cmap, legend_on, [], [], max_rel_amp);
+       
+        % taylor_dist_smb_for_manuscript(obs.(seas_comp_vars{sv}).correlation, obs.(seas_comp_vars{sv}).ratio, [], cmip_names.(variables{v}), color_model, cmap, legend_on, [], [], max_rel_amp);
+         taylor_dist_smb_for_manuscript_uncertainty(obs.(seas_comp_vars{sv}).correlation,  correlation_std, ...
+             obs.(seas_comp_vars{sv}).ratio,  ratio_std, ...
+             [], cmip_names.(variables{v}), color_model, cmap, legend_on, [], [], max_rel_amp);
     end
     %     title('Fit to observations')
     set(gca, 'YColor', 'none')
@@ -383,11 +397,22 @@ for sv = [8 6 4 1]
     rms_cutoff_for_good = .75;
     out_of_phase_corr_cutoff = 0;
 
+    correlation_std = std(obs.(seas_comp_vars{sv}).annual.correlation,1,2, 'omitnan');
+    ratio_std = std(obs.(seas_comp_vars{sv}).annual.ratio,1,2, 'omitnan');
     if ~isempty(strfind(seas_comp_vars{sv}, 'fgco2'))
-        DDD = taylor_dist_smb_for_manuscript(obs.(seas_comp_vars{sv}).correlation, obs.(seas_comp_vars{sv}).ratio, [], cmip_names.(variables{v}), color_model, cmap, legend_on, ...
+        % taylor_dist_smb_for_manuscript(obs.(seas_comp_vars{sv}).correlation, obs.(seas_comp_vars{sv}).ratio, [], cmip_names.(variables{v}), color_model, cmap, legend_on, ...
+        %     rms_cutoff_for_good, out_of_phase_corr_cutoff, 2);
+
+          taylor_dist_smb_for_manuscript_uncertainty(obs.(seas_comp_vars{sv}).correlation, correlation_std, ...
+              obs.(seas_comp_vars{sv}).ratio, ratio_std, ...
+              [], cmip_names.(variables{v}), color_model, cmap, legend_on, ...
             rms_cutoff_for_good, out_of_phase_corr_cutoff, 2);
+
     else
-        DDD = taylor_dist_smb_for_manuscript(obs.(seas_comp_vars{sv}).correlation, obs.(seas_comp_vars{sv}).ratio, [], cmip_names.(variables{v}), color_model, cmap, legend_on, [], [], 2);
+        % taylor_dist_smb_for_manuscript(obs.(seas_comp_vars{sv}).correlation, obs.(seas_comp_vars{sv}).ratio, [], cmip_names.(variables{v}), color_model, cmap, legend_on, [], [], 2);
+        taylor_dist_smb_for_manuscript_uncertainty(obs.(seas_comp_vars{sv}).correlation, correlation_std, ...
+            obs.(seas_comp_vars{sv}).ratio, ratio_std, ...
+            [], cmip_names.(variables{v}), color_model, cmap, legend_on, [], [], 2);
     end
     %     title('Fit to observations')
     set(gca, 'YColor', 'none')
@@ -426,7 +451,7 @@ legend_names = {};
 % multiple columns if need be
 clf
 set(gcf, 'units', 'inches')
-paper_w = 10.2; paper_h =2;
+paper_w = 10.2; paper_h =2.1;
 set(gcf,'PaperSize',[paper_w paper_h],'PaperPosition', [0 0 paper_w paper_h]);
 
 subplot(1,1,1); hold on
@@ -519,7 +544,7 @@ legend_names = {};
 % multiple columns if need be
 clf
 set(gcf, 'units', 'inches')
-paper_w = 2.4; paper_h =9;
+paper_w = 2.4; paper_h =9.5;
 set(gcf,'PaperSize',[paper_w paper_h],'PaperPosition', [0 0 paper_w paper_h]);
 
 subplot(1,1,1); hold on
@@ -538,7 +563,7 @@ for m =  1:length(cmip_names.(variables{v}))
 end
 e1 = plot(1:2, obs.dissic.out_seasonal(1:2,1), 'linewidth', 2, 'color', 'k', 'linestyle', 'none', 'marker', 'x', 'markersize', 15);
 legend_names{end+1,1} = 'Observations';
-legend(legend_names, 'fontsize', 10, 'numcolumns', 1,'location', 'east')
+legend(legend_names, 'fontsize', 10, 'numcolumns', 1,'location', 'north')
 set(gca, 'Xcolor', 'none', 'Ycolor', 'none', 'xlim', [-2 -1])
 % print(gcf, '-dpng', [fig_dir '/' 'Model_Legend.png'])
 print(gcf, '-dpdf', '-r300', [fig_dir '/' 'Figure 2_Model_Legend_vertical_no_line' plot_ver '.pdf'])
@@ -690,11 +715,19 @@ for sv = [2 5 10 11]
     rms_cutoff_for_good = .75;
     out_of_phase_corr_cutoff = 0;
 
+    correlation_std = std(obs.(seas_comp_vars{sv}).annual.correlation,1,2, 'omitnan');
+    ratio_std = std(obs.(seas_comp_vars{sv}).annual.ratio,1,2, 'omitnan');
+
     if ~isempty(strfind(seas_comp_vars{sv}, 'fgco2'))
-        DDD = taylor_dist_smb_for_manuscript(obs.(seas_comp_vars{sv}).correlation, obs.(seas_comp_vars{sv}).ratio, [], cmip_names.(variables{v}), color_model, cmap, legend_on, ...
+        % DDD = taylor_dist_smb_for_manuscript(obs.(seas_comp_vars{sv}).correlation, obs.(seas_comp_vars{sv}).ratio, [], cmip_names.(variables{v}), color_model, cmap, legend_on, ...
+        %     rms_cutoff_for_good, out_of_phase_corr_cutoff, max_rel_amp);
+       taylor_dist_smb_for_manuscript_uncertainty(obs.(seas_comp_vars{sv}).correlation, correlation_std, obs.(seas_comp_vars{sv}).ratio, ratio_std, [], cmip_names.(variables{v}), color_model, cmap, legend_on, ...
             rms_cutoff_for_good, out_of_phase_corr_cutoff, max_rel_amp);
     else
-        DDD = taylor_dist_smb_for_manuscript(obs.(seas_comp_vars{sv}).correlation, obs.(seas_comp_vars{sv}).ratio, [], cmip_names.(variables{v}), color_model, cmap, legend_on, [], [], max_rel_amp);
+        % DDD = taylor_dist_smb_for_manuscript(obs.(seas_comp_vars{sv}).correlation, obs.(seas_comp_vars{sv}).ratio, [], cmip_names.(variables{v}), color_model, cmap, legend_on, [], [], max_rel_amp);
+        taylor_dist_smb_for_manuscript_uncertainty(obs.(seas_comp_vars{sv}).correlation,  correlation_std, ...
+            obs.(seas_comp_vars{sv}).ratio,  ratio_std, ...
+            [], cmip_names.(variables{v}), color_model, cmap, legend_on, [], [], max_rel_amp);
     end
     %     title('Fit to observations')
     set(gca, 'YColor', 'none')
@@ -719,7 +752,7 @@ for sv = [2 5 10 11]
     set(gca, 'titlehorizontalalignment', 'left')
 
     if plot_index==11
-        text(1.85,1.5+.3,'Correlation','fontsize',14)
+        text(5,4.5,'Correlation','fontsize',14)
 
         xlabel('Relative amplitude')
     end
@@ -732,13 +765,28 @@ for sv = [2 5 10 11]
     rms_cutoff_for_good = .75;
     out_of_phase_corr_cutoff = 0;
 
+    correlation_std = std(obs.(seas_comp_vars{sv}).annual.correlation,1,2, 'omitnan');
+    ratio_std = std(obs.(seas_comp_vars{sv}).annual.ratio,1,2, 'omitnan');
+
     if ~isempty(strfind(seas_comp_vars{sv}, 'fgco2'))
-        DDD = taylor_dist_smb_for_manuscript(obs.(seas_comp_vars{sv}).correlation, obs.(seas_comp_vars{sv}).ratio, [], cmip_names.(variables{v}), color_model, cmap, legend_on, ...
+        % DDD = taylor_dist_smb_for_manuscript(obs.(seas_comp_vars{sv}).correlation, obs.(seas_comp_vars{sv}).ratio, [], cmip_names.(variables{v}), color_model, cmap, legend_on, ...
+        %     rms_cutoff_for_good, out_of_phase_corr_cutoff, 2);
+
+        taylor_dist_smb_for_manuscript_uncertainty(obs.(seas_comp_vars{sv}).correlation, correlation_std, ...
+            obs.(seas_comp_vars{sv}).ratio, ratio_std, ...
+            [], cmip_names.(variables{v}), color_model, cmap, legend_on, ...
             rms_cutoff_for_good, out_of_phase_corr_cutoff, 2);
+
     elseif ~isempty(strfind(seas_comp_vars{sv}, 'talk'))
-        DDD = taylor_dist_smb_for_manuscript(obs.(seas_comp_vars{sv}).correlation, obs.(seas_comp_vars{sv}).ratio, [], cmip_names.(variables{v}), color_model, cmap, legend_on, [], [], 1.5);
+        % DDD = taylor_dist_smb_for_manuscript(obs.(seas_comp_vars{sv}).correlation, obs.(seas_comp_vars{sv}).ratio, [], cmip_names.(variables{v}), color_model, cmap, legend_on, [], [], 1.5);
+        taylor_dist_smb_for_manuscript_uncertainty(obs.(seas_comp_vars{sv}).correlation, correlation_std, ...
+            obs.(seas_comp_vars{sv}).ratio, ratio_std, ...
+            [], cmip_names.(variables{v}), color_model, cmap, legend_on, [], [], 1.5);
     else
-        DDD = taylor_dist_smb_for_manuscript(obs.(seas_comp_vars{sv}).correlation, obs.(seas_comp_vars{sv}).ratio, [], cmip_names.(variables{v}), color_model, cmap, legend_on, [], [], 2);
+        % DDD = taylor_dist_smb_for_manuscript(obs.(seas_comp_vars{sv}).correlation, obs.(seas_comp_vars{sv}).ratio, [], cmip_names.(variables{v}), color_model, cmap, legend_on, [], [], 2);
+        taylor_dist_smb_for_manuscript_uncertainty(obs.(seas_comp_vars{sv}).correlation, correlation_std, ...
+            obs.(seas_comp_vars{sv}).ratio, ratio_std, ...
+            [], cmip_names.(variables{v}), color_model, cmap, legend_on, [], [], 2);
     end
     %     title('Fit to observations')
     set(gca, 'YColor', 'none')
@@ -1264,7 +1312,7 @@ for tt = 1:length(tos_amp_per_plot)
                 % number of days off a model is in phase - negative is earlier, positive is later
                 var_phase_shift_days = ( harm.(variables{v}).phase(1) - harm_mod.(variables{v}).phase(mod_var_index,1))*365.25./(2*pi);
                 var_amp_per_diff = (harm_mod.(variables{v}).amp(mod_var_index,1) - harm.(variables{v}).amp(1))./harm.(variables{v}).amp(1)*100;
-                model_marker = color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),4};
+                model_marker = color_model{strcmp(cmip_names.(variables{v}){mod_var_index}, color_model(:,1)),4};
                 if isempty(var_phase_shift_days)
                     continue
                 end
@@ -1574,7 +1622,7 @@ for ta_n = 1:length(talk_day_shift)
 
                             var_phase_shift_days = (harm.(variables{v}).phase(1) - harm_mod.(variables{v}).phase(mod_var_index,1))*365.25./(2*pi);
                             var_amp_per_diff = (harm_mod.(variables{v}).amp(mod_var_index,1) - harm.(variables{v}).amp(1))./harm.(variables{v}).amp(1)*100;
-                            model_marker = color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),4};
+                            model_marker = color_model{strcmp(cmip_names.(variables{v}){mod_var_index}, color_model(:,1)),4};
                             if isempty(var_phase_shift_days)
                                 continue
                             end
@@ -1625,7 +1673,7 @@ for ta_n = 1:length(talk_day_shift)
             end
             %         pause
             if ~isempty(legend_names)
-                l_h(subplot_index) = legend(sc_h, legend_names, 'location', 'southeast', 'fontsize', 10, 'numcolumns', 2);
+                l_h(subplot_index) = legend(sc_h, legend_names, 'location', 'north', 'fontsize', 10, 'numcolumns', 2);
             end
         end
 
@@ -2442,7 +2490,7 @@ end
 axis_font_size = 13;
 r_text_size = 12;
 
-plot_filename = 'Figure 5_Var_comparison SST and MLD relationships_all months';
+plot_filename = 'Figure S_Var_comparison SST and MLD relationships_all months';
 
 p_col = 4;
 p_row = 3;
@@ -3665,7 +3713,7 @@ print(gcf, '-dpdf', [fig_dir plot_filename plot_ver '.pdf'], '-r300')
 axis_font_size = 13;
 r_text_size = 12;
 
-plot_filename = 'Figure 6_Var_comparison DIC and MLD relationships_all months';
+plot_filename = 'Figure S_Var_comparison DIC and MLD relationships_all months';
 
 p_col = 4;
 p_row = 3;
@@ -4732,7 +4780,7 @@ leg_x_shift = .4;
 
 clf
 set(gcf, 'units', 'inches')
-paper_w = 10; paper_h =5;
+paper_w = 10; paper_h =5.9;
 set(gcf,'PaperSize',[paper_w paper_h],'PaperPosition', [0 0 paper_w paper_h]); clear paper_w paper_h
 
 
@@ -5425,7 +5473,7 @@ print(gcf, '-dpdf', [fig_dir plot_filename plot_ver '.pdf'], '-r300')
 r_text_size = 12;
 axis_font_size = 15;
 
-plot_filename = ['Figure 9_pCO2 relationships' plot_ver];
+plot_filename = ['Figure S_pCO2 relationships' plot_ver];
 
 p_col = 3;
 p_row = 1;
@@ -5668,7 +5716,7 @@ end
 % annotation('textbox', [0.05, 0.05, 1, 0], 'String', [script_name ': ' plot_filename], 'EdgeColor', 'none', 'interpreter', 'none');
 print(gcf, '-dpdf', [fig_dir plot_filename '.pdf'], '-r300')
 
-%% Figure 10 substitution summary plot
+%% Figure 7 substitution summary plot
 dataTable_out.orig_pco2_corr(dataTable_out.orig_pco2_corr==0) = nan;
 dataTable_out.orig_pco2_error(dataTable_out.orig_pco2_error==0) = nan;
 clear comparisons
@@ -5702,7 +5750,7 @@ ncols = 3;
 
 plot_groups = fieldnames(comparisons);
 for p=1:length(plot_groups)
-    plot_filename = ['Figure 10_Substitution_results ' plot_groups{p} plot_ver    ];
+    plot_filename = ['Figure 7_Substitution_results ' plot_groups{p} plot_ver    ];
     clf
     set(gcf, 'units', 'inches')
 %     paper_w = size(comparisons.(plot_groups{p}),2)*2.7; paper_h = size(comparisons.(plot_groups{p}),1)*2.5;
@@ -6036,7 +6084,7 @@ print(gcf, '-dpdf', [fig_dir plot_filename '.pdf'], '-r300')
 r_text_size = 12;
 axis_font_size = 13;
 
-plot_filename = ['Figure 12_Cumulative 2100 CO2 flux' plot_ver];
+plot_filename = ['Figure 8_Cumulative 2100 CO2 flux' plot_ver];
 
 p_col = 3;
 p_row = 1;
@@ -6287,8 +6335,8 @@ end
 % annotation('textbox', [0.05, 0.05, 1, 0], 'String', [script_name ': ' plot_filename], 'EdgeColor', 'none', 'interpreter', 'none');
 print(gcf, '-dpdf', [fig_dir plot_filename '.pdf'], '-r300')
 
-%% Figure 13
-plot_filename = ['Figure 13_Cumulative 2100 CO2 flux by adjustment color' plot_ver];
+%% Figure 9 - add model types for those that are missing it
+plot_filename = ['Figure 9_Cumulative 2100 CO2 flux by adjustment color' plot_ver];
 model_types = fieldnames(model_group_names);
 
 p_col = 3;
