@@ -829,7 +829,31 @@ for v = [1 2 5 6 7 8 9 14]
     end
     disp(' ')
 end
+%% save out variants used for each model to go into supplement
+ensembleTable = table;
 
+
+for m = 1:length(cmip_names.fgco2)
+    currentModel = cmip_names.fgco2{m};
+    model_name = table({currentModel}, 'VariableNames', {'Model_Name'});
+    
+    if isfield(CMIP.fgco2.(cmip_names.fgco2{m}), 'ensemble_member')
+        variant = CMIP.fgco2.(cmip_names.fgco2{m}).ensemble_member;
+    else
+        variant = '-';
+    end
+    model_variant = table({variant}, 'VariableNames', {'Variant'});
+ 
+    newRow = [model_name model_variant];
+
+    ensembleTable = [ensembleTable; newRow];
+
+end
+
+save([fig_dir '../spreadsheets/ensemble_members' plot_ver '.mat'], 'ensembleTable');
+writetable(ensembleTable, [fig_dir '../spreadsheets/ensemble_members' plot_ver '.csv']);
+
+clear ensembleTable newRow model_variant variant model_name m currentModel
 %% % save out Taylor diagram results into a table for supplement
 resultsTable = table;
 tests = {'correlation', 'ratio', 'norm_error'};
