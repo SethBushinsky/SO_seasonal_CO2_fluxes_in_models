@@ -10,7 +10,7 @@ fig_dir = [home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/figures/'];
 % seasonal_file = 'seasonal_cycles_w_model_type_matched_2023_11_07.mat';
 % seasonal_file = 'seasonal_cycles_w_model_type_matched_2024_02_28.mat';
 % seasonal_file = 'seasonal_cycles_w_model_type_matched_2024_04_07.mat';
-seasonal_file = 'seasonal_cycles_w_model_type_matched_2024_10_10.mat';
+seasonal_file = 'seasonal_cycles_w_model_type_matched_2024_10_28.mat';
 load([fig_dir '../data/' seasonal_file])
 seas_comp_vars = fieldnames(obs);
 
@@ -6103,7 +6103,7 @@ end
 % annotation('textbox', [0.05, 0.05, 1, 0], 'String', [script_name ': ' plot_filename], 'EdgeColor', 'none', 'interpreter', 'none');
 print(gcf, '-dpdf', [fig_dir plot_filename '.pdf'], '-r300')
 
-%% Figure 12 - pCO2 vs cumulative CO2 flux
+%% Figure 8 - cumulative CO2 flux
 
 r_text_size = 12;
 axis_font_size = 13;
@@ -6359,8 +6359,278 @@ end
 % annotation('textbox', [0.05, 0.05, 1, 0], 'String', [script_name ': ' plot_filename], 'EdgeColor', 'none', 'interpreter', 'none');
 print(gcf, '-dpdf', [fig_dir plot_filename '.pdf'], '-r300')
 
+%% Figure 8v2 - Flux intensity by 2100
+
+r_text_size = 12;
+axis_font_size = 13;
+
+plot_filename = ['Figure 8v2_2100 CO2 flux intensity' plot_ver];
+
+p_col = 3;
+p_row = 1;
+
+clf
+set(gcf, 'units', 'inches')
+paper_w = 14; paper_h =5;
+set(gcf,'PaperSize',[paper_w paper_h],'PaperPosition', [0 0 paper_w paper_h]); clear paper_w paper_h
+
+
+
+% y axis variable choices
+seas_amplitude_list = [  2 2 2 ]; % 0 is off, 1 is on, 2 is other
+dissic_vert_gradient=0;
+
+y_sv2 = {'out_monthly' 'out_monthly' 'out_monthly'};
+% %% only applies if seas_amplitude is off
+tests = {'norm_error';'correlation' ; 'ratio'};
+test_names = {'normalized error'; 'correlation' ; 'amplitude ratio'};
+
+% tt = 2;
+% test_list = [ 1 2 3 1 1];
+
+% x-axis variable choices
+alt_x_list=[3 3 3 3 3]; % 0: x axis is one individual month for variable sv
+% 1: x axis is ratio of max to min
+% 2: x axis is seasonal amplitude of sv
+% 3: choose a test
+% dd = 12;
+test_list_2 = [1 3 3];
+
+wmo_on = 0; % takes precedence over alt_x
+
+% x_sv = [4 1 9 10 10];
+x_sv = {'tos' 'tos' 'dissic'};
+mon_list = [ nan nan nan nan nan];
+
+% set state estimates to 0 for 2100
+CMIP.fgco2.out_monthly_mol_C_m2_yr(43:45,:) = nan;
+
+subplot_num = 0;
+for ss = 1:length(seas_amplitude_list)
+    temp_array =[];
+    temp_names = {};
+    legend_names = {};
+    sc_h = [];
+    mon = mon_list(ss);
+
+    seas_amplitude = seas_amplitude_list(ss);
+    alt_x = alt_x_list(ss);
+    % tt = test_list(ss);
+    tt_x = test_list_2(ss);
+
+    subplot_num = subplot_num+1;
+    subplot(p_row,p_col,subplot_num);
+    hold on
+    grid on
+    if wmo_on==0
+        v = find(strncmp(x_sv{ss}, variables, 4));
+        if length(v)>1 % cludge since dissic and dissic_yr were getting confused
+            v = strmatch(x_sv{ss}, variables, 'exact');
+        end
+    else
+        v=10;
+    end
+
+    sv2_name = y_sv2{ss}; % 4 - DIC, 6 - spco2
+    if strcmp(sv2_name, 'out_monthly')
+        v2_name = 'fgco2';
+    else
+        v2_name = seas_comp_vars{sv2};
+        sv2 = find(strncmp(seas_comp_vars, sv2_name,6));
+
+    end
+     
+    v2 = find(strncmp(v2_name, variables, 4));
+    if length(v2)>1 % cludge since dissic and dissic_yr were getting confused
+        v2 = strmatch(seas_comp_vars{sv2}, variables, 'exact');
+    end
+
+    for m = 1:length(cmip_names.(variables{v}))
+        mod_match = strcmp(cmip_names.(variables{v2}), cmip_names.(variables{v}){m});
+        disp(cmip_names.(variables{v}){m})
+        disp(cmip_names.(variables{v2}){mod_match})
+        % if sum(mod_match)>0
+        % if ~isempty(color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),3}) % skip models if they don't have a model group color - that would mean they don't have fgco2, so what's the point?
+            plot_color = cmap(strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),:);
+
+            model_marker = color_model{strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),4};
+
+            %                                     sc_h(end+1) = scatter(var_phase_shift_days, var_amp_per_diff, 90, mod_pco2_corr, 'filled', 'marker', model_marker, 'markeredgecolor', 'k');
+            temp_name = cmip_names.(variables{v}){m};
+            temp_name = strrep(temp_name, '_', '-');
+            temp_name = strrep(temp_name, '-6', ' (6)');
+            %                                     disp([temp_name ' ' num2str(mod_pco2_corr)])
+
+
+
+            if seas_amplitude==1
+                var_2 = max(CMIP.(variables{v2}).out_seasonal(mod_match,:,1)) - min(CMIP.(variables{v2}).out_seasonal(mod_match,:,1)) ;
+            elseif seas_amplitude==2
+                % cumulative_flux = cumsum(CMIP.fgco2.(sv2_name)(mod_match,:))./1000;
+                % var_2 = cumulative_flux(end);
+
+                flux_intensity_2100 = mean(CMIP.fgco2.out_monthly_mol_C_m2_yr(mod_match,end-11:end),'omitnan'); 
+                % try flux intensity instead of cumulative flux:
+                var_2 = flux_intensity_2100;
+
+                if isnan(var_2)
+                    % for those that end a year too early:
+                    
+                    % var_2 = cumulative_flux(end-13);
+                    flux_intensity_2100 = mean(CMIP.fgco2.out_monthly_mol_C_m2_yr(mod_match,end-23:end),'omitnan');
+
+                    var_2 = flux_intensity_2100;
+
+                end
+            else
+                var_2 = obs.(variables{v2}).(tests{tt})(mod_match);
+
+            end
+            disp(var_2)
+            if dissic_vert_gradient==1
+                if CMIP.dissic_yr.out_annual(m,1,1)==0 % there is an error in CESM2_6 depth coordinate so the interpolation is not working properly
+                    continue
+                end
+                var_1 = CMIP.dissic_yr.out_annual(m,1,1) - CMIP.dissic_yr.out_annual(m,dd,1) ;
+
+            else
+                if wmo_on==1
+                    var_1 = CMIP.wmo.out_seasonal(m,dd,mon,1) ;
+                elseif alt_x==0
+                    var_1 = CMIP.(variables{v}).out_seasonal(m,mon,1);
+                elseif alt_x==1
+                    var_1 = max(CMIP.(variables{v}).out_seasonal(m,:,1))./min(CMIP.(variables{v}).out_seasonal(m,:,1)) ;
+                elseif alt_x==2
+                    var_1 = max(CMIP.(variables{v}).out_seasonal(m,:,1)) - min(CMIP.(variables{v}).out_seasonal(m,:,1)) ;
+                elseif alt_x==3
+                    var_1 = obs.(variables{v}).(tests{tt_x})(m);
+                end
+            end
+            if isnan(var_1) || isnan(var_2)
+                continue
+            end
+            
+            disp([temp_name ' ' num2str(var_1) ' ' num2str(var_2)])
+            sc_h(end+1) = plot(var_1,	var_2 , 'marker', model_marker, 'color', ...
+                'k', 'markerfacecolor', plot_color','markersize', 12, 'linestyle', 'none');
+            legend_names{end+1,1} = temp_name;
+
+            if alt_x==1 && var_1>20
+                disp(['withholding ' cmip_names.(variables{v}){m} ' from regression'])
+                plot(var_1,	var_2 , 'marker', 'o', 'color', ...
+                    'k', 'markerfacecolor', 'none','markersize', 24, 'linestyle', 'none');
+                continue
+            elseif alt_x==3 && strcmp(y_sv2{ss}, 'fgco2_mol_C_m2_yr') && var_2>4
+                disp(['withholding ' cmip_names.(variables{v}){m} ' from regression'])
+                plot(var_1,	var_2 , 'marker', 'o', 'color', ...
+                    'k', 'markerfacecolor', 'none','markersize', 24, 'linestyle', 'none');
+                continue
+
+            elseif strcmp(sv2_name, 'out_monthly') && (var_2>0 || var_2<-1e2)
+                disp(['withholding ' cmip_names.(variables{v}){m} ' from regression'])
+                plot(var_1,	var_2 , 'marker', 'o', 'color', ...
+                    'k', 'markerfacecolor', 'none','markersize', 22, 'linestyle', 'none');
+                continue
+            end
+
+            temp_names{end+1,1} = cmip_names.(variables{v}){m};
+            temp_array(end+1,1) = var_1;
+            temp_array(end,2) = var_2;
+        % end
+        % end
+
+    end
+
+    % if seas_amplitude~=1 && tt~=1 % if plotting correlation or ratio, "obs" equals 1.
+    %     obs_y = 1;
+    % elseif seas_amplitude~=1 % if plotting normalized error, "obs" equals 0
+    %     obs_y=0;
+    % elseif seas_amplitude==1
+    %     if v2==1
+    %         obs_y = max(obs.(variables{v2}).Combined.(p_year).SOCCOM_SOCAT.out_seasonal(:,1)) - ...
+    %             min(obs.(variables{v2}).Combined.(p_year).SOCCOM_SOCAT.out_seasonal(:,1));
+    %     else
+    %         obs_y = max(obs.(variables{v2}).out_seasonal(:,1)) - min(obs.(variables{v2}).out_seasonal(:,1));
+    %     end
+    % end
+
+
+    if seas_amplitude==2
+
+        comp_label = 'Cumulative PFAZ flux in 2100 (Pg C)';
+    else
+        var_label_index = strncmp(seas_comp_vars{sv2}, var_plot_names(:,1), 4);
+
+        if sum(var_label_index>0)
+            if seas_amplitude==1
+                comp_label = [var_plot_names{var_label_index,2} ' (' var_plot_names{var_label_index,3} ') seasonal amplitude'];
+            else
+                comp_label = [var_plot_names{var_label_index,2} ' ' test_names{tt}];
+            end
+
+        else
+            if seas_amplitude==1
+                comp_label = [seas_comp_vars{sv2} ' seasonal amplitude'];
+            else
+                comp_label = [seas_comp_vars{sv2} ' ' tests{tt}];
+            end
+
+        end
+    end
+    var_label_index = strncmp(variables{v}, var_plot_names(:,1), 4);
+    if dissic_vert_gradient==1
+        x_label = ['dissic vert gradient ' num2str(obs.dissic.depth_levs(dd))];
+    elseif wmo_on==1
+        x_label = [variables{v} ' value from Month= ' num2str(mon) ' and depth ' num2str(CMIP.wmo.CMCC_CESM.depth(dd))];
+    else
+        if alt_x==0
+            x_label = [month_names{mon} ' ' var_plot_names{var_label_index,2} ' (' var_plot_names{var_label_index,3} ')'];
+        elseif alt_x==1
+            x_label = [var_plot_names{var_label_index,2} ' max divided by min'];
+        elseif alt_x==2
+            x_label = [var_plot_names{var_label_index,2} ' amp. (' var_plot_names{var_label_index,3} ')'];
+        elseif alt_x==3
+            x_label = [var_plot_names{var_label_index,2} ' ' test_names{tt_x}];
+        else
+            x_label = ' ';
+        end
+    end
+    xlabel( x_label)
+    ylabel(comp_label)
+
+    [m,b,r,~,~]=lsqfitgm(temp_array(:,1),temp_array(:,2));
+    x_plot = min(temp_array(:,1)):(max(temp_array(:,1))-min(temp_array(:,1)))./10 : max(temp_array(:,1));
+    y_plot = m.*x_plot+b;
+    x_lim = get(gca, 'xlim');
+    y_lim = get(gca, 'ylim');
+
+    if subplot_num~=5
+        plot(x_plot, y_plot, 'k-')
+        text(x_lim(2)- diff(x_lim)*.25, y_lim(1)+diff(y_lim)*.1, ['R^2: ' num2str(r^2,2)], 'fontsize', r_text_size)
+    end
+    % title(['r= ' num2str(r,2)])
+    % if subplot_num==2
+    %     l2 = legend(sc_h, legend_names, 'location', 'south', 'fontsize', 10, 'numcolumns', 2);
+    %     l2_pos = get(l2, 'Position');
+    %     set(l2, 'Position', l2_pos+[0 -.5 0 0])
+    % 
+    % end
+    y = 106;
+    if subplot_num==1
+        text(.05, y, 'a.', 'fontsize', axis_font_size)
+    elseif subplot_num==2
+        text(.6, y, 'b.', 'fontsize', axis_font_size)
+    elseif subplot_num==3
+        text(.08, y, 'c.', 'fontsize', axis_font_size)
+    end
+    set(gca, 'fontsize', axis_font_size)
+    % pause
+end
+% annotation('textbox', [0.05, 0.05, 1, 0], 'String', [script_name ': ' plot_filename], 'EdgeColor', 'none', 'interpreter', 'none');
+print(gcf, '-dpdf', [fig_dir plot_filename '.pdf'], '-r300')
+
 %% Figure 9 - add model types for those that are missing it
-plot_filename = ['Figure 9_Cumulative 2100 CO2 flux by adjustment color' plot_ver];
+plot_filename = ['Figure 9_Cumulative 2100 CO2 flux by adjustment color_temp_area_corrected' plot_ver];
 model_types = fieldnames(model_group_names);
 
 p_col = 3;
@@ -6376,18 +6646,28 @@ d2 = subplot(2,1,2);hold on; grid on; title('b. South of 35\circS')
 
 l_l = NaN(6,1);
 
+global_area = C_input.Combined.(p_year).area';
+
+
 % want to loop by model group,
 for mg = [3 4 5 6 2 1]
     fgco2_list = CMIP.fgco2.model_groups.(model_types{mg});
 
     for mod = 1:length(fgco2_list)
         m = fgco2_list(mod);
+        
+        % theta_match = strcmp(cmip_names.thetao, cmip_names.fgco2{m});
 
         plot_color = model_group_colors(color_model{strcmp(cmip_names.fgco2{m}, color_model(:,1)),3},:);
-
+        % 
+        % temp_area = global_area;
+        % try
+        total_area = sum(temp_area(CMIP.thetao.(cmip_names.thetao{theta_match}).SAF_S_mask), 'omitnan');
         p1 = plot(d1, CMIP.fgco2.ACCESS_ESM1_5_6.GMT_Matlab, cumsum(CMIP.fgco2.out_monthly(m,:))./1e3, 'color', plot_color, 'linewidth', 2);
 
         p2 = plot(d2, CMIP.fgco2.ACCESS_ESM1_5_6.GMT_Matlab,  cumsum(CMIP.fgco2.out_monthly_35S(m,:)./1e3),  'color', plot_color, 'linewidth', 2);
+        % catch
+        % end
     end
 end
 datetick(d1)

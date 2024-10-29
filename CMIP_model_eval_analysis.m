@@ -1206,7 +1206,7 @@ for w = 1
     clear time_temp file_index
 end
 clear w ev ECCO_its ECCO_dir ecco_vars mod_name var_load var_units var_long_name
-%% Model Solubility
+%% Model Solubility and PFAZ masking
 
 variables = [variables ; 'CO2_sol'];
 var_type = [var_type ; 'Omon'];
@@ -1267,9 +1267,11 @@ for v=[1 2 4:9 11 12 14, 15] %[1:12 14] % skip thetao as it is only used for the
 
                 if strcmp(variables{v}, 'fgco2')
                     CMIP.(variables{v}).out_seasonal_mol_C_m2_yr = NaN(length(cmip_names.(variables{v})),12,2); % 3D out_seasonal (num models, 12 months, mean and std)
+
                     CMIP.(variables{v}).out_seasonal_35S = NaN(length(cmip_names.(variables{v})),12,2); % 3D out_seasonal (num models, 12 months, mean and std)
                     CMIP.(variables{v}).out_monthly = NaN(length(cmip_names.(variables{v})),12*91,1); % 3D out_seasonal (num models, 12 months * 91 years, sum)
                     CMIP.(variables{v}).out_monthly_35S = NaN(length(cmip_names.(variables{v})),12*91,1); % 3D out_seasonal (num models, 12 months * 91 years, sum)
+                    CMIP.(variables{v}).out_monthly_mol_C_m2_yr = NaN(length(cmip_names.(variables{v})),12*91,1); % 3D out_seasonal (num models, 12 months * 91 years, mean)
 
                 end
                 var4D = 0;
@@ -1470,15 +1472,39 @@ for v=[1 2 4:9 11 12 14, 15] %[1:12 14] % skip thetao as it is only used for the
             % only
             if strcmp(variables{v}, 'fgco2')
                SO_var = CMIP.(variables{v}).(cmip_names.(variables{v}){m}).(variables{v})(:, :, :); % save correct months to SO_var
+
+               SO_var_mol_C_m2_yr = CMIP.(variables{v}).(cmip_names.(variables{v}){m}).fgco2_mol_C_m2_yr(:, :, :); % save flux intensity
+
+
+               
+
                % loop through each month, calculate the integrated flux,
                % and save 
                for month = 1:size(SO_var,3)
                     SO_fgco2_mon = SO_var(:,:,month);
+                    SO_fgco2_mon_mol_m2_yr = SO_var_mol_C_m2_yr(:,:,month);
+
                     SO_fgco2_mon_copy = SO_fgco2_mon;
 
                     % mask out nan values north of the SAF in each
                     % model
                     SO_fgco2_mon(~SAF_S_mask)=nan;
+                    % mask out nan values north of the SAF in each
+                    % model
+                    SO_fgco2_mon_mol_m2_yr(~SAF_S_mask)=nan;
+
+                    % get the area for each grid cell and mask the
+                    % same as SO_var
+                    temp_area = C_input.Combined.(p_year).area';
+                    temp_area(isnan(SO_fgco2_mon_mol_m2_yr)) = nan;
+                    % creating an area weighting:
+                    grid_weights = temp_area./nansum(reshape(temp_area,[],1));
+                    
+                    CMIP.(variables{v}).out_monthly_mol_C_m2_yr(m,month,1) = nansum(reshape(SO_fgco2_mon_mol_m2_yr.*grid_weights,[],1));
+                    % CMIP.(variables{v}).out_monthly_mol_C_m2_yr(m,mon,2) = nanstd(reshape(SO_fgco2_mon_mol_m2_yr,[],1));
+
+
+
 
                     % sum all grid cells to convert to total flux in the area
                     CMIP.(variables{v}).out_monthly(m,month) = nansum(reshape(SO_fgco2_mon,[],1)); % sum, not mean
@@ -3438,7 +3464,7 @@ opts = setvaropts(opts, "model_name", "WhitespaceRule", "preserve");
 opts = setvaropts(opts, "model_name", "EmptyFieldRule", "auto");
 
 % Import the data
-tbl = readtable("/Users/smb-uh/UHM_Ocean_BGC_Group Dropbox/Seth Bushinsky/Work/Manuscripts/2019_06 SO CMIP Comparison/data/Model_adjustment_group_numbers.csv", opts);
+tbl = readtable("/Users/smb-uh/UHM_Ocean_BGC_Group Dropbox/Seth Bushinsky/Work/Manuscripts/2019_06 SO CMIP Comparison/data/Model_adjustment_group_numbers_v18.csv", opts);
 
 % Convert to output type
 excel_model_name = tbl.model_name;
@@ -6334,7 +6360,7 @@ for c = 1:length(columns_out)
     dataTable_correlations_only.(columns_out{c}) = var_copy;
 end
 
-filename = ['dataTable_correlations_only' plot_ver '2024_09_06.csv'];
+filename = ['dataTable_correlations_only' plot_ver '2024_10_28.csv'];
 % writestruct(dataTable_correlations_only, [Plot_out_dir 'Sensitivity_tests/' filename]);
 % writestruct(dataTable_correlations_only, [home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/spreadsheets/' filename]);
 
