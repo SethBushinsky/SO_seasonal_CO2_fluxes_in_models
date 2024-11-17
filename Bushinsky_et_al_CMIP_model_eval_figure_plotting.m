@@ -26,169 +26,169 @@ load([fig_dir '../data/' c_input_file])
 %% matching variable names to names for printing:
 
 var_plot_names = {'tos'  'SST' '\circC' ;
-    'dissic' '[DIC]' '\mumol l^-^1';
+    'dissic' 'DIC' '\mumol l^-^1';
     'spco2' 'pCO_2' '\muatm' ;
     'fgco2' 'CO_2 flux' 'mol C m^-^2 yr^-^1' ;
     'mlotst' 'MLD' 'm';
     'intpp' 'NPP_{int}' 'mg C m^-^2 d^-^1';
     'mld' 'MLD' 'm';
-    'talk' '[TA]' '\mueq l^-^1';
+    'talk' 'TA' '\mueq l^-^1';
     'sos' 'SSS' ''};
 
 month_names = {'January' 'February' 'March' 'April' 'May' 'June' 'July' 'August' 'September' 'October' 'November' 'December'};
 % set GISS (6) to a different color for clarity:
 cmap(50,:) = cmap(14,:);
 %% Figure 1 option 3 - Annual / Summer / winter / seasonal integral
-years = C_input.years;
-product_names = C_input.product_names;
-run_names = C_input.run_names;
-runs = C_input.runs;
-regions = C_input.regions;
-p_year = 'y2023';
-
-p = 3;
-
-
-lat_index = C_input.(product_names{p}).(p_year).lat>=-80 & C_input.(product_names{p}).(p_year).lat<=-35;
-
-% save SOCAT_only, SOCCOM_SOCAT into temp_array
-obs_flux_array = NaN(3, sum(lat_index), 12);
-obs_pCO2_array = NaN(3, sum(lat_index), 12);
-
-for q = 1:2
-    for mon = 1:12
-        date_index = C_input.(product_names{p}).(p_year).Pg_mon.date_vec(:,2)==mon & C_input.(product_names{p}).(p_year).Pg_mon.date_vec(:,1)>=2010 & C_input.(product_names{p}).(p_year).Pg_mon.date_vec(:,1)<=2019;
-        CC = C_input.(product_names{p}).(p_year).Pg_mon.(runs{q})(:, lat_index, date_index).*1000; % Pg mon-1 to Tg mon-1
-        DD = nanmean(CC,3);
-        EE = nansum(DD,1);
-
-        obs_flux_array(q, :, mon) = EE'; % Tg Mon-1
-
-        CC = C_input.(product_names{p}).(p_year).spco2.(runs{q})(:, lat_index, date_index); % fCO2 currently for Neural Network, needs to be fixed
-        DD = nanmean(CC,3);
-        EE = nanmean(DD,1);
-
-        obs_pCO2_array(q, :, mon) = EE'; % Tg Mon-1
-
-
-    end
-end
-
-% difference goes into the 3rd index
-obs_flux_array(3,:,:) = obs_flux_array(2, :, :) - obs_flux_array(1, :, :);
-clear EE CC DD date_index mon q lat_index
-
-
-new_bounds = load([data_dir 'ARGO_O2_Floats/Front_definitions/Gray_5_regions/regional_boundaries_5zone.mat']);
-new_bounds.lon_saf_360 = new_bounds.lon_saf;
-new_bounds.lon_saf_360(new_bounds.lon_saf_360<0) = new_bounds.lon_saf_360(new_bounds.lon_saf_360<0)+360;
-new_bounds.lon_lat_saf_360 = sortrows([new_bounds.lon_saf_360' new_bounds.lat_saf']);
-p = 3;
-
-plot_filename = ['Figure 1_ ' product_names{p} 'annual_summer_winter_integral_flux' plot_ver];
-
-title_size = 13;
-clf
-set(gcf, 'units', 'inches')
-paper_w = 15; paper_h = 8.5;
-set(gcf,'PaperSize',[paper_w paper_h],'PaperPosition', [0 0 paper_w paper_h]);
-
-d = NaN(20);
-orig_position = NaN(8,4);
-p_index=0;
-
-v = 9;
-SO_lat_index = CMIP.(variables{v}).lat<=-35;
-[lon_grid, lat_grid] = meshgrid(CMIP.(variables{v}).lon, CMIP.(variables{v}).lat);
-
-CMIP.lon_grid = lon_grid';
-CMIP.lat_grid = lat_grid';
-clear lon_grid lat_grid
-
-axis_font_size = 10;
-
-set(gcf, 'colormap', flipud(brewermap(30, 'RdBu')))
-
-c_lims = [-.05 .05];
-% save out data for plotting in python instead
-flux_out = [];
-for q = 1:2
-    flux_out.(runs{q}) = NaN(3, 360, 55);
-    seasons = {'Annual', 1:12; 'Summer', [12 1 2]; 'Winter' [6 7 8]};
-    for s = 1:size(seasons,1)
-        p_index = p_index+1;
-
-        d(p_index) = subplot(2,4,p_index);
-
-        date_index =  sum(C_input.(product_names{p}).(p_year).date_vec(:,1)>=2010 & ...
-            C_input.(product_names{p}).(p_year).date_vec(:,1)<=2019 & ...
-            C_input.(product_names{p}).(p_year).date_vec(:,2)==seasons{s,2},2)>0;
-        CC = C_input.(product_names{p}).(p_year).Pg_mon.(runs{q})(:, SO_lat_index, date_index); % mol m-2 yr-1
-        avg_neur = nanmean(CC,3).*10^3; % mol m-2 yr-1 or Tg C mon-1
-
-        SO_mean_var_lon_shift = NaN(size(avg_neur,1), size(avg_neur,2), size(avg_neur,3));
-        SO_mean_var_lon_shift(1:180, :, :) = avg_neur(181:end,:,:);
-        SO_mean_var_lon_shift(181:end, :, :) = avg_neur(1:180,:,:);
-
-        % if v==9
-        %     SO_mean_var_lon_shift = SO_mean_var_lon_shift./C_input.Neur.(p_year).area(SO_lat_index,:)'.*10^15; % g C m-2 yr-1 from Pg C yr-1 ; %
-        % end
-
-
-        pcolor(CMIP.lon_grid(:,SO_lat_index), CMIP.lat_grid(:,SO_lat_index), SO_mean_var_lon_shift); shading flat; %colorbar
-        hold on
-        flux_out.(runs{q})(s,:,:) = SO_mean_var_lon_shift;
-        flux_out.lon_grid = CMIP.lon_grid(:,SO_lat_index);
-        flux_out.lat_grid = CMIP.lat_grid(:,SO_lat_index);
-        plot(new_bounds.lon_lat_saf_360(:,1), new_bounds.lon_lat_saf_360(:,2), 'k-', 'linewidth', 2)
-        plot([1 360], [poleward_lat_lim poleward_lat_lim], 'k-', 'linewidth',2)
-
-        orig_position(p_index,:) = get(gca, 'position');
-        if q==2 && s==2
-
-            c1 = colorbar('location', 'southoutside');
-            ylabel(c1, 'Tg C mon^-^1 \circLat^-^1');
-        end
-        caxis(c_lims)
-        title(seasons{s,1}, 'fontsize', title_size)
-        set(gca, 'fontsize', axis_font_size)
-        set(gca, 'ylim', [-80 -35])
-    end
-
-    p_index = p_index+1;
-
-    d(p_index) = subplot(2,4,p_index);
-    lat_index = C_input.(product_names{p}).(p_year).lat>=-80 & C_input.(product_names{p}).(p_year).lat<=-35;
-
-    lat_x = CMIP.(variables{v}).lat(lat_index);
-    lat_lab = repmat(lat_x, 1, 12);
-
-    mon_lab = repmat(1:12, length(lat_lab),1);
-
-    d(p_index) = subplot(2,4,p_index);
-
-    pcolor(mon_lab, lat_lab, squeeze(obs_flux_array(q,:,:))); shading flat
-    caxis([-10 10])
-    c(q) = colorbar;
-
-    set(gca, 'fontsize', axis_font_size)
-    ylabel(d(1), 'Latitude')
-    ylabel(c(q), 'Tg C mon^-^1 \circLat^-^1')
-    title([runs{q}], 'interpreter', 'none')
-
-end
-xlabel(d(4), 'Months');  xlabel(d(8), 'Months')
-
-
-set(d(6), 'position', orig_position(6,:));
-
-% print(gcf, '-dpng', [fig_dir plot_filename '.png'])
-print(gcf, '-dpdf',  '-r300',[fig_dir plot_filename '.pdf'])
-save([home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/data/fig_1_flux_output.mat'], ...
-    'flux_out', 'mon_lab', 'lat_lab', 'obs_flux_array', 'plot_ver')
-
-
-clear d c mon_lab lat_lab lat_x lat_index p_index SO_lat_index SO_mean_lon_shift avg_neur CC date_index c_lims title_size q s v p paper_h paper_w
+% years = C_input.years;
+% product_names = C_input.product_names;
+% run_names = C_input.run_names;
+% runs = C_input.runs;
+% regions = C_input.regions;
+% p_year = 'y2023';
+% 
+% p = 3;
+% 
+% 
+% lat_index = C_input.(product_names{p}).(p_year).lat>=-80 & C_input.(product_names{p}).(p_year).lat<=-35;
+% 
+% % save SOCAT_only, SOCCOM_SOCAT into temp_array
+% obs_flux_array = NaN(3, sum(lat_index), 12);
+% obs_pCO2_array = NaN(3, sum(lat_index), 12);
+% 
+% for q = 1:2
+%     for mon = 1:12
+%         date_index = C_input.(product_names{p}).(p_year).Pg_mon.date_vec(:,2)==mon & C_input.(product_names{p}).(p_year).Pg_mon.date_vec(:,1)>=2010 & C_input.(product_names{p}).(p_year).Pg_mon.date_vec(:,1)<=2019;
+%         CC = C_input.(product_names{p}).(p_year).Pg_mon.(runs{q})(:, lat_index, date_index).*1000; % Pg mon-1 to Tg mon-1
+%         DD = nanmean(CC,3);
+%         EE = nansum(DD,1);
+% 
+%         obs_flux_array(q, :, mon) = EE'; % Tg Mon-1
+% 
+%         CC = C_input.(product_names{p}).(p_year).spco2.(runs{q})(:, lat_index, date_index); % fCO2 currently for Neural Network, needs to be fixed
+%         DD = nanmean(CC,3);
+%         EE = nanmean(DD,1);
+% 
+%         obs_pCO2_array(q, :, mon) = EE'; % Tg Mon-1
+% 
+% 
+%     end
+% end
+% 
+% % difference goes into the 3rd index
+% obs_flux_array(3,:,:) = obs_flux_array(2, :, :) - obs_flux_array(1, :, :);
+% clear EE CC DD date_index mon q lat_index
+% 
+% 
+% new_bounds = load([data_dir 'ARGO_O2_Floats/Front_definitions/Gray_5_regions/regional_boundaries_5zone.mat']);
+% new_bounds.lon_saf_360 = new_bounds.lon_saf;
+% new_bounds.lon_saf_360(new_bounds.lon_saf_360<0) = new_bounds.lon_saf_360(new_bounds.lon_saf_360<0)+360;
+% new_bounds.lon_lat_saf_360 = sortrows([new_bounds.lon_saf_360' new_bounds.lat_saf']);
+% p = 3;
+% 
+% plot_filename = ['Figure 1_ ' product_names{p} 'annual_summer_winter_integral_flux' plot_ver];
+% 
+% title_size = 13;
+% clf
+% set(gcf, 'units', 'inches')
+% paper_w = 15; paper_h = 8.5;
+% set(gcf,'PaperSize',[paper_w paper_h],'PaperPosition', [0 0 paper_w paper_h]);
+% 
+% d = NaN(20);
+% orig_position = NaN(8,4);
+% p_index=0;
+% 
+% v = 9;
+% SO_lat_index = CMIP.(variables{v}).lat<=-35;
+% [lon_grid, lat_grid] = meshgrid(CMIP.(variables{v}).lon, CMIP.(variables{v}).lat);
+% 
+% CMIP.lon_grid = lon_grid';
+% CMIP.lat_grid = lat_grid';
+% clear lon_grid lat_grid
+% 
+% axis_font_size = 10;
+% 
+% set(gcf, 'colormap', flipud(brewermap(30, 'RdBu')))
+% 
+% c_lims = [-.05 .05];
+% % save out data for plotting in python instead
+% flux_out = [];
+% for q = 1:2
+%     flux_out.(runs{q}) = NaN(3, 360, 55);
+%     seasons = {'Annual', 1:12; 'Summer', [12 1 2]; 'Winter' [6 7 8]};
+%     for s = 1:size(seasons,1)
+%         p_index = p_index+1;
+% 
+%         d(p_index) = subplot(2,4,p_index);
+% 
+%         date_index =  sum(C_input.(product_names{p}).(p_year).date_vec(:,1)>=2010 & ...
+%             C_input.(product_names{p}).(p_year).date_vec(:,1)<=2019 & ...
+%             C_input.(product_names{p}).(p_year).date_vec(:,2)==seasons{s,2},2)>0;
+%         CC = C_input.(product_names{p}).(p_year).Pg_mon.(runs{q})(:, SO_lat_index, date_index); % mol m-2 yr-1
+%         avg_neur = nanmean(CC,3).*10^3; % mol m-2 yr-1 or Tg C mon-1
+% 
+%         SO_mean_var_lon_shift = NaN(size(avg_neur,1), size(avg_neur,2), size(avg_neur,3));
+%         SO_mean_var_lon_shift(1:180, :, :) = avg_neur(181:end,:,:);
+%         SO_mean_var_lon_shift(181:end, :, :) = avg_neur(1:180,:,:);
+% 
+%         % if v==9
+%         %     SO_mean_var_lon_shift = SO_mean_var_lon_shift./C_input.Neur.(p_year).area(SO_lat_index,:)'.*10^15; % g C m-2 yr-1 from Pg C yr-1 ; %
+%         % end
+% 
+% 
+%         pcolor(CMIP.lon_grid(:,SO_lat_index), CMIP.lat_grid(:,SO_lat_index), SO_mean_var_lon_shift); shading flat; %colorbar
+%         hold on
+%         flux_out.(runs{q})(s,:,:) = SO_mean_var_lon_shift;
+%         flux_out.lon_grid = CMIP.lon_grid(:,SO_lat_index);
+%         flux_out.lat_grid = CMIP.lat_grid(:,SO_lat_index);
+%         plot(new_bounds.lon_lat_saf_360(:,1), new_bounds.lon_lat_saf_360(:,2), 'k-', 'linewidth', 2)
+%         plot([1 360], [poleward_lat_lim poleward_lat_lim], 'k-', 'linewidth',2)
+% 
+%         orig_position(p_index,:) = get(gca, 'position');
+%         if q==2 && s==2
+% 
+%             c1 = colorbar('location', 'southoutside');
+%             ylabel(c1, 'Tg C mon^-^1 \circLat^-^1');
+%         end
+%         caxis(c_lims)
+%         title(seasons{s,1}, 'fontsize', title_size)
+%         set(gca, 'fontsize', axis_font_size)
+%         set(gca, 'ylim', [-80 -35])
+%     end
+% 
+%     p_index = p_index+1;
+% 
+%     d(p_index) = subplot(2,4,p_index);
+%     lat_index = C_input.(product_names{p}).(p_year).lat>=-80 & C_input.(product_names{p}).(p_year).lat<=-35;
+% 
+%     lat_x = CMIP.(variables{v}).lat(lat_index);
+%     lat_lab = repmat(lat_x, 1, 12);
+% 
+%     mon_lab = repmat(1:12, length(lat_lab),1);
+% 
+%     d(p_index) = subplot(2,4,p_index);
+% 
+%     pcolor(mon_lab, lat_lab, squeeze(obs_flux_array(q,:,:))); shading flat
+%     caxis([-10 10])
+%     c(q) = colorbar;
+% 
+%     set(gca, 'fontsize', axis_font_size)
+%     ylabel(d(1), 'Latitude')
+%     ylabel(c(q), 'Tg C mon^-^1 \circLat^-^1')
+%     title([runs{q}], 'interpreter', 'none')
+% 
+% end
+% xlabel(d(4), 'Months');  xlabel(d(8), 'Months')
+% 
+% 
+% set(d(6), 'position', orig_position(6,:));
+% 
+% % print(gcf, '-dpng', [fig_dir plot_filename '.png'])
+% print(gcf, '-dpdf',  '-r300',[fig_dir plot_filename '.pdf'])
+% save([home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/data/fig_1_flux_output.mat'], ...
+%     'flux_out', 'mon_lab', 'lat_lab', 'obs_flux_array', 'plot_ver')
+% 
+% 
+% clear d c mon_lab lat_lab lat_x lat_index p_index SO_lat_index SO_mean_lon_shift avg_neur CC date_index c_lims title_size q s v p paper_h paper_w
 
 %% Figure 2 - Plotting 4 variable seasonal cycles
 % cmap = distinguishable_colors(20);
@@ -6174,7 +6174,7 @@ for ss = 1:length(seas_amplitude_list)
     end
 
     sv2_name = y_sv2{ss}; % 4 - DIC, 6 - spco2
-    if strcmp(sv2_name, 'out_monthly')
+    if strcmp(sv2_name, 'out_monthly') || strcmp(sv2_name, 'out_monthly_35S')
         v2_name = 'fgco2';
     else
         v2_name = seas_comp_vars{sv2};
@@ -6629,8 +6629,8 @@ end
 % annotation('textbox', [0.05, 0.05, 1, 0], 'String', [script_name ': ' plot_filename], 'EdgeColor', 'none', 'interpreter', 'none');
 print(gcf, '-dpdf', [fig_dir plot_filename '.pdf'], '-r300')
 
-%% Figure 9 - add model types for those that are missing it
-plot_filename = ['Figure 9_Cumulative 2100 CO2 flux by adjustment color_temp_area_corrected' plot_ver];
+%% Figure 9
+plot_filename = ['Figure 9_Cumulative 2100 CO2 flux by adjustment color_temp_area_corrected_model_color' plot_ver];
 model_types = fieldnames(model_group_names);
 
 p_col = 3;
@@ -6656,16 +6656,28 @@ for mg = [3 4 5 6 2 1]
     for mod = 1:length(fgco2_list)
         m = fgco2_list(mod);
         
-        % theta_match = strcmp(cmip_names.thetao, cmip_names.fgco2{m});
+        theta_match = strcmp(cmip_names.thetao, cmip_names.fgco2{m});
 
         plot_color = model_group_colors(color_model{strcmp(cmip_names.fgco2{m}, color_model(:,1)),3},:);
+
+        plot_color = cmap(strcmp(cmip_names.fgco2{m}, color_model(:,1)),:);
+
         % 
-        % temp_area = global_area;
+        temp_area = global_area;
         % try
         total_area = sum(temp_area(CMIP.thetao.(cmip_names.thetao{theta_match}).SAF_S_mask), 'omitnan');
         p1 = plot(d1, CMIP.fgco2.ACCESS_ESM1_5_6.GMT_Matlab, cumsum(CMIP.fgco2.out_monthly(m,:))./1e3, 'color', plot_color, 'linewidth', 2);
 
         p2 = plot(d2, CMIP.fgco2.ACCESS_ESM1_5_6.GMT_Matlab,  cumsum(CMIP.fgco2.out_monthly_35S(m,:)./1e3),  'color', plot_color, 'linewidth', 2);
+        
+
+        model_marker = color_model{strcmp(cmip_names.fgco2{m}, color_model(:,1)),4};
+
+        final_flux = cumsum(CMIP.fgco2.out_monthly_35S(m,:)./1e3);
+
+        p3 = plot(d2, CMIP.fgco2.ACCESS_ESM1_5_6.GMT_Matlab(end)+60,  final_flux(end),  'marker', model_marker, 'color', ...
+                'k', 'markerfacecolor', plot_color','markersize', 12, 'linestyle', 'none');
+
         % catch
         % end
     end
