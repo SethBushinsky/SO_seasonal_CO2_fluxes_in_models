@@ -1836,6 +1836,11 @@ NOAA_SST.SST_orig = ncread([SST_dir SST_file], 'sst');
 NOAA_SST.sst_lat = ncread([SST_dir SST_file], 'lat');
 NOAA_SST.sst_lon = ncread([SST_dir SST_file], 'lon');
 
+
+[NOAA_SST.orig_X_lon_grid, NOAA_SST.orig_Y_lat_grid] = meshgrid(NOAA_SST.sst_lon, NOAA_SST.sst_lat);
+NOAA_SST.orig_X_lon_grid = NOAA_SST.orig_X_lon_grid';
+NOAA_SST.orig_Y_lat_grid = NOAA_SST.orig_Y_lat_grid';
+
 date_select = NOAA_SST.Matlab_time_orig>datenum('jan-0-2010') & NOAA_SST.Matlab_time_orig<datenum('jan-0-2020');
 
 NOAA_SST.Matlab_time = NOAA_SST.Matlab_time_orig(date_select);
@@ -1845,6 +1850,9 @@ NOAA_SST.SST_flipped = NaN(360, 180, 120);
 NOAA_SST.SST_land_mask = NaN(360, 180, 120);
 load topo
 
+topo_lat = topolatlim(1)+.5:1:topolatlim(end);
+topo_lon = topolonlim(1)+.5:1:topolonlim(end);
+[topo_lon_grid, topo_lat_grid] = meshgrid(topo_lon, topo_lat);
 
 % for mon = 1:12
 for dd = 1:length(NOAA_SST.Matlab_time)
@@ -1858,13 +1866,12 @@ for dd = 1:length(NOAA_SST.Matlab_time)
     NOAA_SST.SST_flipped(:,:,dd) = temp_mean_flipped;
     temp_mean_flipped(topo'>-1000) = nan;
     NOAA_SST.SST_land_mask(:,:,dd) = temp_mean_flipped;
-    clear temp_sst temp_mean date_index temp_mean_flipped
+    clear temp_sst temp_mean date_index 
 end
 
 clear sst_time date_select sst_vec SST_file SST_dir dd
 
-NOAA_SST.SST_orig = [];
-NOAA_SST.SST = [];
+
 % [NOAA_SST.lon_grid, NOAA_SST.lat_grid] = meshgrid(NOAA_SST.sst_lon,
 % NOAA_SST.sst_lat); % this lon/lat grid does not match the "flipped" sst
 
@@ -1875,9 +1882,10 @@ Lon_grid = -179.5:1:179.5;
 NOAA_SST.X_lon_grid = NOAA_SST.X_lon_grid';
 NOAA_SST.Y_lat_grid = NOAA_SST.Y_lat_grid';
 
-clear Lat_grid Lon_grid
 
-% NOAA SST seasonal cycle
+
+%%
+
 
 % create a real world mask for 0-360 longitude
 
@@ -1891,7 +1899,40 @@ NOAA_SST.SAF_mask = NOAA_SST.SAF_mask==1 & NOAA_SST.Y_lat_grid>poleward_lat_lim;
 
 NOAA_SST.SAF_mask_temp = [];
 
-%
+
+% %% checking SST masking and gridding 
+% clf
+% set(gcf, 'units', 'inches')
+% paper_w = 12; paper_h =5;
+% set(gcf,'PaperSize',[paper_w paper_h],'PaperPosition', [0 0 paper_w paper_h]);
+% 
+% subplot(2,2,1); hold on
+% pcolor(NOAA_SST.orig_X_lon_grid, NOAA_SST.orig_Y_lat_grid, NOAA_SST.SST(:,:,end)); shading flat; colorbar
+% title('Orig SST')
+% 
+% subplot(2,2,2); hold on
+% pcolor(topo_lon_grid, topo_lat_grid, topo); shading flat; colorbar
+% title('topo map')
+% 
+% subplot(2,2,3); hold on
+% pcolor(NOAA_SST.X_lon_grid,  NOAA_SST.Y_lat_grid, NOAA_SST.SST_land_mask(:,:,end)); shading flat; colorbar
+% title('Orig SST land masked')
+% 
+% SO_var = NOAA_SST.SST_land_mask;
+% TT = SO_var(:,:,end);
+% TT(~NOAA_SST.SAF_mask) = nan;
+% 
+% subplot(2,2,4); hold on
+% pcolor(NOAA_SST.X_lon_grid,  NOAA_SST.Y_lat_grid, TT); shading flat; colorbar
+% title('PFAZ masked')
+% %%
+
+NOAA_SST.SST_orig = [];
+NOAA_SST.SST = [];
+% NOAA SST seasonal cycle
+clear Lat_grid Lon_grid temp_mean_flipped
+
+
 obs.tos.out_seasonal = NaN(12,2);
 % obs.tos.out_seasonal_annual = NaN(10,12);
 
