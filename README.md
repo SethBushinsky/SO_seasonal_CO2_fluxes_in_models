@@ -15,17 +15,22 @@ Regridding, interpolating, unifying calendars, removing bad data, etc:
 - CMIP5_thetao_so.sh
 - checking_for_unprocessed_model_output.ipynb
   
-MLD_calc_offline.ipynb - MLD calculation for models
+MLD calculation for models:
+- MLD_calc_offline.ipynb
 
 ## Analysis scripts:
-- CMIP5_plotting_v2.m (should rename)
+- CMIP_model_eval_analysis.m
 
 ## Subfunctions called by preprocessing or analysis scripts:
 - functions\CO2SYSSOCCOM_smb.m		
 - functions\MLD_4grp_cmip.py		
 - functions\fit_cosine.m			
 - functions\mld_calculations.py
-- functions\fit_harmonics.m			
+- functions\fit_harmonics.m
+- functions\Sokal_Rohlf_regression_significance.m
+- functions\taylor_dist_smb_for_manuscript_uncertainty.m
+- functions\taylor_dist_smb_for_manuscript.m
+
 
 ## Plotting scripts:
 - Bushinsky_et_al_CMIP_SO_C_flux_figure_plotting.m
