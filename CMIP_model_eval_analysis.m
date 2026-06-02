@@ -138,7 +138,7 @@ plot_ver = '_v20';
 % int_levels = [12,25,50,75,100,125,150,175,200,250,300,350,400];
 % bgc_levels = [10,25,50,75,100,125,150,175,200,300,400,500,600,700,800,900,1000,1200,1400,1600,1800,2000];
 
-for v= [1 2 4 5 6 7 8 9 11 12 13 14]%[13, 14]%[1 2 4 5 6 7 8 9 11 12 13 14]% 1:length(variables)[%1, 4, 6, 13 14]
+for v= [1 2 5 6 7 8 9 11 12 13 14]%[13, 14]%[1 2 4 5 6 7 8 9 11 12 13 14]% 1:length(variables)[%1, 4, 6, 13 14]
     
     disp([ '     <strong> Starting ' variables{v} ' processing </strong>' ])
 
@@ -2515,7 +2515,7 @@ end
 clear dd
 obs.talk.depth_levs = depth_levs;
 obs.dissic.depth_levs = depth_levs;
-
+%%
 % Neural network pco2 load
 year_range =[2010 2019];
 
@@ -2641,19 +2641,21 @@ end
 clear p q y
 
 p=3;
-q=2;
-var_name = 'spco2';
-lon_grid = C_input.(product_names{p}).(p_year).lon_grid;
-lat_grid = C_input.(product_names{p}).(p_year).lat_grid;
-time_index = C_input.(product_names{p}).(p_year).date_vec(:,1)>=year_range(1) & C_input.(product_names{p}).(p_year).date_vec(:,1)<=year_range(2);
-SO_spco2 = C_input.(product_names{p}).(p_year).spco2.(runs{q})(:, :, time_index);
-
-SO_var = mean(SO_spco2, 3, 'omitnan');
-units = 'uatm';
-model_name = [product_names{p} ' ' runs{q} ' ' p_year];
-save([home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/data/surface_fields/' var_name '/00_Obs' plot_ver '.mat'], ...
-            'lon_grid', 'lat_grid', 'SO_var', 'var_name','model_SAF', 'plot_ver', 'model_name','units')
-
+for q=1:2
+    var_name = 'spco2';
+    lon_grid = C_input.(product_names{p}).(p_year).lon_grid;
+    lat_grid = C_input.(product_names{p}).(p_year).lat_grid;
+    time_index = C_input.(product_names{p}).(p_year).date_vec(:,1)>=year_range(1) & C_input.(product_names{p}).(p_year).date_vec(:,1)<=year_range(2);
+    SO_spco2 = C_input.(product_names{p}).(p_year).spco2.(runs{q})(:, :, time_index);
+    
+    SO_var = mean(SO_spco2, 3, 'omitnan');
+    units = 'uatm';
+    model_name = [product_names{p} ' ' runs{q} ' ' p_year];
+    disp(model_name)
+    
+    save([home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/data/surface_fields/' var_name '/00_Obs_' runs{q} plot_ver '.mat'], ...
+                'lon_grid', 'lat_grid', 'SO_var', 'var_name','model_SAF', 'plot_ver', 'model_name','units')
+end
 clear var_name p time_index SO_spco2 SO_var units model_name q
 % Neural Network seasonal fgCO2 - 2021_02_08 updated to use the "C_input
 % from "Carbon_mapped_product_analysis"
@@ -2736,38 +2738,39 @@ for p=3%1:length(product_names)
 end
 
 p=3;
-q=2;
-var_name = 'fgco2';
-lon_grid = C_input.(product_names{p}).(p_year).lon_grid;
-lat_grid = C_input.(product_names{p}).(p_year).lat_grid;
-time_index = C_input.(product_names{p}).(p_year).date_vec(:,1)>=year_range(1) & C_input.(product_names{p}).(p_year).date_vec(:,1)<=year_range(2);
-SO_fgco2_mol_m2_yr = C_input.(product_names{p}).(p_year).(runs{q})(:, :, time_index);
-SO_var = mean(SO_fgco2_mol_m2_yr, 3, 'omitnan');
-units = 'mol_C_m2_yr';
+for q=1:2
+    var_name = 'fgco2';
+    lon_grid = C_input.(product_names{p}).(p_year).lon_grid;
+    lat_grid = C_input.(product_names{p}).(p_year).lat_grid;
+    time_index = C_input.(product_names{p}).(p_year).date_vec(:,1)>=year_range(1) & C_input.(product_names{p}).(p_year).date_vec(:,1)<=year_range(2);
+    SO_fgco2_mol_m2_yr = C_input.(product_names{p}).(p_year).(runs{q})(:, :, time_index);
+    SO_var = mean(SO_fgco2_mol_m2_yr, 3, 'omitnan');
+    units = 'mol_C_m2_yr';
 
-% also calculate the zonal integral
-lat_index = C_input.(product_names{p}).(p_year).lat>=-80 & C_input.(product_names{p}).(p_year).lat<=-35;
+    % also calculate the zonal integral
+    lat_index = C_input.(product_names{p}).(p_year).lat>=-80 & C_input.(product_names{p}).(p_year).lat<=-35;
 
-obs_flux_array = NaN(sum(lat_index), 12);
-for mon = 1:12
-    date_index = C_input.(product_names{p}).(p_year).Pg_mon.date_vec(:,2)==mon & ...
-        C_input.(product_names{p}).(p_year).Pg_mon.date_vec(:,1)>=year_range(1) & ...
-        C_input.(product_names{p}).(p_year).Pg_mon.date_vec(:,1)<=year_range(2);
-    CC = C_input.(product_names{p}).(p_year).Pg_mon.(runs{q})(:, lat_index, date_index).*1000; % Pg mon-1 to Tg mon-1
-    DD = nanmean(CC,3);
-    EE = nansum(DD,1);
+    obs_flux_array = NaN(sum(lat_index), 12);
+    for mon = 1:12
+        date_index = C_input.(product_names{p}).(p_year).Pg_mon.date_vec(:,2)==mon & ...
+            C_input.(product_names{p}).(p_year).Pg_mon.date_vec(:,1)>=year_range(1) & ...
+            C_input.(product_names{p}).(p_year).Pg_mon.date_vec(:,1)<=year_range(2);
+        CC = C_input.(product_names{p}).(p_year).Pg_mon.(runs{q})(:, lat_index, date_index).*1000; % Pg mon-1 to Tg mon-1
+        DD = nanmean(CC,3);
+        EE = nansum(DD,1);
 
-    obs_flux_array(:, mon) = EE'; % Tg Mon-1
+        obs_flux_array(:, mon) = EE'; % Tg Mon-1
+    end
+    lat_x = CMIP.fgco2.lat(lat_index);
+    lat_lab = repmat(lat_x, 1, 12);
+
+    mon_lab = repmat(1:12, length(lat_lab),1);
+    SO_flux_Tg_mon = obs_flux_array;
+
+    model_name = [product_names{p} ' ' runs{q} ' ' p_year];
+    save([home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/data/surface_fields/' var_name '/00_Obs_' runs{q} plot_ver '.mat'], ...
+        'lon_grid', 'lat_grid', 'SO_var', 'var_name','model_SAF', 'plot_ver', 'model_name','units', 'SO_flux_Tg_mon', 'mon_lab', 'lat_lab')
 end
-lat_x = CMIP.fgco2.lat(lat_index);
-lat_lab = repmat(lat_x, 1, 12);
-
-mon_lab = repmat(1:12, length(lat_lab),1);
-SO_flux_Tg_mon = obs_flux_array;
-
-model_name = [product_names{p} ' ' runs{q} ' ' p_year];
-save([home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/data/surface_fields/' var_name '/00_Obs' plot_ver '.mat'], ...
-            'lon_grid', 'lat_grid', 'SO_var', 'var_name','model_SAF', 'plot_ver', 'model_name','units', 'SO_flux_Tg_mon', 'mon_lab', 'lat_lab')
 clear var_name p time_index SO_spco2 SO_var units model_name q SO_flux_Tg_mon lat_lab lat_x date_index CC DD EE obs_flux_array lat_index mon_lab SO_fgco2_mol_m2_yr
 
 %
@@ -4529,7 +4532,7 @@ dataTable_out = table('Size', [0, numel(varNames)], 'VariableNames', varNames, '
 n_rows = 13;
 n_cols = 4;
 
-for m = 1:length(cmip_names.spco2) % spco2 model number
+for m = 3%:length(cmip_names.spco2) % spco2 model number
     disp(cmip_names.spco2{m})
     end_plot = 0;
 

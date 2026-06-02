@@ -197,6 +197,8 @@ clear d c mon_lab lat_lab lat_x lat_index p_index SO_lat_index SO_mean_lon_shift
 %% Figure 2 - Plotting 4 variable seasonal cycles
 % cmap = distinguishable_colors(20);
 
+obs_only = 1; % for making plots I can use w/ presentations
+
 var_mean_lims = var_lims;
 
 var_mean_lims(2,:) = [0 1200];
@@ -224,8 +226,11 @@ if anomaly==1
 else
     anomaly_text=[];
 end
-
-plot_filename = ['Figure 2_v4 Obs model Seasonal ' anomaly_text ' fgco2 spco2 dic tos ' plot_ver];
+if obs_only==1
+    plot_filename = ['Figure 2_v4 Obs model Seasonal ' anomaly_text ' fgco2 spco2 dic tos OBS only' plot_ver];
+else
+    plot_filename = ['Figure 2_v4 Obs model Seasonal ' anomaly_text ' fgco2 spco2 dic tos ' plot_ver];
+end
 clf
 set(gcf, 'units', 'inches')
 paper_w = 14; paper_h =12.5;
@@ -254,27 +259,28 @@ for sv = [8 6 4 1 5]
     hold on
     legend_names = {};
     % plot([1 12], [0 0], '--k')
-    for m =  1:length(cmip_names.(variables{v}))
-        % [l, a] = boundedline(1:12, DIC_out_seasonal(m,:,1), DIC_out_seasonal(m,:,2));
-        % a.FaceAlpha = 0.3;
-
-        if isnan(CMIP.(variables{v}).out_seasonal(m,1,1))
-            continue
-        end
-        if anomaly==1
-            if sv==8
-                plot(1:12, CMIP.(variables{v}).out_seasonal_mol_C_m2_yr(m,:,1) - nanmean(CMIP.(variables{v}).out_seasonal_mol_C_m2_yr(m,:,1)), 'color', [cmap(strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),:) .5], 'linewidth', 3);
-            else
-                plot(1:12, CMIP.(variables{v}).out_seasonal(m,:,1)-nanmean(CMIP.(variables{v}).out_seasonal(m,:,1)), 'color', [cmap(strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),:) .5], 'linewidth', 3);
+    if obs_only==0
+        for m =  1:length(cmip_names.(variables{v}))
+            % [l, a] = boundedline(1:12, DIC_out_seasonal(m,:,1), DIC_out_seasonal(m,:,2));
+            % a.FaceAlpha = 0.3;
+    
+            if isnan(CMIP.(variables{v}).out_seasonal(m,1,1))
+                continue
             end
-        else
-            plot(1:12, CMIP.(variables{v}).out_seasonal(m,:,1), 'color', [cmap(strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),:) .5], 'linewidth', 3);
-
+            if anomaly==1
+                if sv==8
+                    plot(1:12, CMIP.(variables{v}).out_seasonal_mol_C_m2_yr(m,:,1) - nanmean(CMIP.(variables{v}).out_seasonal_mol_C_m2_yr(m,:,1)), 'color', [cmap(strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),:) .5], 'linewidth', 3);
+                else
+                    plot(1:12, CMIP.(variables{v}).out_seasonal(m,:,1)-nanmean(CMIP.(variables{v}).out_seasonal(m,:,1)), 'color', [cmap(strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),:) .5], 'linewidth', 3);
+                end
+            else
+                plot(1:12, CMIP.(variables{v}).out_seasonal(m,:,1), 'color', [cmap(strcmp(cmip_names.(variables{v}){m}, color_model(:,1)),:) .5], 'linewidth', 3);
+    
+            end
+    
+            legend_names{end+1,1} = cmip_names.(variables{v}){m};
         end
-
-        legend_names{end+1,1} = cmip_names.(variables{v}){m};
     end
-
     if v==9 || v==1
         if anomaly==1
             % e1 = errorbar(1:12, obs.(seas_comp_vars{sv}).Combined.(p_year).SOCCOM_SOCAT.out_seasonal(:,1)- ...
@@ -330,14 +336,23 @@ for sv = [8 6 4 1 5]
     % end
     if plot_index==1
         title(['a.   ' var_plot_names{var_label_index,2} ' seasonal anomaly'])
+        set(gca, 'ylim', [-10, 10])
     elseif plot_index==4
         title(['b.     ' var_plot_names{var_label_index,2} ' seasonal anomaly'])
+        set(gca, 'ylim', [-58, 52])
+
     elseif plot_index==7
         title(['c.     ' var_plot_names{var_label_index,2} ' seasonal anomaly'])
+                set(gca, 'ylim', [-50, 50])
+
     elseif plot_index==10
         title(['d.     ' var_plot_names{var_label_index,2} ' seasonal anomaly'])
+                set(gca, 'ylim', [-2.9, 4.3])
+
     elseif plot_index==13
         title(['e.     ' var_plot_names{var_label_index,2} ' seasonal anomaly'])
+                set(gca, 'ylim', [-10, 10])
+
     end
     set(gca, 'titlehorizontalalignment', 'left')
     if plot_index==13
@@ -2242,7 +2257,7 @@ for tt = 1:length(tos_amp_per_plot)
 
         var_label_index = strncmp(variables{v}, var_plot_names(:,1), 4);
 
-        xlabel([var_plot_names{var_label_index,2} ' timing shift (days)'])
+        xlabel([var_plot_names{var_label_index,2} ' timing shift (\Delta days)'])
         ylabel([var_plot_names{var_label_index,2} ' Amplitude (% diff)'])
 
         sub_var_label_index = strncmp(variables{sub_v}, var_plot_names(:,1), 4);
