@@ -14,6 +14,7 @@ import xarray as xr
 import pandas as pd
 from datetime import datetime
 import gsw
+import numpy as np
 
 # In[37]:
 
@@ -235,11 +236,11 @@ def depth_at_which(var,z_coor,value_attained,method='actual',top='top',bottom='b
                 attained = (data_in_range <= value_attained)
 
             if sum(attained) == 0:
-                return NaN
+                return np.nan
             else:
                 attained_idx = argmax(attained) - 1  # note: np.argmax returns index of first 'True', or 0 if all False (!)
         if attained_idx == -1:
-            return NaN
+            return np.nan
         else:
             return levels_in_range[attained_idx]
 
@@ -262,7 +263,7 @@ def depth_at_which(var,z_coor,value_attained,method='actual',top='top',bottom='b
                 attained = (data_coarse <= value_attained)
 
             if sum(attained) == 0:
-                return NaN
+                return np.nan
             else:
                 attained_idx_coarse = argmax(attained) - 1
 
@@ -286,7 +287,7 @@ def depth_at_which(var,z_coor,value_attained,method='actual',top='top',bottom='b
                 attained = (data_fine <= value_attained)
 
             if sum(attained) == 0:
-                return NaN
+                return np.nan
             else:
                 attained_idx_fine = argmax(attained) - 1
 
@@ -385,12 +386,12 @@ def calc_mld(sigma_theta, depth, ref_depth=10,ref_range_method='interp',ref_reje
             if depth[0] > ref_depth:
                 if not ref_reject: print('Warning : '
                                          'reference depth is above shallowest measurement.')
-                else:              return NaN
+                else:              return np.nan
         elif not ref_reject:
             if depth[0] > ref_depth[1]:
                 if not ref_reject: print('Warning : '
                                          'reference depth range is above shallowest measurement.')
-                else:              return NaN
+                else:              return np.nan
 
     if ref_depth == 'shallowest':
         rho_mld = sigma_theta_crit + sigma_theta[0]
@@ -414,6 +415,6 @@ def calc_mld(sigma_theta, depth, ref_depth=10,ref_range_method='interp',ref_reje
     elif isnan(mld_found) and bottom_return == 'bottom':
         return depth[-1]
     elif isnan(mld_found) and bottom_return == 'NaN':
-        return NaN
+        return np.nan
     else:
         return mld_found

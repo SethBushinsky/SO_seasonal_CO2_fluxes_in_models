@@ -19,7 +19,7 @@ def sigma0(salinity,temperature,lon,lat,pressure):
     
     return sigma
 
-def cmip_mld_calc(cmip_dir, out_dir, model_name, dir_add_on, sal_name, theta_name, model_run):
+def cmip_mld_calc(cmip_dir, out_dir, model_name, dir_add_on, sal_name, theta_name, model_run, verbose=False):
 
     print(model_name + ' ' + dir_add_on + ' started')    
     for file in os.listdir(cmip_dir + 'so/regrid_for_MLD/' + dir_add_on):
@@ -37,7 +37,7 @@ def cmip_mld_calc(cmip_dir, out_dir, model_name, dir_add_on, sal_name, theta_nam
     sig_threshold = 0.03
 
     mld_array = np.zeros((len(thetao_n['time']), len(thetao_n['lat']), len(thetao_n['lon'])))
-    mld_array[:] = np.NaN
+    mld_array[:] = np.nan
     # la = 30
 
     # find the depth levels without knowing the coordinate name:
@@ -65,6 +65,8 @@ def cmip_mld_calc(cmip_dir, out_dir, model_name, dir_add_on, sal_name, theta_nam
         depth_factor = 1
         
     for tt in range(0, len(thetao_n['time'])):
+        if verbose:
+            print('time step ' + str(tt) + ' of ' + str(len(thetao_n['time'])))
         for lo in range(0,360):
             for la in range(10, 60):
                 if sum(~np.isnan(thetao_n[theta_name].isel(time=tt, lon=lo, lat=la).values))<=1:

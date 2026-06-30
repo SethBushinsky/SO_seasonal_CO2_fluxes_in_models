@@ -118,7 +118,8 @@ var_type = {'Omon'; 'Omon'; 'Amon';'Omon';'Omon';'Omon'; 'Omon'; 'Omon'; 'Omon';
 var_lims = [350 450 ;  0 7e2; 980 1020 ; 0 300 ; -1 25; 29 35.5; 1950 2300;2200 2500;-5e-2 5e-2;-3e7 3e7;1950 2300; 2200 2500; -1 25; 0 300];
 %%
 
-plot_ver = '_v20';
+plot_ver = '_v21';
+% v21 - fixing detrending before calculating mean seasonal cycle 
 % v20 - updating more names, checking that NPP is using the correct dates
 % v19 - changing a few names, figures for paper. no major changes. 
 % v18 Working to add interannual variability to analysis, adding NASA GISS CMIP6 model
@@ -1265,10 +1266,10 @@ for v=[1 2 4:9 11 12 14, 15] %[1:12 14] % skip thetao as it is only used for the
             else
                 CMIP.(variables{v}).out_seasonal = NaN(length(cmip_names.(variables{v})),12,2); % 3D out_seasonal (num models, 12 months, mean and std)
                 CMIP.(variables{v}).out_seasonal_annual = NaN(length(cmip_names.(variables{v})),10, 12); % 3D out_seasonal_annual (num models, year, 12 months mean)
-                CMIP.(variables{v}).out_seasonal_annual_mol_C_m2_yr = NaN(length(cmip_names.(variables{v})),10, 12); % 3D out_seasonal_annual (num models, year, 12 months mean)
 
                 if strcmp(variables{v}, 'fgco2')
                     CMIP.(variables{v}).out_seasonal_mol_C_m2_yr = NaN(length(cmip_names.(variables{v})),12,2); % 3D out_seasonal (num models, 12 months, mean and std)
+                    CMIP.(variables{v}).out_seasonal_annual_mol_C_m2_yr = NaN(length(cmip_names.(variables{v})),10, 12); % 3D out_seasonal_annual (num models, year, 12 months mean)
 
                     CMIP.(variables{v}).out_seasonal_35S = NaN(length(cmip_names.(variables{v})),12,2); % 3D out_seasonal (num models, 12 months, mean and std)
                     CMIP.(variables{v}).out_monthly = NaN(length(cmip_names.(variables{v})),12*91,1); % 3D out_seasonal (num models, 12 months * 91 years, sum)
@@ -1360,7 +1361,7 @@ for v=[1 2 4:9 11 12 14, 15] %[1:12 14] % skip thetao as it is only used for the
                         SO_fgco2_mean(~SAF_S_mask)=nan;
 
                         % sum all grid cells to convert to total flux in the area
-                        CMIP.(variables{v}).out_seasonal(m,mon,1) = nansum(reshape(SO_fgco2_mean,[],1)); % sum, not mean
+                        % CMIP.(variables{v}).out_seasonal(m,mon,1) = nansum(reshape(SO_fgco2_mean,[],1)); % sum, not mean
     
                         % also calculate a version where I save
                         % annual cycles, not just a mean annual cycle
@@ -1399,8 +1400,8 @@ for v=[1 2 4:9 11 12 14, 15] %[1:12 14] % skip thetao as it is only used for the
                         % creating an area weighting:
                         grid_weights = temp_area./nansum(reshape(temp_area,[],1));
 
-                        CMIP.(variables{v}).out_seasonal_mol_C_m2_yr(m,mon,1) = nansum(reshape(SO_var_mean.*grid_weights,[],1));
-                        CMIP.(variables{v}).out_seasonal_mol_C_m2_yr(m,mon,2) = nanstd(reshape(SO_var_mean,[],1));
+                        % CMIP.(variables{v}).out_seasonal_mol_C_m2_yr(m,mon,1) = nansum(reshape(SO_var_mean.*grid_weights,[],1));
+                        % CMIP.(variables{v}).out_seasonal_mol_C_m2_yr(m,mon,2) = nanstd(reshape(SO_var_mean,[],1));
 
 
                         % also calculate a version where I save
@@ -1429,9 +1430,9 @@ for v=[1 2 4:9 11 12 14, 15] %[1:12 14] % skip thetao as it is only used for the
                             temp_area(isnan(SO_var_mean)) = nan;
                             % creating an area weighting:
                             grid_weights = temp_area./nansum(reshape(temp_area,[],1));
-
-                            CMIP.(variables{v}).out_seasonal(m,mon,1) = nansum(reshape(SO_var_mean.*grid_weights,[],1));  % nanmean(reshape(SO_var_mean,[],1));
-                            CMIP.(variables{v}).out_seasonal(m,mon,2) = nanstd(reshape(SO_var_mean,[],1));
+                            % 
+                            % CMIP.(variables{v}).out_seasonal(m,mon,1) = nansum(reshape(SO_var_mean.*grid_weights,[],1));  % nanmean(reshape(SO_var_mean,[],1));
+                            % CMIP.(variables{v}).out_seasonal(m,mon,2) = nanstd(reshape(SO_var_mean,[],1));
 
                             % also calculate a version where I save
                             % annual cycles, not just a mean annual cycle
@@ -1616,7 +1617,79 @@ for v=[1 2 4:9 11 12 14, 15] %[1:12 14] % skip thetao as it is only used for the
 end
 clear v dd m month 
 
+%% detrend 10-year monthly pCO2 and then calculate a mean annual cycle
+CMIP_fields = fieldnames(CMIP);
 
+for f_idx = 1:length(CMIP_fields)
+    if isstruct((CMIP.(CMIP_fields{f_idx})))==0
+        continue
+    end
+    if isfield(CMIP.(CMIP_fields{f_idx}), 'out_seasonal')==0
+        continue
+    end
+    for m = 1:length(cmip_names.(CMIP_fields{f_idx}))
+        ts = reshape(squeeze(CMIP.(CMIP_fields{f_idx}).out_seasonal_annual(m,:,:))', [], 1);  % 120x1
+
+        % Remove linear trend
+        ts_detrended = detrend(ts, "omitnan");
+
+        % add back in the mean value
+        ts_detrended_absolute = ts_detrended + nanmean(CMIP.(CMIP_fields{f_idx}).out_seasonal_annual(m,:,:), 'all');
+
+        % Reshape back to 10x12
+        data_detrended = reshape(ts_detrended_absolute, 12, 10);  % 10x12
+
+        % Mean seasonal cycle
+        CMIP.(CMIP_fields{f_idx}).out_seasonal(m,:,1) = nanmean(data_detrended, 2);  % 1x12
+        CMIP.(CMIP_fields{f_idx}).out_seasonal(m,:,2) = nanstd(data_detrended');  % 1x12
+
+    end
+    clear ts ts_detrended ts_detrended_absolute data_detrended 
+    % break
+end
+
+clear CMIP_fields f_dix m
+%% Check for zeros in variables
+
+CMIP_fields = fieldnames(CMIP);
+
+for f_idx = 1:length(CMIP_fields)
+    if isstruct((CMIP.(CMIP_fields{f_idx})))==0
+        continue
+    end
+    if isfield(CMIP.(CMIP_fields{f_idx}), 'out_seasonal')==0
+        continue
+    end
+    for m = 1:length(cmip_names.(CMIP_fields{f_idx}))
+        ts = reshape(squeeze(CMIP.(CMIP_fields{f_idx}).out_seasonal_annual(m,:,:))', [], 1);  % 120x1
+        if sum(ts==0)>0
+            disp(CMIP_fields{f_idx})
+        end
+    end
+end
+
+%% flux density detrended annual cycle
+
+
+for m = 1:length(cmip_names.fgco2)
+        ts = reshape(squeeze(CMIP.fgco2.out_seasonal_annual_mol_C_m2_yr(m,:,:))', [], 1);  % 120x1
+
+        % Remove linear trend
+        ts_detrended = detrend(ts, "omitnan");
+
+        % add back in the mean value
+        ts_detrended_absolute = ts_detrended + nanmean(CMIP.fgco2.out_seasonal_annual_mol_C_m2_yr(m,:,:), 'all');
+
+        % Reshape back to 10x12
+        data_detrended = reshape(ts_detrended_absolute, 12, 10);  % 10x12
+
+        % Mean seasonal cycle
+        CMIP.fgco2.out_seasonal_mol_C_m2_yr(m,:,1) = nanmean(data_detrended, 2);  % 1x12
+        CMIP.fgco2.out_seasonal_mol_C_m2_yr(m,:,2) = nanstd(data_detrended');  % 1x12
+
+end
+
+clear m ts_detrended ts_detrended_absolute data_detrended 
 %% plot vars w the SAF mask
 
 Plot_out_dir = [home_dir 'Work/Projects/2019_05 SO_C_flux_model_comparison/Plots/'];
@@ -1936,6 +2009,8 @@ clear Lat_grid Lon_grid temp_mean_flipped
 
 
 obs.tos.out_seasonal = NaN(12,2);
+obs.tos.out_seasonal_annual = NaN(10,12);
+
 % obs.tos.out_seasonal_annual = NaN(10,12);
 
 % mod_vec = datevec(NOAA_SST.Matlab_time);
@@ -1972,12 +2047,20 @@ for mon = 1:12
         clear TT
     end
     clear zz
+    
+    for year = 1:size(SO_var,3)
+        SO_var_year = SO_var(:,:,year); % select a single year
+        
+        obs.tos.out_seasonal_annual(year,mon) = nansum(reshape(SO_var_year,[],1)); % calculate a weighted average 
+        % CMIP.(variables{v}).out_seasonal_annual(m,year,mon) = nansum(reshape(SO_var_year.*grid_weights,[],1)); % calculate a weighted average 
+        clear SO_var_year
+    end
 
     % sum each year into a single month, then take the mean and std:
-    zonal_sum = nansum(SO_var,1);
-    box_sum = squeeze(nansum(zonal_sum,2));
-    obs.tos.out_seasonal(mon,1) = nanmean(box_sum);
-    obs.tos.out_seasonal(mon,2) = nanstd(box_sum);
+    % zonal_sum = nansum(SO_var,1);
+    % box_sum = squeeze(nansum(zonal_sum,2));
+    % obs.tos.out_seasonal(mon,1) = nanmean(box_sum);
+    % obs.tos.out_seasonal(mon,2) = nanstd(box_sum);
     %     SO_var(~NOAA_SST.SAF_mask)=nan;
     %
     %
@@ -1994,8 +2077,10 @@ for mon = 1:12
     %     obs.tos.out_seasonal(mon,1) = nansum(reshape(SO_var.*grid_weights,[],1));
     %     obs.tos.out_seasonal(mon,2) = nanstd(reshape(SO_var,[],1));
 
-    clear time_index SO_var temp_area grid_weights zonal_sum
+    % clear time_index SO_var temp_area grid_weights zonal_sum
 end
+
+
 
 % saving out data for plots
 var_name = 'tos';
@@ -2123,6 +2208,7 @@ clear topolatlim topolegend topolonlim topomap1 topomap2 v m lon lon_grid lat_gr
 % currently saved in manuscript folder
 % load([home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/data/gdap_and_argo_gridded_2022_Apr_04.mat'])
 load([home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/data/gdap_and_argo_gridded_2024_Sep_06.mat'])
+% load([home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/data/gdap_and_argo_gridded_2026_Jun_15_v21.mat'])
 depth_levs = CMIP.dissic_yr.(cmip_names.dissic_yr{1}).depth;
 
 %% Load SOCCOM
@@ -2421,7 +2507,8 @@ end
 clear lo la mon a dd
 %% save gridded datasets, reload here instead of re-running the last several cells
 % currently saved in manuscript folder
-save([home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/data/gdap_and_argo_gridded_' datestr(now, 'YYYY_mmm_dd') '.mat'], 'argo_SO', 'gdap_SO')
+save([home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/data/gdap_and_argo_gridded_' datestr(now, 'YYYY_mmm_dd') plot_ver '.mat'], 'argo_SO', 'gdap_SO')
+
 
 
 %% merge gridded datasets - nanmean:
@@ -2586,6 +2673,8 @@ for p = 3%1:length(product_names)
         for q = 1:length(runs)
             if isfield(C_input.(product_names{p}).(years{y}).spco2, runs{q})
                 obs.spco2.(product_names{p}).(years{y}).(runs{q}).out_seasonal = NaN(12,2);
+                obs.spco2.(product_names{p}).(years{y}).(runs{q}).out_seasonal_annual = NaN(10,12);
+
             end
             % mod_vec = datevec(Mapped_pCO2.Neur.time_Matlab);
         end
@@ -2615,23 +2704,28 @@ for p = 3%1:length(product_names)
                     % creating an area weighting:
                     grid_weights = temp_area./nansum(reshape(temp_area,[],1));
 
-                    SO_spco2(:,:,zz) = TT.*grid_weights; % weight each value - now to get the annual mean you will sum these together
+                    % SO_spco2(:,:,zz) = TT.*grid_weights; % weight each value - now to get the annual mean you will sum these together
+                    
+                    obs.spco2.(product_names{p}).(years{y}).(runs{q}).out_seasonal_annual(zz,mon) = nansum(reshape(TT.*grid_weights,[],1)); % calculate a weighted average 
+                    
                     clear TT grid_weights temp_area
+
+
                 end
                 clear zz
 
-
+                
                 % sum each year into a single month, then take the mean and std:
-                zonal_sum = nansum(SO_spco2,1);
-                box_sum = squeeze(nansum(zonal_sum,2));
-
-                obs.spco2.(product_names{p}).(years{y}).(runs{q}).out_seasonal(mon,1) = nanmean(box_sum);
-                obs.spco2.(product_names{p}).(years{y}).(runs{q}).out_seasonal(mon,2) = nanstd(box_sum);
+                % zonal_sum = nansum(SO_spco2,1);
+                % box_sum = squeeze(nansum(zonal_sum,2));
+                % 
+                % obs.spco2.(product_names{p}).(years{y}).(runs{q}).out_seasonal(mon,1) = nanmean(box_sum);
+                % obs.spco2.(product_names{p}).(years{y}).(runs{q}).out_seasonal(mon,2) = nanstd(box_sum);
 
                 %                 obs.spco2.out_seasonal (mon,1) = nanmean(box_sum);
                 %                 obs.spco2.out_seasonal (mon,2) = nanstd(box_sum);
 
-                clear SO_spco2 zonal_sum box_sum
+                % clear SO_spco2 zonal_sum box_sum
             end
 
             clear lat_index mod_vec time_index mon
@@ -2670,7 +2764,10 @@ for p=3%1:length(product_names)
         for q = 1:2
             %         lat_index = C_input.(product_names{p}).(years{y}).lat<=lat_lims(2) & C_input.(product_names{p}).(years{y}).lat>=lat_lims(1);
             obs.fgco2.(product_names{p}).(years{y}).(runs{q}).out_seasonal = NaN(12,2);
+            obs.fgco2.(product_names{p}).(years{y}).(runs{q}).out_seasonal_annual = NaN(10,12);
+
             obs.fgco2_mol_C_m2_yr.(product_names{p}).(years{y}).(runs{q}).out_seasonal = NaN(12,2);
+            obs.fgco2_mol_C_m2_yr.(product_names{p}).(years{y}).(runs{q}).out_seasonal_annual = NaN(10,12);
 
             for mon=1:12
                 time_index = C_input.(product_names{p}).(years{y}).date_vec(:,2)==mon & ...
@@ -2683,22 +2780,25 @@ for p=3%1:length(product_names)
                 for zz = 1:size(SO_fgco2,3)
                     TT = SO_fgco2(:,:,zz);
                     TT(~C_input.Combined.(p_year).index.SAF_S_mask) = nan;
-                    SO_fgco2(:,:,zz) = TT;
-                    clear tt grid_weights
+                    % SO_fgco2(:,:,zz) = TT;
+
+                    obs.fgco2.(product_names{p}).(years{y}).(runs{q}).out_seasonal_annual(zz,mon) = nansum(reshape(TT,[],1))*1000; %Pg C mon-1 to Tg C mon-1
+
+                    clear TT grid_weights
 
                 end
                 clear zz
 
                 % sum each year into a single month, then take the mean and std:
-                zonal_sum = nansum(SO_fgco2,1);
-                box_sum = squeeze(nansum(zonal_sum,2));
+                % zonal_sum = nansum(SO_fgco2,1);
+                % box_sum = squeeze(nansum(zonal_sum,2));
 
                 %     % collapse all years into one mean map for each month
                 %     SO_fgco2_mean = nanmean(SO_fgco2,3);
 
                 % sum all grid cells to calculate a total flux
-                obs.fgco2.(product_names{p}).(years{y}).(runs{q}).out_seasonal(mon,1) = nanmean(box_sum)*1000; % Pg to Tg
-                obs.fgco2.(product_names{p}).(years{y}).(runs{q}).out_seasonal(mon,2) = nanstd(box_sum)*1000;
+                % obs.fgco2.(product_names{p}).(years{y}).(runs{q}).out_seasonal(mon,1) = nanmean(box_sum)*1000; % Pg to Tg
+                % obs.fgco2.(product_names{p}).(years{y}).(runs{q}).out_seasonal(mon,2) = nanstd(box_sum)*1000;
 
                 clear SO_fgco2 zonal_sum box_sum
 
@@ -2716,19 +2816,22 @@ for p=3%1:length(product_names)
                     grid_weights = temp_area./nansum(reshape(temp_area,[],1));
 
                     SO_fgco2_mol_m2_yr(:,:,zz) = TT.*grid_weights; % weight each value - now to get the annual mean you will sum these together
+                    obs.fgco2_mol_C_m2_yr.(product_names{p}).(years{y}).(runs{q}).out_seasonal_annual(zz,mon) = ...
+                        nansum(reshape(TT.*grid_weights,[],1)); % calculate a weighted average 
+
                     clear TT grid_weights temp_area
                 end
                 clear zz
 
 
                 % sum each year into a single month, then take the mean and std:
-                zonal_sum = nansum(SO_fgco2_mol_m2_yr,1);
-                box_sum = squeeze(nansum(zonal_sum,2));
-
-                obs.fgco2_mol_C_m2_yr.(product_names{p}).(years{y}).(runs{q}).out_seasonal(mon,1) = nanmean(box_sum);
-                obs.fgco2_mol_C_m2_yr.(product_names{p}).(years{y}).(runs{q}).out_seasonal(mon,2) = nanstd(box_sum);
-
-                clear SO_fgco2_mol_m2_yr zonal_sum box_sum
+                % zonal_sum = nansum(SO_fgco2_mol_m2_yr,1);
+                % box_sum = squeeze(nansum(zonal_sum,2));
+                % 
+                % obs.fgco2_mol_C_m2_yr.(product_names{p}).(years{y}).(runs{q}).out_seasonal(mon,1) = nanmean(box_sum);
+                % obs.fgco2_mol_C_m2_yr.(product_names{p}).(years{y}).(runs{q}).out_seasonal(mon,2) = nanstd(box_sum);
+                % 
+                % clear SO_fgco2_mol_m2_yr zonal_sum box_sum
 
             end
 
@@ -2801,6 +2904,7 @@ clear var_name p time_index SO_spco2 SO_var units model_name q SO_flux_Tg_mon la
 %
 clear lat_index mod_vec time_index mon
 clear y q p
+
 
 %% looking at pCO2 seasonal cycles
 c_map = brewermap(10, 'Set2');
@@ -2990,6 +3094,7 @@ NPP_obs.area = (lat_deg_step.*ones(length(NPP_obs.lat),1).*m_per_deg.*cosd(NPP_o
 % of all three
 for f = 1:length(npp_types)
     obs.intpp.(npp_types{f}).out_seasonal = NaN(12,2);
+    obs.intpp.(npp_types{f}).out_seasonal_annual = NaN(10,12);
 
     % for m = 1:size(NPP_obs_out_seasonal,1)
     mod_vec = datevec(NPP_obs.(npp_types{f}).Matlab_date);
@@ -3009,31 +3114,33 @@ for f = 1:length(npp_types)
             % creating an area weighting:
             grid_weights = temp_area./nansum(reshape(temp_area,[],1));
 
-            SO_pp(:,:,zz) = TT.*grid_weights; % weight each value - now to get the annual mean you will sum these together
+            % SO_pp(:,:,zz) = TT.*grid_weights; % weight each value - now to get the annual mean you will sum these together
+            obs.intpp.(npp_types{f}).out_seasonal_annual(zz,mon) = nansum(reshape(TT.*grid_weights,[],1)); % calculate a weighted average 
+
             clear TT grid_weights temp_area
         end
         clear zz
 
-        % sum each year into a single month, then take the mean and std:
-        zonal_sum = nansum(SO_pp,1);
-        box_sum = squeeze(nansum(zonal_sum,2));
+        % % sum each year into a single month, then take the mean and std:
+        % zonal_sum = nansum(SO_pp,1);
+        % box_sum = squeeze(nansum(zonal_sum,2));
 
         % area weighted mean and std deviation (representing the time variance)
-        obs.intpp.(npp_types{f}).out_seasonal(mon,1) = nanmean(box_sum);
-        obs.intpp.(npp_types{f}).out_seasonal(mon,2) = nanstd(box_sum);
+        % obs.intpp.(npp_types{f}).out_seasonal(mon,1) = nanmean(box_sum);
+        % obs.intpp.(npp_types{f}).out_seasonal(mon,2) = nanstd(box_sum);
 
         clear  time_index  SO_pp zonal_sum box_sum
     end
 end
-
+%
 clear mod_vec lat_index mon lat_deg_step lon_deg_step f
 
 % combined intpp:
-temp_intpp = NaN(length(npp_types), 12);
+temp_intpp = NaN(length(npp_types),10,12);
 for f = 1:length(npp_types)
-    temp_intpp(f,:) = obs.intpp.(npp_types{f}).out_seasonal(:,1);
+    temp_intpp(f,:,:) = obs.intpp.(npp_types{f}).out_seasonal_annual(:,:);
 end
-obs.intpp.out_seasonal = mean(temp_intpp, 1, 'omitnan')';
+obs.intpp.out_seasonal_annual = squeeze(mean(temp_intpp, 1, 'omitnan'));
 
 
 % saving out data for plots
@@ -3084,6 +3191,51 @@ clear f temp_intpp
 % CMIP.(variables{v}).(cmip_names.(variables{v}){1}).units = CMIP.dissic.(cmip_names.(variables{v}){1}).units;
 % clear m mod_match model_index v
 
+
+
+
+%% Calculate detrended means 
+obs_for_detrending = {'tos', 'intpp'};
+for f_idx = 1:length(obs_for_detrending)
+    
+    ts = reshape(squeeze(obs.(obs_for_detrending{f_idx}).out_seasonal_annual(:,:))', [], 1);  % 120x1
+
+    % Remove linear trend
+    ts_detrended = detrend(ts, "omitnan");
+
+    % add back in the mean value
+    ts_detrended_absolute = ts_detrended + nanmean(obs.(obs_for_detrending{f_idx}).out_seasonal_annual(:,:), 'all');
+
+    % Reshape back to 10x12
+    data_detrended = reshape(ts_detrended_absolute, 12, 10);  % 10x12
+
+    % Mean seasonal cycle
+    obs.(obs_for_detrending{f_idx}).out_seasonal(:,1) = nanmean(data_detrended, 2);  % 1x12
+    obs.(obs_for_detrending{f_idx}).out_seasonal(:,2) = nanstd(data_detrended');  % 1x12
+
+end
+%% detrended means for spco2 and fgco2 products
+
+obs_for_detrending = {'spco2', 'fgco2', 'fgco2_mol_C_m2_yr'};
+for f_idx = 1:length(obs_for_detrending)
+    for q = 1:2
+        ts = reshape(squeeze(obs.(obs_for_detrending{f_idx}).Combined.y2023.(runs{q}).out_seasonal_annual(:,:))', [], 1);  % 120x1
+    
+        % Remove linear trend
+        ts_detrended = detrend(ts, "omitnan");
+    
+        % add back in the mean value
+        ts_detrended_absolute = ts_detrended + nanmean(obs.(obs_for_detrending{f_idx}).Combined.y2023.(runs{q}).out_seasonal_annual(:,:), 'all');
+    
+        % Reshape back to 10x12
+        data_detrended = reshape(ts_detrended_absolute, 12, 10);  % 10x12
+    
+        % Mean seasonal cycle
+        obs.(obs_for_detrending{f_idx}).Combined.y2023.(runs{q}).out_seasonal(:,1) = nanmean(data_detrended, 2);  % 1x12
+        obs.(obs_for_detrending{f_idx}).Combined.y2023.(runs{q}).out_seasonal(:,2) = nanstd(data_detrended');  % 1x12
+
+    end
+end
 
 %% plot all variable maps together, similar to the supplemental figures for your paper
 
@@ -3298,7 +3450,7 @@ regions = C_input.regions;
 for v = 1:length(variables)
 
     % currently skipping psl and wmo
-    if sum(strcmp(variables{v}, {'psl'; 'wmo';'dissic_yr';'talk_yr';'thetao'}))>0
+    if sum(strcmp(variables{v}, {'psl'; 'wmo';'dissic_yr';'talk_yr';'thetao';'mlotst'}))>0
         continue
     end
     % I believe this removes mean, but I can test that:
@@ -3470,6 +3622,7 @@ end
 
 %% choosing model groups based on taylor diagram
 clear model_group_names
+out_of_phase_corr_cutoff = .7;
 
 % model_group_names.good_mag_good_phase = {};
 model_group_names.good_phase = {};
@@ -3514,7 +3667,7 @@ opts = setvaropts(opts, "model_name", "WhitespaceRule", "preserve");
 opts = setvaropts(opts, "model_name", "EmptyFieldRule", "auto");
 
 % Import the data
-tbl = readtable("/Users/smb-uh/UHM_Ocean_BGC_Group Dropbox/Seth Bushinsky/Work/Manuscripts/2019_06 SO CMIP Comparison/data/Model_adjustment_group_numbers_v18.csv", opts);
+tbl = readtable("/Users/sethbushinsky/UHM_Ocean_BGC_Group Dropbox/Seth Bushinsky/Work/Manuscripts/2019_06 SO CMIP Comparison/data/Model_adjustment_group_numbers_v18.csv", opts);
 
 % Convert to output type
 excel_model_name = tbl.model_name;
@@ -3589,7 +3742,7 @@ clear q m mod_index
 
 %% Save out seasonal data with model types assigned
 
-save([home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/data/seasonal_cycles_w_model_type_matched_' datestr(now, 'YYYY_mm_dd') '.mat'], 'CMIP', 'combined_SO', 'NOAA_SST', 'WOA_SSS',...
+save([home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/data/seasonal_cycles_w_model_type_matched_' datestr(now, 'YYYY_mm_dd') plot_ver '.mat'], 'CMIP', 'combined_SO', 'NOAA_SST', 'WOA_SSS',...
     'cmip_names', 'obs', 'color_model', 'variables', 'var_type', 'cmap', 'model_group_colors', ...
     'var_lims', 'depth_levs', 'poleward_lat_lim', 'depth_names', 'plot_ver', 'model_group_names', 'p_year', '-v7.3')
 
@@ -4309,7 +4462,7 @@ nharm=1;cutoff=10;L=365.25;
 %% 2. Fit Harmonics for all models
 % year_days = datenum(2012,1:12,15)-datenum(2012,1,0);
 
-for v = [7 5 1 8 6 4 2 14]
+for v = [7 5 1 8 6  2 14]
     harm_mod.(variables{v}).amp = NaN(length(cmip_names.(variables{v})),nharm);
     harm_mod.(variables{v}).phase = NaN(length(cmip_names.(variables{v})),nharm);
     harm_mod.(variables{v}).frac = NaN(length(cmip_names.(variables{v})),nharm);
@@ -4532,7 +4685,7 @@ dataTable_out = table('Size', [0, numel(varNames)], 'VariableNames', varNames, '
 n_rows = 13;
 n_cols = 4;
 
-for m = 3%:length(cmip_names.spco2) % spco2 model number
+for m = 1:length(cmip_names.spco2) % spco2 model number
     disp(cmip_names.spco2{m})
     end_plot = 0;
 

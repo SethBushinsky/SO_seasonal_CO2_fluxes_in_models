@@ -13,15 +13,20 @@ fig_dir = [home_dir 'Work/Manuscripts/2019_06 SO CMIP Comparison/figures/'];
 % seasonal_file = 'seasonal_cycles_w_model_type_matched_2025_03_17.mat';
 % seasonal_file = 'seasonal_cycles_w_model_type_matched_2025_06_10.mat';
 % seasonal_file = 'seasonal_cycles_w_model_type_matched_2025_08_22.mat';
-seasonal_file = 'seasonal_cycles_w_model_type_matched_2025_10_21.mat';
+% seasonal_file = 'seasonal_cycles_w_model_type_matched_2025_10_21.mat';
+seasonal_file = 'seasonal_cycles_w_model_type_matched_2026_06_18_v21.mat';
 
 load([fig_dir '../data/' seasonal_file])
 seas_comp_vars = fieldnames(obs);
 
 % toy_model_file = 'toy_model_output_2024_10_10.mat';
-toy_model_file = 'toy_model_output_2025_10_22.mat';
+% toy_model_file = 'toy_model_output_2025_10_22.mat';
+toy_model_file = 'toy_model_output_2026_06_16.mat';
+
 load([fig_dir '../data/' toy_model_file])
-sensitivity_results = 'sensitivity_test_results_2025_10_22.mat';
+% sensitivity_results = 'sensitivity_test_results_2025_10_22.mat';
+sensitivity_results = 'sensitivity_test_results_2026_06_16.mat';
+
 load([fig_dir '../data/' sensitivity_results])
 
 c_input_file = 'Carbon_mapped_product_analysis_output_2024_04_15.mat';
@@ -197,7 +202,7 @@ clear d c mon_lab lat_lab lat_x lat_index p_index SO_lat_index SO_mean_lon_shift
 %% Figure 2 - Plotting 4 variable seasonal cycles
 % cmap = distinguishable_colors(20);
 
-obs_only = 1; % for making plots I can use w/ presentations
+obs_only = 0; % for making plots I can use w/ presentations
 
 var_mean_lims = var_lims;
 
@@ -415,7 +420,7 @@ for sv = [8 6 4 1 5]
     set(gca, 'titlehorizontalalignment', 'left')
     if plot_index==14
         text(1.22,1.15,'Correlation','fontsize',14)
-        xlabel('Amplitude ratio')
+        xlabel('Normalized SD')
     end
     
      plot_index = plot_index+1;
@@ -463,7 +468,7 @@ for sv = [8 6 4 1 5]
         set(gca, 'ylim', [0 1])
     end
     if plot_index==15
-        xlabel('Amplitude ratio')
+        xlabel('Normalized SD')
     end
    
     if plot_index==3
@@ -747,7 +752,7 @@ for sv = [2 10 11]
     end
     set(gca, 'titlehorizontalalignment', 'left')
 
-    if plot_index==10
+    if plot_index==7
         xlabel('Month')
     end
     %     l1 = legend([legend_names ; 'Obs'], 'interpreter', 'none', 'location', 'eastoutside');
@@ -809,7 +814,7 @@ for sv = [2 10 11]
     if plot_index==8
         text(4.7,4.7,'Correlation','fontsize',14)
 
-        xlabel('Amplitude ratio')
+        xlabel('Normalized SD')
     end
      plot_index = plot_index+1;
 
@@ -859,8 +864,8 @@ for sv = [2 10 11]
         set(gca, 'xlim', [0 2])
         set(gca, 'ylim', [0 1.6])
     end
-    if plot_index==12
-        xlabel('Amplitude ratio')
+    if plot_index==9
+        xlabel('Normalized SD')
     end
     if plot_index==3
         title(['g. ' var_plot_names{var_label_index,2} ' Taylor diagram, zoomed'])
@@ -1065,7 +1070,7 @@ for sv = [2 5 10 11]
     if plot_index==11
         text(5,4.5,'Correlation','fontsize',14)
 
-        xlabel('Amplitude ratio')
+        xlabel('Normalized SD')
     end
      plot_index = plot_index+1;
 
@@ -1110,7 +1115,7 @@ for sv = [2 5 10 11]
         set(gca, 'ylim', [0 1])
     end
     if plot_index==12
-        xlabel('Amplitude ratio')
+        xlabel('Normalized SD')
     end
     if plot_index==3
         title(['i. ' var_plot_names{var_label_index,2} ' Taylor diagram, zoomed'])
@@ -1341,10 +1346,17 @@ for cc = 1:length(tos_amp_per_plot)
         end
         if cc==1
             title('c.')
+            box_pos_c = get(gca, 'Position');
+            set(gca, 'Position', box_pos_c.*[.95 1 1.4 1])
         elseif cc==2
             title('f.')
+            box_pos_f = get(gca, 'Position');
+            set(gca, 'Position', box_pos_f.*[.95 1 1.4 1])
+
+            xlabel('DIC timing (days)');
         elseif cc==3 && z==1
             title(['i. \DeltaSST amp.: ' num2str(tos_amp_per(z)) ' %']);
+            box_pos_i = get(gca, 'Position');
         elseif cc==3 && z==2
             title(['j. \DeltaSST amp.: ' num2str(tos_amp_per(z)) ' %']);
         elseif cc==4 && z==1
@@ -1539,7 +1551,7 @@ disp(' ')
 cb1 = contourcbar(d(contour_index), 'location', 'eastoutside');
 cb1_pos = get(cb1, 'position');
 % set(d(z), 'position', [contour_pos(z,1) bottom_pos(2) contour_pos(z,3) contour_pos(z,4)+height_adjust])
-set(cb1, 'position', [second_pos(1)+.17 second_pos(2)+.05 cb1_pos(3)+.01 cb1_pos(4)+.02])
+set(cb1, 'position', [second_pos(1)+.2 second_pos(2)+.05 cb1_pos(3)+.01 cb1_pos(4)+.02])
 ylabel(cb1, 'pCO_2 Correlation', 'fontweight', 'bold')
 set(cb1, 'fontsize', 14)
 print(gcf, '-dpdf', '-r300', [fig_dir '/' plot_filename plot_ver '.pdf'])
@@ -3584,7 +3596,7 @@ for mon = 1:12
 
     % %% only applies if seas_amplitude is off
     tests = {'norm_error';'correlation' ; 'ratio'};
-    test_names = {'normalized error'; 'correlation' ; 'Amplitude Ratio'};
+    test_names = {'normalized error'; 'correlation' ; 'Normalized SD'};
 
     tt = 2;
     % %%
@@ -4807,7 +4819,7 @@ for mon = 1:12
 
     % %% only applies if seas_amplitude is off
     tests = {'norm_error';'correlation' ; 'ratio'};
-    test_names = {'normalized error'; 'correlation' ; 'Amplitude Ratio'};
+    test_names = {'normalized error'; 'correlation' ; 'Normalized SD'};
 
     tt = 2;
     % %%
@@ -5067,7 +5079,7 @@ end
 
 % %% only applies if seas_amplitude is off
 tests = {'norm_error';'correlation' ; 'ratio'};
-test_names = {'normalized error'; 'correlation' ; 'Amplitude Ratio'};
+test_names = {'normalized error'; 'correlation' ; 'Normalized SD'};
 
 tt = 2;
 % %%
@@ -5364,7 +5376,7 @@ end
 
 % %% only applies if seas_amplitude is off
 tests = {'norm_error';'correlation' ; 'ratio'};
-test_names = {'normalized error'; 'correlation' ; 'Amplitude Ratio'};
+test_names = {'normalized error'; 'correlation' ; 'Normalized SD'};
 
 tt = 2;
 % %%
@@ -5553,7 +5565,7 @@ end
 
 % %% only applies if seas_amplitude is off
 tests = {'norm_error';'correlation' ; 'ratio'};
-test_names = {'normalized error'; 'correlation' ; 'Amplitude Ratio'};
+test_names = {'normalized error'; 'correlation' ; 'Normalized SD'};
 
 tt = 2;
 % %%
@@ -5869,7 +5881,7 @@ end
 
 % %% only applies if seas_amplitude is off
 tests = {'norm_error';'correlation' ; 'ratio'};
-test_names = {'normalized error'; 'correlation' ; 'Amplitude Ratio'};
+test_names = {'normalized error'; 'correlation' ; 'Normalized SD'};
 
 tt = 2;
 
@@ -6264,7 +6276,7 @@ end
 
 % %% only applies if seas_amplitude is off
 tests = {'norm_error';'correlation' ; 'ratio'};
-test_names = {'normalized error'; 'correlation' ; 'Amplitude Ratio'};
+test_names = {'normalized error'; 'correlation' ; 'Normalized SD'};
 
 tt = 2;
 
@@ -6549,7 +6561,7 @@ leg_x_shift = .4;
 
 clf
 set(gcf, 'units', 'inches')
-paper_w = 14; paper_h =5.9;
+paper_w = 16; paper_h =5.8;
 set(gcf,'PaperSize',[paper_w paper_h],'PaperPosition', [0 0 paper_w paper_h]); clear paper_w paper_h
 
 
@@ -6570,7 +6582,7 @@ end
 
 % %% only applies if seas_amplitude is off
 tests = {'norm_error';'correlation' ; 'ratio'};
-test_names = {'normalized error'; 'correlation' ; 'Amplitude Ratio'};
+test_names = {'normalized error'; 'correlation' ; 'Normalized SD'};
 
 tt = 2;
 
@@ -6755,6 +6767,10 @@ end
 % set(l1, 'Position', l1_pos+[.5 .03 0 0])
 
 set(gca, 'fontsize', axis_font_size)
+left_ax_pos = get(gca, 'Position');
+left_shift = -0.065;
+set(gca, 'Position', left_ax_pos + [left_shift 0 0.02 0])
+left_ax_pos = get(gca, 'Position');
 
 
 %%%%%% DIC Amp vs. TOS Amp., colored by pCO2 correlation
@@ -6774,7 +6790,7 @@ end
 
 % %% only applies if seas_amplitude is off
 tests = {'norm_error';'correlation' ; 'ratio'};
-test_names = {'normalized error'; 'correlation' ; 'Amplitude Ratio'};
+test_names = {'normalized error'; 'correlation' ; 'Normalized SD'};
 
 tt = 2;
 
@@ -6967,7 +6983,11 @@ c = colorbar;
 c.Label.String = 'pCO_2 correlation';
 
 set(gca, 'fontsize', axis_font_size)
+mid_ax_pos = get(gca, 'Position');
+mid_ax_pos(3) = left_ax_pos(3);
+mid_ax_pos(1) = mid_ax_pos(1)+left_shift+.01;
 
+set(gca, 'Position', mid_ax_pos)
 
 
 %%%%%%%%%%% DIC amp vs. Jan NPP
@@ -6987,7 +7007,7 @@ end
 
 % %% only applies if seas_amplitude is off
 tests = {'norm_error';'correlation' ; 'ratio'};
-test_names = {'normalized error'; 'correlation' ; 'Amplitude Ratio'};
+test_names = {'normalized error'; 'correlation' ; 'Normalized SD'};
 
 tt = 2;
 
@@ -7162,6 +7182,11 @@ else
 end 
 clear significant R_2
 
+right_ax_pos = get(gca, 'Position');
+right_ax_pos(1) = right_ax_pos(1) + .02;
+right_ax_pos(3) = left_ax_pos(3);
+set(gca, 'Position', right_ax_pos)
+
 print(gcf, '-dpdf', [fig_dir plot_filename plot_ver '.pdf'], '-r300')
 
 %% Figure 9 - pCO2
@@ -7188,7 +7213,7 @@ dissic_vert_gradient=0;
 y_sv2 = {'spco2' 'spco2' 'spco2' 'spco2'};
 % %% only applies if seas_amplitude is off
 tests = {'norm_error';'correlation' ; 'ratio'};
-test_names = {'normalized RMSE'; 'correlation' ; 'amplitude ratio'};
+test_names = {'normalized RMSE'; 'correlation' ; 'Normalized SD'};
 
 % tt = 2;
 test_list = [ 1 1 3 3];
@@ -7562,7 +7587,7 @@ dissic_vert_gradient=0;
 y_sv2 = {'fgco2_mol_C_m2_yr' 'fgco2_mol_C_m2_yr' 'fgco2_mol_C_m2_yr' 'fgco2_mol_C_m2_yr' 'fgco2_mol_C_m2_yr'};
 % %% only applies if seas_amplitude is off
 tests = {'norm_error';'correlation' ; 'ratio'};
-test_names = {'normalized RMSE'; 'correlation' ; 'amplitude ratio'};
+test_names = {'normalized RMSE'; 'correlation' ; 'Normalized SD'};
 
 % tt = 2;
 test_list = [ 1 2 3 1 1];
@@ -7814,7 +7839,7 @@ dissic_vert_gradient=0;
 y_sv2 = {'out_monthly' 'out_monthly' 'out_monthly'};
 % %% only applies if seas_amplitude is off
 tests = {'norm_error';'correlation' ; 'ratio'};
-test_names = {'normalized error'; 'correlation' ; 'amplitude ratio'};
+test_names = {'normalized error'; 'correlation' ; 'Normalized SD'};
 
 % tt = 2;
 % test_list = [ 1 2 3 1 1];
@@ -8070,7 +8095,7 @@ dissic_vert_gradient=0;
 y_sv2 = {'out_monthly' 'out_monthly' 'out_monthly'};
 % %% only applies if seas_amplitude is off
 tests = {'norm_error';'correlation' ; 'ratio'};
-test_names = {'normalized error'; 'correlation' ; 'amplitude ratio'};
+test_names = {'normalized error'; 'correlation' ; 'Normalized SD'};
 
 % tt = 2;
 % test_list = [ 1 2 3 1 1];
